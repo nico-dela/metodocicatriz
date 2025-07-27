@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "processes": "processes",
+    "publications": "Publications",
+    "bio": "Bio",
+    "contact": "Contact"
+  },
+  "processes": {
+    "title": "processes",
+    "process1": {
+      "title": "Natural Patterns Study",
+      "description": "An exploration of natural patterns and their mathematical representations."
+    },
+    "process2": {
+      "title": "Butterfly Wing Analysis",
+      "description": "Detailed study of butterfly wing patterns and their structural properties."
+    }
+  },
+  "publications": {
+    "title": "Publications",
+    "pub1": {
+      "title": "The Art of Natural Observation",
+      "description": "A comprehensive study on natural pattern recognition and artistic interpretation."
+    },
+    "pub2": {
+      "title": "Methodological Approaches to Scientific Art",
+      "description": "Exploring the intersection between scientific methodology and artistic expression."
+    }
+  },
+  "bio": {
+    "title": "Bio",
+    "paragraph1": "Método Cicatriz is an artistic practice that explores the intersection between scientific observation and creative expression.",
+    "paragraph2": "Through detailed studies of natural patterns and phenomena, this methodology seeks to understand the underlying structures that govern both artistic and scientific inquiry.",
+    "paragraph3": "The work focuses on the documentation and interpretation of natural forms, creating a dialogue between empirical observation and aesthetic representation."
+  },
+  "contact": {
+    "title": "Contact",
+    "email": "Email: info@metodocicatriz.com",
+    "location": "Location: Buenos Aires, Argentina"
+  }
+}

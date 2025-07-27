@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "processes": "Procesos",
+    "publications": "Publicaciones",
+    "bio": "Biografía",
+    "contact": "Contacto"
+  },
+  "processes": {
+    "title": "Procesos",
+    "process1": {
+      "title": "Estudio de Patrones Naturales",
+      "description": "Una exploración de patrones naturales y sus representaciones matemáticas."
+    },
+    "process2": {
+      "title": "Análisis de Alas de Mariposa",
+      "description": "Estudio detallado de los patrones de alas de mariposa y sus propiedades estructurales."
+    }
+  },
+  "publications": {
+    "title": "Publicaciones",
+    "pub1": {
+      "title": "El Arte de la Observación Natural",
+      "description": "Un estudio integral sobre el reconocimiento de patrones naturales y la interpretación artística."
+    },
+    "pub2": {
+      "title": "Enfoques Metodológicos del Arte Científico",
+      "description": "Explorando la intersección entre la metodología científica y la expresión artística."
+    }
+  },
+  "bio": {
+    "title": "Biografía",
+    "paragraph1": "Método Cicatriz es una práctica artística que explora la intersección entre la observación científica y la expresión creativa.",
+    "paragraph2": "A través de estudios detallados de patrones y fenómenos naturales, esta metodología busca comprender las estructuras subyacentes que gobiernan tanto la investigación artística como la científica.",
+    "paragraph3": "El trabajo se centra en la documentación e interpretación de formas naturales, creando un diálogo entre la observación empírica y la representación estética."
+  },
+  "contact": {
+    "title": "Contacto",
+    "email": "Email: info@metodocicatriz.com",
+    "location": "Ubicación: Buenos Aires, Argentina"
+  }
+}
