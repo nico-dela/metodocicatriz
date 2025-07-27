@@ -1,0 +1,35 @@
+/* Bio page styles */
+.bio-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.bio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.bio-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  text-align: justify;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .bio-container {
+    padding: 2rem 1rem;
+  }
+
+  .bio-content {
+    gap: 1.5rem;
+  }
+
+  .bio-content p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
