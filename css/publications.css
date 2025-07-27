@@ -1,0 +1,57 @@
+/* Publications page styles */
+.publications-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.publications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.publication-item {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 2rem;
+}
+
+.publication-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.publication-item h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.publication-year {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.publication-item p:not(.publication-year) {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .publications-container {
+    padding: 2rem 1rem;
+  }
+
+  .publications-list {
+    gap: 2rem;
+  }
+
+  .publication-item h3 {
+    font-size: 1.3rem;
+  }
+}
