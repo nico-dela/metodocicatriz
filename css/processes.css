@@ -1,0 +1,50 @@
+/* Processes page styles */
+.processes-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.processes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.processes-item {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 2rem;
+}
+
+.processes-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.processes-item h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.processes-item p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .processes-container {
+    padding: 2rem 1rem;
+  }
+
+  .processes-list {
+    gap: 2rem;
+  }
+
+  .processes-item h3 {
+    font-size: 1.3rem;
+  }
+}
