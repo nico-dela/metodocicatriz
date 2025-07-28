@@ -25,7 +25,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -33,7 +32,7 @@ html {
 a {
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
 ul {
@@ -49,8 +48,10 @@ img {
 /* Main content layout with fade-in animation */
 .main-content {
   padding-top: 80px;
+  /* Desktop padding */
   min-height: calc(100vh - 80px);
-  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
 }
 
 @keyframes fadeInUp {
@@ -65,62 +66,53 @@ img {
   }
 }
 
-/* Page titles with stagger animation */
+/* Page titles */
 .page-title {
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: 24px;
   font-weight: 400;
-  margin-bottom: 2rem;
+  margin-bottom: 40px;
   text-align: center;
   opacity: 0;
-  animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  animation: fadeInUp 0.8s ease 0.4s forwards;
 }
 
 /* Container styles */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 clamp(1rem, 4vw, 2rem);
+  padding: 0 20px;
 }
 
-/* Loading animation for content */
-.content-section {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
-}
-
-/* Responsive design */
+/* Mobile responsive - adjust padding for mobile header */
 @media (max-width: 768px) {
-  .main-content {
-    padding-top: 70px;
-  }
-
-  .page-title {
-    margin-bottom: 1.5rem;
-  }
-
-  .container {
-    padding: 0 1rem;
-  }
-}
-
-@media (max-width: 480px) {
   body {
     font-size: 14px;
   }
 
   .main-content {
-    padding-top: 60px;
+    padding-top: 0;
+    /* Remove padding since header is relative */
+    min-height: auto;
+  }
+
+  .page-title {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+
+  .container {
+    padding: 0 20px;
   }
 }
 
-/* Touch device optimizations */
-@media (hover: none) and (pointer: coarse) {
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 18px;
+    margin-bottom: 25px;
+  }
 
-  a,
-  button {
-    min-height: 44px;
-    min-width: 44px;
+  .container {
+    padding: 0 15px;
   }
 }
 
