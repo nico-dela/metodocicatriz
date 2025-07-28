@@ -2,35 +2,68 @@
 .bio-container {
   max-width: 700px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 2rem);
 }
 
 .bio-content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: clamp(1.5rem, 4vw, 2rem);
 }
 
 .bio-content p {
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 1.1rem;
+  font-family: "Nunito", sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   line-height: 1.8;
   color: #555;
   text-align: justify;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+.bio-content p:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.bio-content p:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.bio-content p:nth-child(3) {
+  animation-delay: 0.6s;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .bio-container {
-    padding: 2rem 1rem;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 1.5rem);
   }
 
   .bio-content {
-    gap: 1.5rem;
+    gap: clamp(1rem, 3vw, 1.5rem);
   }
 
   .bio-content p {
-    font-size: 1rem;
     line-height: 1.7;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .bio-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Improved readability for small screens */
+@media (max-width: 360px) {
+  .bio-content p {
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 }
