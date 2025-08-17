@@ -146,7 +146,8 @@ header {
   text-decoration: none;
   color: #333;
   font-size: 18px;
-  font-family: "C_tesis", serif; /* Updated navigation to use custom font */
+  font-family: "C_tesis", serif;
+  /* Updated navigation to use custom font */
   transition: color 0.3s ease;
 }
 
@@ -265,12 +266,24 @@ main {
 
 .project-item {
   text-align: center;
+  /* Added hover effects for clickable project items */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
 }
 
-.project-item img {
-  width: 100%;
-  height: auto;
-  margin-bottom: 20px;
+.project-item:hover {
+  transform: translateY(-5px);
+  opacity: 0.9;
+}
+
+.project-item a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.project-item a:hover .project-info h3 {
+  color: #666;
 }
 
 .project-info h3 {
@@ -290,7 +303,8 @@ main {
 .publications-grid {
   margin-top: 80px;
   padding: 60px 40px;
-  display: flex; /* Changed publications grid to single column layout */
+  display: flex;
+  /* Changed publications grid to single column layout */
   flex-direction: column;
   gap: 30px;
   max-width: 1000px;
@@ -299,7 +313,8 @@ main {
 }
 
 .publication-item {
-  display: flex; /* Updated publication item to display as horizontal row */
+  display: flex;
+  /* Updated publication item to display as horizontal row */
   align-items: flex-start;
   gap: 30px;
   padding: 20px 0;
@@ -320,7 +335,8 @@ main {
 .publication-item a {
   text-decoration: none;
   color: inherit;
-  display: flex; /* Updated publication item to display as horizontal row */
+  display: flex;
+  /* Updated publication item to display as horizontal row */
   align-items: flex-start;
   gap: 30px;
   width: 100%;
@@ -338,6 +354,29 @@ main {
 .publication-info {
   flex: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.publication-info h3 {
+  font-family: "C_tesis", serif;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.publication-info p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.publication-info p:last-child {
+  margin-bottom: 0;
 }
 
 /* Bio content styles for bio.html */
@@ -567,6 +606,8 @@ main {
     justify-content: center;
   }
 
+
+
   .projects-grid,
   .publications-grid {
     margin-top: 120px;
@@ -590,6 +631,8 @@ main {
     flex-direction: column;
     gap: 15px;
     text-align: center;
+    padding: 20px 0;
+    align-items: center;
   }
 
   .publication-item img {
@@ -601,10 +644,23 @@ main {
   .publication-item a {
     flex-direction: column;
     gap: 15px;
+    align-items: center;
   }
 
   .publication-info {
     text-align: center;
+    width: 100%;
+    align-items: center;
+  }
+
+  .publication-info h3 {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .publication-info p {
+    text-align: center;
+    margin-bottom: 8px;
   }
 }
 
@@ -642,5 +698,136 @@ main {
   .bio-text h2 {
     font-size: 18px;
     letter-spacing: 2px;
+  }
+}
+
+/* PDF Viewer Page Styles */
+.pdf-viewer-page {
+  margin: 0;
+  padding: 0;
+  background: #f8f8f8;
+  font-family: "C_tesis", serif;
+}
+
+.pdf-header {
+  background: white;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-link:hover {
+  color: #666;
+}
+
+.project-title {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.pdf-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  background: white;
+}
+
+.pdf-thumbnail {
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-thumbnail:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pdf-thumbnail.active {
+  border-color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-thumbnail img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.page-number {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+  background: white;
+}
+
+.pdf-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  overflow: auto;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.pdf-fallback {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pdf-fallback img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* PDF Viewer Mobile Styles */
+@media (max-width: 768px) {
+  .pdf-header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .pdf-container {
+    flex-direction: column;
+  }
+
+  .pdf-thumbnail {
+    min-width: 100px;
+    margin-bottom: 0;
+  }
+
+  .pdf-main {
+    padding: 1rem;
+    min-height: 80vh;
   }
 }

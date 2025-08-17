@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const langLinks = document.querySelectorAll(".lang-option") // Updated selector to match actual HTML
   const contentTexts = document.querySelectorAll(".content-text")
 
-  let currentLanguage = localStorage.getItem("currentLanguage") || "es"
+  let currentLanguage = localStorage.getItem("language") || "es"
 
   updateLanguageDisplay(currentLanguage)
 
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetLang = this.getAttribute("data-lang")
       currentLanguage = targetLang
 
-      localStorage.setItem("currentLanguage", targetLang)
+      localStorage.setItem("language", targetLang)
 
       updateLanguageDisplay(targetLang)
     })
@@ -43,12 +43,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
 
-    // Handle data-es/data-en attribute translations
+    // Handle data-es/data-en attribute translations for all elements
     const translatableElements = document.querySelectorAll("[data-es][data-en]")
     translatableElements.forEach((element) => {
       const text = element.getAttribute(`data-${lang}`)
       if (text) {
-        element.textContent = text
+        // Handle different element types appropriately
+        if (element.tagName === "TITLE") {
+          element.textContent = text
+        } else if (element.tagName === "INPUT" && element.type === "submit") {
+          element.value = text
+        } else {
+          element.textContent = text
+        }
       }
     })
 
@@ -82,5 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
         titleElement.textContent = lang === "es" ? titleEs : titleEn
       }
     }
+
+    const navElements = document.querySelectorAll(".nav-right a[data-es][data-en]")
+    navElements.forEach((element) => {
+      const text = element.getAttribute(`data-${lang}`)
+      if (text) {
+        element.textContent = text
+      }
+    })
   }
 })
