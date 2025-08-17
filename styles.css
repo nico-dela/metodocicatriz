@@ -50,7 +50,7 @@ header {
 .artist-name {
   font-family: "C_tesis", serif;
   font-size: 18px;
-  font-weight: normal;
+  font-weight: bold;
   color: #333;
 }
 
@@ -127,13 +127,9 @@ header {
 .nav-left .artist-name {
   font-family: "C_tesis", serif;
   font-size: 22px;
-  font-weight: normal;
+  font-weight: bold;
   color: #333;
   text-decoration: none;
-}
-
-.nav-left .artist-name:hover {
-  color: #666;
 }
 
 .nav-right {
