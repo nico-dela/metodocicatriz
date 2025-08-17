@@ -4,58 +4,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Método Cicatriz</title>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/header.css">
-  <link rel="stylesheet" href="css/gallery.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
-    rel="stylesheet">
+  <!-- Changed title to use bullet point instead of hyphen -->
+  <title>Método Cicatriz • Candela Gencarelli</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-  <header class="header">
-    <div class="header-container">
-      <h1 class="logo">
-        <span class="strikethrough">Método</span> Cicatriz
-      </h1>
-      <nav class="navigation">
-        <ul class="nav-list">
-          <li><a href="processes.html" class="nav-link" data-translate="nav.processes">processes</a></li>
-          <li><a href="publications.html" class="nav-link" data-translate="nav.publications">Publications</a></li>
-          <li><a href="bio.html" class="nav-link" data-translate="nav.bio">Bio</a></li>
-          <li><a href="contact.html" class="nav-link" data-translate="nav.contact">Contact</a></li>
-          <li class="language-toggle">
-            <button class="lang-btn" data-lang="en">EN</button>
-            <span class="lang-separator">/</span>
-            <button class="lang-btn active" data-lang="es">ES</button>
-          </li>
-        </ul>
-      </nav>
+  <!-- Unified navigation structure to match other pages -->
+  <nav class="navigation">
+    <div class="nav-left">
+      <a href="index.html" class="artist-name"><span class="strikethrough">Método</span> Cicatriz</a>
     </div>
-  </header>
 
-  <main class="main-content">
-    <div class="gallery-container">
-      <div class="gallery-grid">
-        <div class="gallery-item">
-          <img src="images/butterfly-1.jpg" alt="Butterfly study 1" class="gallery-image">
-        </div>
-        <div class="gallery-item">
-          <img src="images/butterfly-2.jpg" alt="Butterfly study 2" class="gallery-image">
-        </div>
-        <div class="gallery-item">
-          <img src="images/butterfly-3.jpg" alt="Butterfly study 3" class="gallery-image">
-        </div>
-        <div class="gallery-item">
-          <img src="images/butterfly-4.jpg" alt="Butterfly study 4" class="gallery-image">
-        </div>
+    <div class="nav-right">
+      <a href="procesos.html" data-es="Procesos" data-en="Processes">Procesos</a>
+      <a href="publicaciones.html" data-es="Publicaciones" data-en="Publications">Publicaciones</a>
+      <a href="bio.html" data-es="Bio" data-en="Bio">Bio</a>
+      <a href="mailto:candelagencarelli@gmail.com" data-es="Contacto" data-en="Contact">Contacto</a>
+      <div class="language-toggle">
+        <span class="lang-option active" data-lang="es">ES</span>
+        <span class="separator">/</span>
+        <span class="lang-option" data-lang="en">EN</span>
       </div>
     </div>
+  </nav>
+
+  <main>
+    <!-- Home page with automatic image gallery -->
+    <section class="home-gallery">
+      <div class="gallery-container">
+        <div class="gallery-image active">
+          <img src="/placeholder.svg?height=600&width=400" alt="Método CICATRIZ - Proceso 1" />
+        </div>
+        <div class="gallery-image">
+          <img src="/placeholder.svg?height=600&width=400" alt="Método CICATRIZ - Proceso 2" />
+        </div>
+        <div class="gallery-image">
+          <img src="/placeholder.svg?height=600&width=400" alt="Método CICATRIZ - Proceso 3" />
+        </div>
+        <div class="gallery-image">
+          <img src="/placeholder.svg?height=600&width=400" alt="Método CICATRIZ - Proceso 4" />
+        </div>
+        <div class="gallery-image">
+          <img src="/placeholder.svg?height=600&width=400" alt="Método CICATRIZ - Proceso 5" />
+        </div>
+      </div>
+    </section>
   </main>
 
-  <script type="module" src="js/main.js"></script>
+  <script src="translations.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>

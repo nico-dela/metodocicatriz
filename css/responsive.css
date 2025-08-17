@@ -1,0 +1,64 @@
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: var(--spacing-sm);
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .nav-menu {
+    gap: var(--spacing-sm);
+  }
+
+  .main-content {
+    margin-top: 120px;
+  }
+
+  .artist-name {
+    font-size: 2rem;
+  }
+
+  .method-title {
+    font-size: 1.2rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-section {
+    padding: var(--spacing-md) var(--spacing-sm);
+    min-height: 60vh;
+  }
+
+  .content-section {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .artist-name {
+    font-size: 1.8rem;
+  }
+
+  .method-title {
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .bio-text {
+    font-size: 1rem;
+  }
+}
