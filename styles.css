@@ -232,24 +232,41 @@ main {
 
 .gallery-container {
   position: relative;
-  max-width: 500px;
   width: 100%;
-  margin-bottom: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  /* evita que algo se salga */
 }
 
 .gallery-image {
-  display: none;
   width: 100%;
+  height: auto;
+  /* deja que la altura se ajuste sola */
+  max-height: 80vh;
+  /* nunca más alto que la pantalla */
+  object-fit: contain;
+  /* que la imagen siempre se vea completa */
+  background-color: #fff;
+  /* fondo blanco si sobra espacio */
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
 }
 
 .gallery-image.active {
-  display: block;
+  opacity: 1;
+  position: relative;
 }
 
 .gallery-image img {
   width: 100%;
   height: auto;
   display: block;
+  transition: opacity 1s ease-in-out;
+  /* <- animación suave */
 }
 
 /* Projects grid styles for procesos.html */
@@ -721,7 +738,7 @@ main {
 .back-link {
   color: #333;
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
