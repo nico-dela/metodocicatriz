@@ -832,7 +832,7 @@ main {
   }
 
   .pdf-viewer {
-    width: 95%;          /* Ocupa casi toda la pantalla */
-    height: 80vh;        /* Alto relativo a la altura de la pantalla */
+    width: 100% !important;
+    height: 90vh;
   }
 }
