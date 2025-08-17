@@ -44,41 +44,10 @@ const translations = {
   },
 }
 
-// Current language state
-let currentLanguage = "es"
+// Current language state is now managed in script.js with localStorage persistence
 
-// Translation function
+// Translation function (kept for potential future use)
 function t(key) {
+  const currentLanguage = localStorage.getItem("currentLanguage") || "es"
   return translations[currentLanguage][key] || key
-}
-
-// Language switching function
-function switchLanguage(lang) {
-  currentLanguage = lang
-  updatePageContent()
-}
-
-// Update page content based on current language
-function updatePageContent() {
-  // Update navigation
-  const navItems = document.querySelectorAll("[data-translate]")
-  navItems.forEach((item) => {
-    const key = item.getAttribute("data-translate")
-    if (translations[currentLanguage][key]) {
-      item.innerHTML = translations[currentLanguage][key]
-    }
-  })
-
-  // Update title
-  const titleElement = document.querySelector("title")
-  if (titleElement && titleElement.getAttribute("data-translate")) {
-    const key = titleElement.getAttribute("data-translate")
-    titleElement.textContent = translations[currentLanguage][key]
-  }
-
-  // Update main title if exists
-  const mainTitle = document.querySelector(".main-title")
-  if (mainTitle) {
-    mainTitle.innerHTML = translations[currentLanguage].mainTitle
-  }
 }

@@ -1,7 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
   const galleryImages = document.querySelectorAll(".gallery-image")
-  const langLinks = document.querySelectorAll(".lang-link")
+  const langLinks = document.querySelectorAll(".lang-option") // Updated selector to match actual HTML
   const contentTexts = document.querySelectorAll(".content-text")
+
+  let currentLanguage = localStorage.getItem("currentLanguage") || "es"
+
+  updateLanguageDisplay(currentLanguage)
 
   // Automatic gallery rotation
   if (galleryImages.length > 0) {
@@ -17,26 +21,66 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(showNextImage, 4000)
   }
 
-  // Language toggle functionality (works on all pages)
   langLinks.forEach((link) => {
     link.addEventListener("click", function (e) {
       e.preventDefault()
 
       const targetLang = this.getAttribute("data-lang")
+      currentLanguage = targetLang
 
-      // Update active language link
-      langLinks.forEach((l) => l.classList.remove("active"))
-      this.classList.add("active")
+      localStorage.setItem("currentLanguage", targetLang)
 
-      // Show/hide content based on language
-      contentTexts.forEach((content) => {
-        const contentLang = content.getAttribute("data-lang")
-        if (contentLang === targetLang) {
-          content.classList.remove("hidden")
-        } else {
-          content.classList.add("hidden")
-        }
-      })
+      updateLanguageDisplay(targetLang)
     })
   })
+
+  function updateLanguageDisplay(lang) {
+    // Update active language link
+    langLinks.forEach((l) => {
+      l.classList.remove("active")
+      if (l.getAttribute("data-lang") === lang) {
+        l.classList.add("active")
+      }
+    })
+
+    // Handle data-es/data-en attribute translations
+    const translatableElements = document.querySelectorAll("[data-es][data-en]")
+    translatableElements.forEach((element) => {
+      const text = element.getAttribute(`data-${lang}`)
+      if (text) {
+        element.textContent = text
+      }
+    })
+
+    // Handle content sections with data-lang attributes
+    contentTexts.forEach((content) => {
+      const contentLang = content.getAttribute("data-lang")
+      if (contentLang === lang) {
+        content.style.display = "block"
+        content.classList.remove("hidden")
+      } else {
+        content.style.display = "none"
+        content.classList.add("hidden")
+      }
+    })
+
+    const bioTexts = document.querySelectorAll(".bio-text")
+    bioTexts.forEach((bioText) => {
+      const bioLang = bioText.getAttribute("data-lang")
+      if (bioLang === lang) {
+        bioText.style.display = "block"
+      } else {
+        bioText.style.display = "none"
+      }
+    })
+
+    const titleElement = document.querySelector("title")
+    if (titleElement) {
+      const titleEs = titleElement.getAttribute("data-es")
+      const titleEn = titleElement.getAttribute("data-en")
+      if (titleEs && titleEn) {
+        titleElement.textContent = lang === "es" ? titleEs : titleEn
+      }
+    }
+  }
 })

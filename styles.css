@@ -145,7 +145,8 @@ header {
 .nav-right a {
   text-decoration: none;
   color: #333;
-  font-size: 16px;
+  font-size: 18px;
+  font-family: "C_tesis", serif; /* Updated navigation to use custom font */
   transition: color 0.3s ease;
 }
 
@@ -289,28 +290,40 @@ main {
 .publications-grid {
   margin-top: 80px;
   padding: 60px 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 40px;
-  max-width: 1200px;
+  display: flex; /* Changed publications grid to single column layout */
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .publication-item {
-  text-align: center;
+  display: flex; /* Updated publication item to display as horizontal row */
+  align-items: flex-start;
+  gap: 30px;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.publication-item:last-child {
+  border-bottom: none;
 }
 
 .publication-item img {
-  width: 100%;
+  width: 150px;
   height: auto;
-  margin-bottom: 20px;
+  flex-shrink: 0;
+  margin-bottom: 0;
 }
 
 .publication-item a {
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: flex; /* Updated publication item to display as horizontal row */
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
   transition: opacity 0.3s ease;
 }
 
@@ -322,18 +335,9 @@ main {
   color: #666;
 }
 
-.publication-info h3 {
-  font-family: "C_tesis", serif;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.publication-info p {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 5px;
+.publication-info {
+  flex: 1;
+  text-align: left;
 }
 
 /* Bio content styles for bio.html */
@@ -574,6 +578,33 @@ main {
   .bio-content {
     margin-top: 120px;
     padding: 40px 20px;
+  }
+
+  .publications-grid {
+    margin-top: 120px;
+    padding: 40px 20px;
+    gap: 25px;
+  }
+
+  .publication-item {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .publication-item img {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .publication-item a {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .publication-info {
+    text-align: center;
   }
 }
 
