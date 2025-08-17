@@ -233,27 +233,31 @@ main {
 .gallery-container {
   position: relative;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
+  /* Aumentado el ancho máximo */
   margin: 0 auto;
   overflow: hidden;
-  /* evita que algo se salga */
+  /* Altura fija para evitar saltos cuando cambian las imágenes */
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-image {
   width: 100%;
-  height: auto;
-  /* deja que la altura se ajuste sola */
-  max-height: 80vh;
-  /* nunca más alto que la pantalla */
+  height: 100%;
   object-fit: contain;
-  /* que la imagen siempre se vea completa */
+  /* Mantiene la proporción completa */
   background-color: #fff;
-  /* fondo blanco si sobra espacio */
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
   transition: opacity 1s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .gallery-image.active {
@@ -262,11 +266,45 @@ main {
 }
 
 .gallery-image img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
   height: auto;
   display: block;
+  object-fit: contain;
+  /* Asegura que la imagen completa sea visible */
   transition: opacity 1s ease-in-out;
-  /* <- animación suave */
+}
+
+/* Responsive design - Mobile ajustado */
+@media (max-width: 768px) {
+  .home-gallery {
+    padding: 40px 20px;
+    min-height: calc(100vh - 120px);
+  }
+
+  .gallery-container {
+    margin-bottom: 30px;
+    height: 60vh;
+    /* Altura menor en móvil */
+    max-width: 100%;
+  }
+
+  .gallery-image img {
+    max-width: 95%;
+    max-height: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-container {
+    height: 50vh;
+  }
+
+  .gallery-image img {
+    max-width: 90%;
+    max-height: 90%;
+  }
 }
 
 /* Projects grid styles for procesos.html */
