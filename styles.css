@@ -227,7 +227,7 @@ main {
   align-items: center;
   justify-content: center;
   min-height: calc(100vh - 80px);
-  padding: 60px 40px;
+  padding: 50px 30px;
 }
 
 .gallery-container {
