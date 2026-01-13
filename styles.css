@@ -126,7 +126,7 @@ header {
 
 .nav-left .artist-name {
   font-family: "C_tesis", serif;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: bold;
   color: #333;
   text-decoration: none;
@@ -141,7 +141,7 @@ header {
 .nav-right a {
   text-decoration: none;
   color: #333;
-  font-size: 18px;
+  font-size: 22px;
   font-family: "C_tesis", serif;
   /* Updated navigation to use custom font */
   transition: color 0.3s ease;
@@ -338,7 +338,6 @@ main {
 }
 
 .project-info h3 {
-  font-family: "C_tesis", serif;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -411,7 +410,6 @@ main {
 }
 
 .publication-info h3 {
-  font-family: "C_tesis", serif;
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
