@@ -1,74 +1,91 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title
+      data-es="Método Cicatriz • Candela Gencarelli"
+      data-en="Método Cicatriz • Candela Gencarelli"
+    >
+      Método Cicatriz • Candela Gencarelli
+    </title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Background Image -->
+    <div id="random-background" class="background-image-container"></div>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Changed title to use bullet point instead of hyphen -->
-  <!-- Added translation attributes to title -->
-  <title data-es="Método Cicatriz • Candela Gencarelli" data-en="Método Cicatriz • Candela Gencarelli">Método Cicatriz •
-    Candela Gencarelli</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-
-<body>
-  <!-- Unified navigation structure to match other pages -->
-  <nav class="navigation">
-    <div class="nav-left">
-      <h1 class="artist-name">
-        <span class="strikethrough">Método</span> Cicatriz
-      </h1>
-    </div>
-
-    <div class="nav-right">
-      <a href="./pages/procesos.html" data-es="Procesos" data-en="Processes">Procesos</a>
-      <a href="./pages/publicaciones.html" data-es="Publicaciones" data-en="Publications">Publicaciones</a>
-      <a href="./pages/bio.html" data-es="Bio" data-en="Bio">Bio</a>
-      <a href="mailto:candelagencarelli@gmail.com" data-es="Contacto" data-en="Contact">Contacto</a>
-      <div class="language-toggle">
-        <!-- Added data-lang attributes to language options -->
-        <span class="lang-option active" data-lang="es">ES</span>
-        <span class="separator">/</span>
-        <span class="lang-option" data-lang="en">EN</span>
+    <!-- Navigation -->
+    <nav class="navigation">
+      <div class="nav-left">
+        <h1 class="artist-name">
+          <span class="strikethrough">Método</span> Cicatriz
+        </h1>
       </div>
-    </div>
-  </nav>
 
-  <main>
-    <!-- Home page with automatic image gallery -->
-    <section class="home-gallery">
-      <div class="gallery-container">
-        <div class="gallery-image active">
-          <img
-            src="assets/WhatsApp Image 2026-01-08 at 12.52.08 (1).jpeg"
-            alt="Método CICATRIZ - Proceso 1" />
+      <div class="nav-right">
+        <a href="./pages/bio.html" data-es="Bio" data-en="Bio">Bio</a>
+        <div class="language-toggle">
+          <span class="lang-option active" data-lang="es">ES</span>
+          <span class="separator">/</span>
+          <span class="lang-option" data-lang="en">EN</span>
         </div>
-        <div class="gallery-image">
-          <img
-            src="assets/WhatsApp Image 2026-01-08 at 12.52.08 (2).jpeg"
-            alt="Método CICATRIZ - Proceso 2" />
-        </div>
-        <div class="gallery-image">
-          <img
-            src="assets/WhatsApp Image 2026-01-08 at 12.52.08.jpeg"
-            alt="Método CICATRIZ - Proceso 3" />
-        </div>
-        <div class="gallery-image">
-          <img
-            src="assets/WhatsApp Image 2026-01-08 at 12.52.09.jpeg"
-            alt="Método CICATRIZ - Proceso 4" />
-        </div>
-        <!-- <div class="gallery-image">
-          <img
-            src=""
-            alt="Método CICATRIZ - Proceso 5" />
-        </div> -->
       </div>
-    </section>
-  </main>
+    </nav>
 
-  <script src="../js/translations.js"></script>
-  <script src="main.js"></script>
-</body>
+    <!-- Main Content - Single Column -->
+    <main class="home-layout">
+      <div class="home-content">
+        <div class="vertical-banner">
+          <p class="banner-text">
+            <span
+              data-es="Esta web no soy yo pero podes conocer algo de mi arte"
+              data-en="This website isn't me, but it gives you a glimpse of my"
+              >Esta web no soy yo pero podes conocer algo de mi
+              arte</span
+            >
+            <span class="random-line">
+              <span data-es="random" data-en="random art.">random</span>
+              <button
+                id="random-pdf-btn"
+                class="eye-button"
+                aria-label="Ver arte aleatorio"
+              >
+                <svg
+                  class="eye-icon eye-icon-closed"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="28"
+                  height="28"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM9.5 8.5l-6 6 1.5 1.5 6-6-1.5-1.5zm5 0l6 6-1.5 1.5-6-6 1.5-1.5z"
+                  />
+                </svg>
+                <svg
+                  class="eye-icon eye-icon-open"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="28"
+                  height="28"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                  />
+                </svg>
+              </button>
+            </span>
+          </p>
+        </div>
+      </div>
+    </main>
 
+    <!-- Scripts -->
+    <script src="js/translations.js"></script>
+    <script src="js/random-background.js"></script>
+    <script src="js/random-pdf.js"></script>
+    <script src="main.js"></script>
+  </body>
 </html>

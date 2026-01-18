@@ -1,9 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Changed title to use bullet point instead of hyphen -->
     <title
       data-es="Bio • Candela Gencarelli"
       data-en="Bio • Candela Gencarelli"
@@ -12,31 +11,16 @@
     </title>
     <link rel="stylesheet" href="../styles.css" />
   </head>
-
   <body>
+    <!-- Navigation -->
     <nav class="navigation">
       <div class="nav-left">
-        <a href="../index.html" class="artist-name">Candela Gencarelli</a>
+        <a href="../index.html" class="artist-name">
+          <span class="strikethrough">Método</span> Cicatriz
+        </a>
       </div>
       <div class="nav-right">
-        <a href="procesos.html" data-es="Procesos" data-en="Processes"
-          >Procesos</a
-        >
-        <a
-          href="publicaciones.html"
-          data-es="Publicaciones"
-          data-en="Publications"
-          >Publicaciones</a
-        >
-        <a href="bio.html" class="active" data-es="Bio" data-en="Bio">Bio</a>
-        <a
-          href="mailto:candelagencarelli@gmail.com"
-          data-es="Contacto"
-          data-en="Contact"
-          >Contacto</a
-        >
         <div class="language-toggle">
-          <!-- Added data-lang attributes to language options -->
           <span class="lang-option active" data-lang="es">ES</span>
           <span class="separator">/</span>
           <span class="lang-option" data-lang="en">EN</span>
@@ -44,9 +28,20 @@
       </div>
     </nav>
 
+    <!-- Bio Content -->
     <main class="bio-content">
-      <!-- Ensured bio text sections have proper data-lang attributes -->
+      <!-- Spanish Version -->
       <div class="bio-text" data-lang="es">
+        <button
+          id="random-pdf-btn"
+          class="home-btn home-btn-bottom"
+          data-es="Descargar CV"
+          href="../assets/CV_Candela_Gencarelli.pdf"
+          download="CV_Candela_Gencarelli.pdf"
+        >
+          Descargar CV (PDF)
+        </button>
+
         <p>
           <strong>Candela Gencarelli</strong> es artista, educadora e
           investigadora radicada en Córdoba, Argentina. Es profesora en Ciencias
@@ -82,7 +77,7 @@
           crítico.
         </p>
 
-        <h2 style="font-size: 26px; font-weight: bold">Sobre mi práctica</h2>
+        <h2 style="font-size: 26px">Sobre mi práctica</h2>
 
         <p>
           Trabajo con
@@ -114,7 +109,18 @@
         </p>
       </div>
 
+      <!-- English Version -->
       <div class="bio-text" data-lang="en" style="display: none">
+        <button
+          id="random-pdf-btn"
+          class="home-btn home-btn-bottom"
+          data-en="Download academic CV"
+          href="../assets/CV_Candela_Gencarelli.pdf"
+          download="CV_Candela_Gencarelli.pdf"
+        >
+          Download academic CV (PDF)
+        </button>
+
         <p>
           <strong>Candela Gencarelli</strong> is an artist, educator, and
           researcher based in Córdoba, Argentina. She holds a degree in
@@ -147,7 +153,7 @@
           care, and critical inquiry.
         </p>
 
-        <h2 style="font-size: 26px; font-weight: bold">About my practice</h2>
+        <h2>About my practice</h2>
 
         <p>
           I
@@ -187,6 +193,7 @@
       </div>
     </main>
 
+    <!-- Scripts -->
     <script src="../js/translations.js"></script>
     <script src="../main.js"></script>
   </body>

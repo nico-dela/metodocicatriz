@@ -1,54 +1,45 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title data-es="Archivo Textil y Memoria • Candela Gencarelli"
-    data-en="Textile Archive and Memory • Candela Gencarelli">Archivo Textil y Memoria • Candela Gencarelli</title>
+  <title 
+    data-es="Visualizador de PDF • Candela Gencarelli" 
+    data-en="PDF Viewer • Candela Gencarelli">
+    Visualizador de PDF • Candela Gencarelli
+  </title>
   <link rel="stylesheet" href="../styles.css">
 </head>
-
 <body class="pdf-viewer-page">
-  <!-- Removed all inline styles, now using external CSS -->
+  <!-- Header -->
   <div class="pdf-header">
-    <a href="procesos.html" class="back-link" data-es="← Volver a procesos" data-en="← Back to processes">← Volver a
-      procesos</a>
-    <h1 class="project-title" data-es="Archivo Textil y Memoria" data-en="Textile Archive and Memory">Archivo Textil y
-      Memoria</h1>
-    <div></div>
+    <a href="../index.html" class="back-link" data-es="← Volver" data-en="← Back">
+      ← Volver
+    </a>
+    <a href="./bio.html" class="back-link" data-es="Bio" data-en="Bio">
+      Bio
+    </a>
   </div>
 
+  <!-- PDF Container -->
   <div class="pdf-container">
     <div class="pdf-main">
-      <!-- Using Mozilla PDF.js example PDF that allows embedding -->
-      <iframe class="pdf-viewer" src="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
-        title="Archivo Textil y Memoria PDF" allowfullscreen>
-        <p>Tu navegador no soporta PDFs. <a
-            href="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf" target="_blank">Abrir PDF en
-            nueva ventana</a></p>
+      <iframe 
+        id="pdf-iframe" 
+        class="pdf-viewer" 
+        src="" 
+        title="PDF Viewer"
+        allowfullscreen>
+        <p data-es="Tu navegador no soporta PDFs." data-en="Your browser doesn't support PDFs.">
+          Tu navegador no soporta PDFs.
+        </p>
       </iframe>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="../js/translations.js"></script>
   <script src="../main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const thumbnails = document.querySelectorAll('.pdf-thumbnail');
-      const pdfViewer = document.querySelector('.pdf-viewer');
-
-      thumbnails.forEach(thumbnail => {
-        thumbnail.addEventListener('click', function () {
-          thumbnails.forEach(t => t.classList.remove('active'));
-          this.classList.add('active');
-
-          const pageNumber = this.dataset.page;
-          pdfViewer.src = `https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf#page=${pageNumber}`;
-        });
-      });
-    });
-  </script>
+  <script src="../js/pdf-loader.js"></script>
 </body>
-
 </html>
