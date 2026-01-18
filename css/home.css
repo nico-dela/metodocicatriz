@@ -1,0 +1,170 @@
+/* ==========================================================================
+   Home Page Styles
+   ========================================================================== */
+
+/* Background Image Container */
+.background-image-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+/* Home Layout - Single Column with text over background */
+.home-layout {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-top: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.home-content {
+  max-width: 650px;
+  padding: 40px;
+}
+
+/* Banner Text */
+.vertical-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.banner-text {
+  font-family: "C_tesis", serif;
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: bold;
+  color: #1a1a1a;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  line-height: 1.4;
+  margin: 0;
+  /* Text visibility over images */
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 30px 35px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Line with RANDOM word and eye button */
+.random-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Eye Button */
+.eye-button {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  background: transparent;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.eye-button:hover {
+  background-color: #333;
+}
+
+.eye-button:hover .eye-icon-closed {
+  opacity: 0;
+}
+
+.eye-button:hover .eye-icon-open {
+  opacity: 1;
+}
+
+.eye-button:hover svg {
+  color: #fff;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+}
+
+.eye-icon-closed {
+  opacity: 0.7;
+}
+
+.eye-icon-open {
+  opacity: 0;
+}
+
+/* Home Responsive */
+@media (max-width: 768px) {
+  .home-layout {
+    padding-top: 0;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .home-content {
+    padding: 20px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .banner-text {
+    font-size: clamp(16px, 5vw, 28px);
+    letter-spacing: 3px;
+    padding: 20px 25px;
+  }
+
+  .eye-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .eye-button svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-layout {
+    padding-top: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-content {
+    padding: 15px;
+  }
+
+  .banner-text {
+    font-size: clamp(14px, 4.5vw, 22px);
+    letter-spacing: 2px;
+    padding: 18px 20px;
+    line-height: 1.5;
+  }
+
+  .eye-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .eye-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}

@@ -1,0 +1,128 @@
+/* ==========================================================================
+   Navigation Styles
+   ========================================================================== */
+
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 1000;
+  padding: 20px 40px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left .artist-name {
+  font-family: "C_tesis", serif;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-right a {
+  text-decoration: none;
+  color: #333;
+  font-size: 22px;
+  font-family: "C_tesis", serif;
+  transition: color 0.3s ease;
+}
+
+.nav-right a.active {
+  color: #000;
+  font-weight: bold;
+}
+
+.nav-right a:hover {
+  color: #666;
+}
+
+/* Language Toggle */
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-right .lang-option {
+  color: #999;
+  font-size: 14px;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-right .lang-option.active {
+  color: #333;
+}
+
+.nav-right .lang-option:hover {
+  color: #333;
+}
+
+.nav-right .separator {
+  color: #999;
+  font-size: 14px;
+}
+
+/* Navigation Responsive */
+@media (max-width: 768px) {
+  .navigation {
+    padding: 15px 20px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-left {
+    flex: 1;
+    min-width: 100%;
+    text-align: center;
+  }
+
+  .nav-left .artist-name {
+    font-size: 24px;
+  }
+
+  .nav-right {
+    flex: 1;
+    justify-content: center;
+    gap: 25px;
+  }
+
+  .nav-right a {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navigation {
+    padding: 12px 15px;
+  }
+
+  .nav-left .artist-name {
+    font-size: 22px;
+  }
+
+  .nav-right {
+    gap: 20px;
+  }
+
+  .nav-right a {
+    font-size: 18px;
+  }
+
+  .nav-right .lang-option,
+  .nav-right .separator {
+    font-size: 13px;
+  }
+}

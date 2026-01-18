@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Base Styles - Reset, Typography, Variables
+   ========================================================================== */
+
+@font-face {
+  font-family: "C_tesis";
+  src: url("../assets/fonts/C_tesis-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  font-size: 16px;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  text-decoration-color: #333;
+  text-decoration-thickness: 1px;
+}
+
+.hidden {
+  display: none;
+}
