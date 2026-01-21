@@ -5,9 +5,32 @@
 .bio-content {
   margin-top: 80px;
   padding: 60px 40px;
-  max-width: 800px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Bio Layout with Image */
+.bio-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.bio-image-container {
+  flex-shrink: 0;
+  width: 250px;
+}
+
+.bio-profile-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.bio-text-container {
+  flex: 1;
+  min-width: 0;
 }
 
 .bio-text p {
@@ -65,24 +88,38 @@
 /* Bio Responsive */
 @media (max-width: 768px) {
   .bio-content {
-    margin-top: 100px;
+    margin-top: 60px;
     padding: 30px 25px;
   }
 
+  .bio-layout {
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+  }
+
+  .bio-image-container {
+    width: 160px;
+  }
+
+  .bio-text-container {
+    width: 100%;
+  }
+
   .bio-text p {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.7;
     text-align: left;
   }
 
   .bio-text h2 {
-    font-size: 22px;
+    font-size: 20px;
     letter-spacing: 2px;
     margin: 30px 0 15px 0;
   }
 
   .home-btn {
-    font-size: 18px;
+    font-size: 16px;
     padding: 10px 28px;
     margin-bottom: 30px;
   }
@@ -90,12 +127,20 @@
 
 @media (max-width: 480px) {
   .bio-content {
-    margin-top: 90px;
-    padding: 25px 20px;
+    margin-top: 50px;
+    padding: 20px 16px;
+  }
+
+  .bio-layout {
+    gap: 20px;
+  }
+
+  .bio-image-container {
+    width: 140px;
   }
 
   .bio-text p {
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.65;
     text-align: left;
   }
@@ -107,7 +152,7 @@
   }
 
   .home-btn {
-    font-size: 16px;
+    font-size: 14px;
     padding: 10px 24px;
     margin-bottom: 25px;
     margin-left: 0;

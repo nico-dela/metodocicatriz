@@ -34,6 +34,7 @@
   text-decoration: none;
   color: #333;
   font-size: 22px;
+  font-weight: bold;
   font-family: "C_tesis", serif;
   transition: color 0.3s ease;
 }
@@ -62,11 +63,11 @@
 }
 
 .nav-right .lang-option.active {
-  color: #333;
+  color: blue;
 }
 
 .nav-right .lang-option:hover {
-  color: #333;
+  color: blue;
 }
 
 .nav-right .separator {
@@ -77,52 +78,55 @@
 /* Navigation Responsive */
 @media (max-width: 768px) {
   .navigation {
-    padding: 15px 20px;
+    padding: 12px 20px;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 10px;
   }
 
   .nav-left {
-    flex: 1;
-    min-width: 100%;
-    text-align: center;
+    flex: 0 0 auto;
   }
 
   .nav-left .artist-name {
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .nav-right {
-    flex: 1;
-    justify-content: center;
-    gap: 25px;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    gap: 15px;
   }
 
   .nav-right a {
-    font-size: 20px;
+    font-size: 16px;
+  }
+
+  .nav-right .lang-option,
+  .nav-right .separator {
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
   .navigation {
-    padding: 12px 15px;
+    padding: 10px 12px;
   }
 
   .nav-left .artist-name {
-    font-size: 22px;
+    font-size: 16px;
   }
 
   .nav-right {
-    gap: 20px;
+    gap: 12px;
   }
 
   .nav-right a {
-    font-size: 18px;
+    font-size: 14px;
   }
 
   .nav-right .lang-option,
   .nav-right .separator {
-    font-size: 13px;
+    font-size: 11px;
   }
 }

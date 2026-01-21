@@ -21,95 +21,94 @@
   position: relative;
   z-index: 1;
   min-height: 100vh;
+  min-width: 100vw;
   padding-top: 80px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .home-content {
-  max-width: 650px;
-  padding: 40px;
+  /* max-width: 1000px; */
+  padding: 40px 60px;
 }
 
-/* Banner Text */
+/* Banner/Legend Container */
 .vertical-banner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: 20px;
 }
 
-.banner-text {
-  font-family: "C_tesis", serif;
-  font-size: clamp(24px, 5vw, 48px);
-  font-weight: bold;
-  color: #1a1a1a;
-  letter-spacing: 8px;
-  text-transform: uppercase;
-  line-height: 1.4;
-  margin: 0;
-  /* Text visibility over images */
-  background-color: rgba(255, 255, 255, 0.85);
-  padding: 30px 35px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
+/* Legend Image - The main text image */
+.leyenda-image {
+  max-width: 80vw;
+  width: auto;
+  height: auto;
+  max-height: 50vh;
+  object-fit: contain;
 }
 
-/* Line with RANDOM word and eye button */
-.random-line {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* Eye Button */
-.eye-button {
-  position: relative;
-  width: 42px;
-  height: 42px;
+/* Open Button */
+.open-button {
+  align-self: center;
   background: transparent;
-  border: 1px solid #333;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-  vertical-align: middle;
+  padding: 0;
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
 }
 
-.eye-button:hover {
-  background-color: #333;
+.open-button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
 }
 
-.eye-button:hover .eye-icon-closed {
-  opacity: 0;
+/* Button Image */
+.boton-image {
+  max-width: 600px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
-.eye-button:hover .eye-icon-open {
-  opacity: 1;
+footer {
+  position: fixed;
+  bottom: 10px;
+  left: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
 }
 
-.eye-button:hover svg {
-  color: #fff;
+.footer-text {
+  font-family: "DINNextLTPro", sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  color: white;
+  /* max-width: 80vw; */
 }
 
-.eye-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease;
+.instagram-link {
+  position: fixed;
+  bottom: -10px;
+  right: 10px;
+  z-index: 10;
+  transition: transform 0.3s ease;
 }
 
-.eye-icon-closed {
-  opacity: 0.7;
-}
-
-.eye-icon-open {
-  opacity: 0;
+.instagram-link:hover {
+  transform: scale(1.1);
 }
 
 /* Home Responsive */
 @media (max-width: 768px) {
   .home-layout {
-    padding-top: 0;
+    padding-top: 60px;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
@@ -123,26 +122,53 @@
     justify-content: center;
   }
 
-  .banner-text {
-    font-size: clamp(16px, 5vw, 28px);
-    letter-spacing: 3px;
-    padding: 20px 25px;
+  .vertical-banner {
+    align-items: center;
+    gap: 15px;
   }
 
-  .eye-button {
+  .leyenda-image {
+    max-width: 85vw;
+    max-height: 35vh;
+  }
+
+  .open-button {
+    align-self: center;
+  }
+
+  .boton-image {
+    max-width: 220px;
+  }
+
+  footer {
+    left: 12px;
+    right: 12px;
+    bottom: 8px;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .footer-text {
+    font-size: 10px;
+    max-width: calc(100vw - 80px);
+    line-height: 1.4;
+  }
+
+  .instagram-link {
+    position: static;
+    flex-shrink: 0;
+  }
+
+  .instagram-link img {
     width: 36px;
     height: 36px;
-  }
-
-  .eye-button svg {
-    width: 22px;
-    height: 22px;
   }
 }
 
 @media (max-width: 480px) {
   .home-layout {
-    padding-top: 0;
+    padding-top: 50px;
     align-items: center;
     justify-content: center;
   }
@@ -151,20 +177,32 @@
     padding: 15px;
   }
 
-  .banner-text {
-    font-size: clamp(14px, 4.5vw, 22px);
-    letter-spacing: 2px;
-    padding: 18px 20px;
-    line-height: 1.5;
+  .vertical-banner {
+    gap: 12px;
   }
 
-  .eye-button {
+  .leyenda-image {
+    max-width: 90vw;
+    max-height: 30vh;
+  }
+
+  .boton-image {
+    max-width: 180px;
+  }
+
+  footer {
+    left: 10px;
+    right: 10px;
+    bottom: 6px;
+  }
+
+  .footer-text {
+    font-size: 9px;
+    max-width: calc(100vw - 70px);
+  }
+
+  .instagram-link img {
     width: 32px;
     height: 32px;
-  }
-
-  .eye-button svg {
-    width: 18px;
-    height: 18px;
   }
 }

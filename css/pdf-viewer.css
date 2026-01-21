@@ -19,6 +19,7 @@
 }
 
 .back-link {
+  font-weight: bold;
   color: #333;
   text-decoration: none;
   font-size: 1.4rem;
