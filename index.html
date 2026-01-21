@@ -37,47 +37,61 @@
     <main class="home-layout">
       <div class="home-content">
         <div class="vertical-banner">
-          <p class="banner-text">
-            <span
-              data-es="Esta web no soy yo pero podes conocer algo de mi arte"
-              data-en="This website isn't me, but it gives you a glimpse of my"
-              >Esta web no soy yo pero podes conocer algo de mi
-              arte</span
+          <!-- Legend Image - Changes based on language -->
+          <img
+            id="leyenda-home"
+            class="leyenda-image lang-es"
+            src="assets/images/leyenda-home-es.png"
+            data-src-es="assets/images/leyenda-home-es.png"
+            data-src-en="assets/images/leyenda-home-en.png"
+            alt="Esta web no soy yo, es una forma de entrar a mi práctica artística"
+            data-alt-es="Esta web no soy yo, es una forma de entrar a mi práctica artística"
+            data-alt-en="This website isn't me, it's a way into my artistic practice"
+          />
+
+          <!-- Button Image - Opens random process -->
+          <button
+            id="random-pdf-btn"
+            class="open-button"
+            aria-label="Abrir proceso"
+          >
+            <img
+              id="boton-abrir"
+              class="boton-image lang-es"
+              src="assets/images/boton-abrir-es.png"
+              data-src-es="assets/images/boton-abrir-es.png"
+              data-src-en="assets/images/boton-abrir-en.png"
+              alt="Abrir proceso"
+              data-alt-es="Abrir proceso"
+              data-alt-en="Open a process"
+            />
+          </button>
+
+          <footer>
+            <p
+              class="footer-text"
+              data-es="Este sitio no funciona como un archivo exhaustivo. Los procesos aparecen de manera parcial y aleatoria, según el momento de la visita, esta lógica busca potenciar mi concepción del trabajo artístico como experiencia situada y contingente."
+              data-en="This site does not function as an exhaustive archive. Processes appear partially and at random, depending on the moment of the visit. This logic reflects my understanding of artistic practice as a situated and contingent experience."
             >
-            <span class="random-line">
-              <span data-es="random" data-en="random art.">random</span>
-              <button
-                id="random-pdf-btn"
-                class="eye-button"
-                aria-label="Ver arte aleatorio"
-              >
-                <svg
-                  class="eye-icon eye-icon-closed"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="28"
-                  height="28"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM9.5 8.5l-6 6 1.5 1.5 6-6-1.5-1.5zm5 0l6 6-1.5 1.5-6-6 1.5-1.5z"
-                  />
-                </svg>
-                <svg
-                  class="eye-icon eye-icon-open"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="28"
-                  height="28"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-                  />
-                </svg>
-              </button>
-            </span>
-          </p>
+              Este sitio no funciona como un archivo exhaustivo. Los procesos
+              aparecen de manera parcial y aleatoria, según el momento de la
+              visita, esta lógica busca potenciar mi concepción del trabajo
+              artístico como experiencia situada y contingente.
+            </p>
+            <a
+              class="instagram-link"
+              href="https://www.instagram.com/candegenca/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src="assets/images/social-media.png"
+                alt="Logo Instagram"
+                width="48"
+                height="48"
+              />
+            </a>
+          </footer>
         </div>
       </div>
     </main>
