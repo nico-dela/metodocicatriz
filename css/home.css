@@ -77,25 +77,26 @@
 
 footer {
   position: fixed;
-  bottom: 10px;
+  bottom: 15px;
   left: 20px;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
 .footer-text {
   font-family: "DINNextLTPro", sans-serif;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 14px;
   color: white;
-  /* max-width: 80vw; */
+  max-width: 90vw;
 }
 
 .instagram-link {
   position: fixed;
-  bottom: -10px;
+  bottom: -5px;
   right: 10px;
   z-index: 10;
   transition: transform 0.3s ease;
@@ -156,7 +157,6 @@ footer {
   }
 
   .instagram-link {
-    position: static;
     flex-shrink: 0;
   }
 
