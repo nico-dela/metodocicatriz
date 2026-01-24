@@ -7,7 +7,7 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: #fff;
+  background-color: #ffffffee;
   z-index: 1000;
   padding: 20px 40px;
   border-bottom: 1px solid #eee;
@@ -89,7 +89,7 @@
   }
 
   .nav-left .artist-name {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .nav-right {
@@ -99,12 +99,12 @@
   }
 
   .nav-right a {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .nav-right .lang-option,
   .nav-right .separator {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -114,7 +114,7 @@
   }
 
   .nav-left .artist-name {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .nav-right {
@@ -122,11 +122,11 @@
   }
 
   .nav-right a {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .nav-right .lang-option,
   .nav-right .separator {
-    font-size: 11px;
+    font-size: 13px;
   }
 }
