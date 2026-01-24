@@ -5,8 +5,8 @@
 class RandomBackground {
   constructor() {
     this.images = [];
-    this.basePath = "./assets/images/";
-    this.manifestPath = "./assets/images/manifest.json";
+    this.basePath = "assets/images/";
+    this.manifestPath = "assets/images/manifest.json";
   }
 
   async init() {
@@ -17,7 +17,6 @@ class RandomBackground {
     await this.loadManifest();
 
     if (this.images.length === 0) {
-      this.applyFallback(container);
       return;
     }
 
@@ -46,9 +45,6 @@ class RandomBackground {
     img.crossOrigin = "anonymous";
     img.onload = () => {
       container.style.backgroundImage = `url('${imageUrl}')`;
-    };
-    img.onerror = () => {
-      this.applyFallback(container);
     };
     img.src = imageUrl;
   }
