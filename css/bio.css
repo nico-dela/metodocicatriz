@@ -99,7 +99,7 @@
   }
 
   .bio-image-container {
-    width: 160px;
+    align-self: flex-start;
   }
 
   .bio-text-container {
@@ -136,7 +136,7 @@
   }
 
   .bio-image-container {
-    width: 140px;
+    align-self: flex-start;
   }
 
   .bio-text p {
