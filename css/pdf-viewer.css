@@ -1,91 +1,85 @@
-/* ==========================================================================
-   PDF Viewer Page Styles
-   ========================================================================== */
-
-.pdf-viewer-page {
-  margin: 0;
-  padding: 0;
-  background: #f8f8f8;
-  font-family: "C_tesis", serif;
+.pdf-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  z-index: 9999;
+  display: none;
+  justify-content: center;
+  align-items: center;
 }
-
-.pdf-header {
-  background: white;
-  padding: 1rem 2rem;
+.pdf-modal-overlay.active {
+  display: flex;
+}
+.pdf-modal {
+  position: relative;
+  width: 94%;
+  max-width: 1200px;
+  height: 92vh;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+.pdf-modal-header {
+  background: #fff;
+  padding: 0.75rem 1.25rem;
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
-
-.back-link {
-  font-weight: bold;
-  color: #333;
-  text-decoration: none;
-  font-size: 1.4rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.back-link:hover {
-  color: #666;
-}
-
-.project-title {
-  font-size: 1.4rem;
+.pdf-modal-title {
+  font-family: "C_tesis", serif;
+  font-size: 1.1rem;
   color: #333;
   margin: 0;
 }
-
-.pdf-container {
+.pdf-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #333;
+  padding: 0;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
   display: flex;
-  height: calc(100vh - 70px);
-  background: white;
-}
-
-.pdf-main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  overflow: auto;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s ease;
 }
-
-.pdf-viewer {
+.pdf-modal-close:hover {
+  background: #f0f0f0;
+}
+.pdf-modal-body {
+  flex: 1;
+  overflow: hidden;
+  background: #525659;
+}
+.pdf-modal-iframe {
   width: 100%;
   height: 100%;
   border: none;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  background: white;
 }
-
-/* PDF Viewer Responsive */
+body.pdf-modal-open {
+  overflow: hidden;
+}
 @media (max-width: 768px) {
-  .pdf-header {
-    padding: 0.75rem 1rem;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .back-link {
-    font-size: 1.2rem;
-  }
-
-  .pdf-container {
-    flex-direction: column;
-    height: calc(100vh - 50px);
-  }
-
-  .pdf-main {
-    padding: 0;
-    min-height: 0;
+  .pdf-modal {
+    width: 100%;
     height: 100%;
+    max-width: none;
+    border-radius: 0;
   }
-
-  .pdf-viewer {
-    width: 100% !important;
-    height: 100%;
+  .pdf-modal-header {
+    padding: 0.5rem 1rem;
   }
 }
