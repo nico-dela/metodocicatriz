@@ -21,59 +21,8 @@
     </script>
   </head>
   <body class="pdf-viewer-page">
-    <!-- Header con botón de descarga -->
-    <div class="pdf-header">
-      <a
-        href="../index.html"
-        class="back-link"
-        data-es="← Volver"
-        data-en="← Back"
-      >
-        ← Volver
-      </a>
-      <div class="pdf-header-controls">
-        <a
-          href="./bio.html"
-          class="back-link"
-          data-es="Bio"
-          data-en="Bio"
-          style="margin-right: 10px"
-        >
-          Bio
-        </a>
-        <button
-          id="download-pdf-btn"
-          class="download-btn"
-          title="Descargar PDF"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          <span data-es="Descargar" data-en="Download">Descargar</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Contenedor del PDF -->
     <div class="pdf-container">
       <div id="pdf-viewer"></div>
-      <div id="pdf-loading" class="pdf-loading">
-        <div class="pdf-spinner"></div>
-        <div
-          class="pdf-loading-text"
-          data-es="Cargando PDF..."
-          data-en="Loading PDF..."
-        >
-          Cargando PDF...
-        </div>
-      </div>
     </div>
 
     <!-- Scripts -->

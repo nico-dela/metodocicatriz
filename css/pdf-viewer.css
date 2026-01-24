@@ -230,6 +230,13 @@ body.pdf-modal-open {
   }
 }
 
+/* Para pantallas de alta densidad (Retina, etc.) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .pdf-page canvas {
+    image-rendering: auto; /* Dejar que el navegador decida */
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
