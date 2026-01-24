@@ -1,5 +1,5 @@
 /**
- * PDF Modal Module - Versión con desplazamiento y spinner
+ * PDF Modal Module - Versión sin estiramiento vertical
  */
 (function () {
   "use strict";
@@ -48,7 +48,7 @@
         z-index: 9999;
         display: none;
       ">
-        <!-- Botón de cerrar (sin título) -->
+        <!-- Botón de cerrar -->
         <button class="pdf-modal-close" style="
           position: fixed;
           top: 20px;
@@ -74,44 +74,7 @@
           overflow: auto;
           padding: 20px;
         "></div>
-        
-        <!-- Spinner de carga -->
-        <div id="pdf-modal-loading" style="
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          z-index: 10000;
-          display: none;
-          text-align: center;
-        ">
-          <div class="pdf-modal-spinner" style="
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto 15px auto;
-          "></div>
-          <div style="color: white; font-family: sans-serif; font-size: 14px;">
-          </div>
-        </div>
       </div>
-      
-      <style>
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 768px) {
-          #pdf-modal-overlay .pdf-modal-spinner {
-            width: 40px;
-            height: 40px;
-            border-width: 3px;
-          }
-        }
-      </style>
     `;
 
     document.body.insertAdjacentHTML("beforeend", modalHTML);
@@ -135,19 +98,11 @@
     }
   }
 
-  function showModalLoading(show) {
-    const loading = document.getElementById("pdf-modal-loading");
-    if (loading) {
-      loading.style.display = show ? "block" : "none";
-    }
-  }
-
   async function loadPdfInModal(pdfUrl) {
     const content = document.getElementById("pdf-modal-content");
     if (!content) return;
 
     content.innerHTML = "";
-    showModalLoading(true);
 
     try {
       if (!window.pdfjsLib) {
@@ -159,14 +114,12 @@
       const pdfDoc = await loadingTask.promise;
 
       // Obtener ancho disponible para el modal
-      const modalWidth = window.innerWidth - 40; // 20px de padding a cada lado
+      const modalWidth = window.innerWidth - 40;
 
       // Renderizar todas las páginas
       for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
         await renderModalPage(pdfDoc, pageNum, modalWidth, content);
       }
-
-      showModalLoading(false);
     } catch (error) {
       console.error("Error cargando PDF en modal:", error);
       content.innerHTML = `
@@ -187,7 +140,6 @@
           <p style="font-size: 14px; color: #ccc;">${error.message}</p>
         </div>
       `;
-      showModalLoading(false);
     }
   }
 
@@ -195,14 +147,13 @@
     try {
       const page = await pdfDoc.getPage(pageNum);
 
-      // Calcular escala óptima para esta página
+      // Calcular escala manteniendo proporciones
       const scale = calculateOptimalScaleForPage(page, containerWidth);
 
       // Crear contenedor para la página
       const pageDiv = document.createElement("div");
       pageDiv.style.cssText = `
         margin: 0 auto 20px auto;
-        background: white;
         box-shadow: 0 0 10px rgba(0,0,0,0.3);
         display: block;
         max-width: 100%;
@@ -218,9 +169,10 @@
       pageDiv.appendChild(canvas);
       container.appendChild(pageDiv);
 
-      // Calcular dimensiones
+      // Calcular viewport
       const viewport = page.getViewport({ scale: scale });
 
+      // Configurar canvas SIN estiramiento
       canvas.width = viewport.width;
       canvas.height = viewport.height;
       canvas.style.width = viewport.width + "px";
@@ -243,18 +195,15 @@
     // Obtener el tamaño natural de la página
     const naturalViewport = page.getViewport({ scale: 1 });
     const pageWidth = naturalViewport.width;
-    const pageHeight = naturalViewport.height;
 
-    // Para móvil: ajustar al ancho del contenedor
+    // Calcular escala para que la página quepa en el ancho disponible
+    const scale = containerWidth / pageWidth;
+
+    // Para móvil: limitar la escala máxima
     if (window.innerWidth <= 768) {
-      // Calcular escala para que la página quepa en el ancho disponible
-      const scale = containerWidth / pageWidth;
-      // Limitar la escala máxima para que no se vea muy pequeño
-      return Math.min(scale, 1.2); // Máximo 120% del tamaño original
+      return Math.min(scale, 1.3); // Máximo 130% en móvil
     } else {
-      // Para desktop: usar escala fija pero ajustada
-      const scale = containerWidth / pageWidth;
-      return Math.min(scale, 1.5); // Máximo 150% del tamaño original
+      return Math.min(scale, 1.8); // Máximo 180% en desktop
     }
   }
 
