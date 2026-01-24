@@ -24,6 +24,10 @@
   text-decoration: none;
 }
 
+.nav-left .artist-name:hover {
+  color: #666;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
