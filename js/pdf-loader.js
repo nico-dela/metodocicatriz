@@ -1,6 +1,6 @@
 /**
  * PDF Loader Module
- * Muestra todas las páginas del PDF para permitir desplazamiento
+ * Muestra todas las páginas del PDF sin estiramiento vertical
  */
 class PdfLoader {
   constructor() {
@@ -25,7 +25,6 @@ class PdfLoader {
     }
 
     const pdfUrl = "../assets/pdfs/" + decodeURIComponent(pdfFile);
-    this.showLoading(true);
 
     try {
       // Verificar que PDF.js esté cargado
@@ -44,8 +43,6 @@ class PdfLoader {
       for (let pageNum = 1; pageNum <= this.pdfDoc.numPages; pageNum++) {
         await this.renderPage(pageNum);
       }
-
-      this.showLoading(false);
     } catch (error) {
       console.error("Error cargando PDF:", error);
       this.showError("Error al cargar el PDF: " + error.message);
@@ -55,9 +52,6 @@ class PdfLoader {
   async renderPage(pageNum) {
     try {
       const page = await this.pdfDoc.getPage(pageNum);
-
-      // Calcular escala apropiada para móvil
-      const scale = this.calculateOptimalScale(page);
 
       // Crear contenedor para la página
       const pageDiv = document.createElement("div");
@@ -71,11 +65,13 @@ class PdfLoader {
       pageDiv.appendChild(canvas);
       this.viewer.appendChild(pageDiv);
 
-      // Calcular dimensiones
-      const viewport = page.getViewport({ scale: scale });
-      const pixelRatio = 1; // Usar 1 para evitar estiramiento en móvil
+      // Calcular escala manteniendo proporciones originales
+      const scale = this.calculateOptimalScale(page);
 
-      // Configurar canvas
+      // Obtener viewport con la escala calculada
+      const viewport = page.getViewport({ scale: scale });
+
+      // Configurar canvas SIN devicePixelRatio para evitar estiramiento
       canvas.width = viewport.width;
       canvas.height = viewport.height;
       canvas.style.width = viewport.width + "px";
@@ -103,23 +99,15 @@ class PdfLoader {
     // Obtener ancho del contenedor
     const containerWidth = this.viewer.clientWidth - 40; // 20px de padding a cada lado
 
-    // Para móvil: ajustar al ancho del contenedor
-    if (window.innerWidth <= 768) {
-      // Calcular escala para que la página quepa en el ancho disponible
-      const scale = containerWidth / pageWidth;
-      // Limitar la escala máxima para que no se vea muy pequeño
-      return Math.min(scale, 1.2); // Máximo 120% del tamaño original
-    } else {
-      // Para desktop: usar escala fija pero ajustada
-      const scale = containerWidth / pageWidth;
-      return Math.min(scale, 1.5); // Máximo 150% del tamaño original
-    }
-  }
+    // Calcular escala para que la página quepa en el ancho disponible
+    // Esto mantiene las proporciones originales
+    const scale = containerWidth / pageWidth;
 
-  showLoading(show) {
-    const loading = document.getElementById("pdf-loading");
-    if (loading) {
-      loading.style.display = show ? "block" : "none";
+    // Para móvil: limitar la escala máxima para buen rendimiento
+    if (window.innerWidth <= 768) {
+      return Math.min(scale, 1.3); // Máximo 130% en móvil
+    } else {
+      return Math.min(scale, 1.8); // Máximo 180% en desktop
     }
   }
 
@@ -153,7 +141,6 @@ class PdfLoader {
         </button>
       </div>
     `;
-    this.showLoading(false);
   }
 }
 
