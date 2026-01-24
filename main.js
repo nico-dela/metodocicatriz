@@ -81,11 +81,9 @@ class App {
     const langImages = document.querySelectorAll(
       "img[data-src-es][data-src-en]",
     );
-    console.log("[v0] Found language images:", langImages.length);
     langImages.forEach((img) => {
       const newSrc = img.getAttribute(`data-src-${lang}`);
       const newAlt = img.getAttribute(`data-alt-${lang}`);
-      console.log("[v0] Switching image to:", newSrc);
       if (newSrc) {
         img.setAttribute("src", newSrc);
       }
