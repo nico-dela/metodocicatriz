@@ -457,7 +457,6 @@
       return;
     }
     const randomIndex = Math.floor(Math.random() * pdfFiles.length);
-    console.log("Abriendo PDF aleatorio:", pdfFiles[randomIndex]);
     openPdf(pdfFiles[randomIndex]);
   }
 
@@ -507,11 +506,8 @@
       newButton.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log("Botón random clickeado");
         openRandomPdf();
       });
-
-      console.log("Botón random configurado:", newButton);
     } else {
       console.warn("No se encontró el botón random-pdf-btn");
     }
@@ -528,11 +524,8 @@
   }
 
   async function init() {
-    console.log("Inicializando PDF Modal...");
-
     // *** PRIMERO CARGAR EL MANIFEST ***
     await loadManifest();
-    console.log("PDFs cargados:", pdfFiles.length);
 
     // *** LUEGO CONFIGURAR EL BOTÓN ***
     bindRandomButton();
@@ -540,19 +533,16 @@
 
     // *** CONFIGURAR PDF.JS SI ES NECESARIO ***
     if (!window.pdfjsLib) {
-      console.log("Cargando PDF.js...");
       const script = document.createElement("script");
       script.src =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
       script.onload = async () => {
-        console.log("PDF.js cargado");
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
         // *** CREAR MODAL DESPUÉS DE QUE PDF.JS CARGUE ***
         createModal();
         document.addEventListener("keydown", handleKeydown);
-        console.log("Modal inicializado");
       };
       script.onerror = () => {
         console.error("Error cargando PDF.js");
@@ -562,7 +552,6 @@
       };
       document.head.appendChild(script);
     } else {
-      console.log("PDF.js ya está cargado");
       // *** CREAR MODAL INMEDIATAMENTE ***
       createModal();
       document.addEventListener("keydown", handleKeydown);
@@ -584,6 +573,4 @@
     openSelector: openPdfSelector,
     closeSelector: closePdfSelector,
   };
-
-  console.log("PDF Modal Module cargado");
 })();
