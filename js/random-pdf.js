@@ -326,7 +326,7 @@
       if (error.name === "AbortError" || error.message.includes("destroy")) {
         return;
       }
-      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error cargando PDF</p>`;
+      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error</p>`;
     }
   }
 
