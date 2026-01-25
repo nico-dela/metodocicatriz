@@ -8,10 +8,17 @@
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent,
     );
+  let currentLanguage = localStorage.getItem("language") || "es";
 
   // *** VARIABLE PARA CANCELAR LA CARGA ANTERIOR ***
   let currentLoadingTask = null;
   let currentRenderPromises = [];
+
+  // *** NUEVA VARIABLE: Controlar si el selector está visible ***
+  let isSelectorVisible = false;
+
+  // *** VARIABLE: Controlar si el modal está inicializado ***
+  let isModalInitialized = false;
 
   function getPaths() {
     const isInSubdir = window.location.pathname.includes("/pages/");
@@ -37,15 +44,46 @@
   }
 
   function createModal() {
+    // *** EVITAR DUPLICADOS: Si ya existe, solo configurar ***
     if (document.getElementById("pdf-modal-overlay")) {
       modal = document.getElementById("pdf-modal-overlay");
+
+      // Configurar eventos si no están configurados
+      setupModalEvents();
+      setupSelectorEvents();
+      setupLanguageListener();
+
+      isModalInitialized = true;
       return;
     }
 
     const modalHTML = `
-      <div id="pdf-modal-overlay" class="pdf-modal-overlay">
+      <div id="pdf-modal-overlay" class="pdf-modal-overlay" style="display: none;">
         <button class="pdf-modal-close">&times;</button>
         <div id="pdf-modal-content"></div>
+        
+        <!-- Botón para abrir selector de PDFs -->
+        <button class="pdf-selector-toggle" title="Ver todos los procesos">
+          📂
+        </button>
+        
+        <!-- Selector de PDFs (inicialmente oculto) -->
+        <div class="pdf-selector-overlay">
+          <div class="pdf-selector-container">
+            <div class="pdf-selector-header">
+              <h3 
+                data-es="Procesos disponibles" 
+                data-en="Available processes"
+              >
+                Procesos disponibles
+              </h3>
+              <button class="pdf-selector-close">&times;</button>
+            </div>
+            <div class="pdf-selector-list" id="pdf-selector-list">
+              <!-- Los PDFs se cargarán aquí dinámicamente -->
+            </div>
+          </div>
+        </div>
       </div>
     `;
 
@@ -53,18 +91,191 @@
 
     modal = document.getElementById("pdf-modal-overlay");
 
-    modal
-      .querySelector(".pdf-modal-close")
-      .addEventListener("click", closeModal);
+    // *** CONFIGURAR TODOS LOS EVENTOS ***
+    setupModalEvents();
+    setupSelectorEvents();
+    setupLanguageListener();
 
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) closeModal();
-    });
+    isModalInitialized = true;
 
     if (window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
       window.pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
     }
+  }
+
+  // *** FUNCIÓN SEPARADA: Configurar eventos del modal principal ***
+  function setupModalEvents() {
+    if (!modal) return;
+
+    const closeBtn = modal.querySelector(".pdf-modal-close");
+    if (closeBtn) {
+      // Remover listeners anteriores para evitar duplicados
+      closeBtn.replaceWith(closeBtn.cloneNode(true));
+      modal
+        .querySelector(".pdf-modal-close")
+        .addEventListener("click", closeModal);
+    }
+
+    // Remover y re-añadir listener del overlay
+    modal.removeEventListener("click", handleOverlayClick);
+    modal.addEventListener("click", handleOverlayClick);
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === modal) closeModal();
+  }
+
+  // *** FUNCIÓN SEPARADA: Configurar eventos del selector ***
+  function setupSelectorEvents() {
+    const selectorToggle = document.querySelector(".pdf-selector-toggle");
+    const selectorClose = document.querySelector(".pdf-selector-close");
+    const selectorOverlay = document.querySelector(".pdf-selector-overlay");
+
+    if (selectorToggle) {
+      selectorToggle.replaceWith(selectorToggle.cloneNode(true));
+      document
+        .querySelector(".pdf-selector-toggle")
+        .addEventListener("click", togglePdfSelector);
+    }
+
+    if (selectorClose) {
+      selectorClose.replaceWith(selectorClose.cloneNode(true));
+      document
+        .querySelector(".pdf-selector-close")
+        .addEventListener("click", closePdfSelector);
+    }
+
+    if (selectorOverlay) {
+      selectorOverlay.removeEventListener("click", handleSelectorOverlayClick);
+      selectorOverlay.addEventListener("click", handleSelectorOverlayClick);
+    }
+  }
+
+  function handleSelectorOverlayClick(e) {
+    if (e.target === document.querySelector(".pdf-selector-overlay")) {
+      closePdfSelector();
+    }
+  }
+
+  // *** FUNCIÓN: Configurar listener de idioma ***
+  function setupLanguageListener() {
+    // Actualizar currentLanguage
+    currentLanguage = localStorage.getItem("language") || "es";
+
+    // Escuchar cambios en localStorage
+    window.addEventListener("storage", function (e) {
+      if (e.key === "language") {
+        currentLanguage = e.newValue || "es";
+        updateSelectorLanguage();
+      }
+    });
+
+    // Inicializar con el idioma actual
+    updateSelectorLanguage();
+  }
+
+  // *** FUNCIÓN: Actualizar idioma del selector ***
+  function updateSelectorLanguage() {
+    const selectorTitle = document.querySelector(".pdf-selector-header h3");
+    if (!selectorTitle) return;
+
+    const text = selectorTitle.getAttribute(`data-${currentLanguage}`);
+    if (text) {
+      selectorTitle.textContent = text;
+    }
+
+    // Actualizar título del botón
+    const selectorToggle = document.querySelector(".pdf-selector-toggle");
+    if (selectorToggle) {
+      const toggleTitle =
+        currentLanguage === "es"
+          ? "Ver todos los procesos"
+          : "View all processes";
+      selectorToggle.title = toggleTitle;
+    }
+  }
+
+  // *** FUNCIONES PARA EL SELECTOR DE PDFs ***
+  function togglePdfSelector() {
+    if (isSelectorVisible) {
+      closePdfSelector();
+    } else {
+      openPdfSelector();
+    }
+  }
+
+  function openPdfSelector() {
+    const selectorOverlay = document.querySelector(".pdf-selector-overlay");
+    const selectorList = document.getElementById("pdf-selector-list");
+
+    if (!selectorOverlay || !selectorList) return;
+
+    // *** ACTUALIZAR IDIOMA ANTES DE MOSTRAR ***
+    currentLanguage = localStorage.getItem("language") || "es";
+    updateSelectorLanguage();
+
+    // Limpiar lista anterior
+    selectorList.innerHTML = "";
+
+    // Crear elementos de lista para cada PDF
+    pdfFiles.forEach((pdfFile, index) => {
+      const listItem = document.createElement("div");
+      listItem.className = "pdf-selector-item";
+      listItem.dataset.pdfFile = pdfFile;
+
+      // Formatear nombre para mostrar
+      const displayName = formatPdfDisplayName(pdfFile);
+
+      listItem.innerHTML = `
+        <span class="pdf-selector-number">${index + 1}</span>
+        <span class="pdf-selector-name">${displayName}</span>
+      `;
+
+      listItem.addEventListener("click", function () {
+        const pdfFile = this.dataset.pdfFile;
+        openPdf(pdfFile);
+        closePdfSelector();
+      });
+
+      selectorList.appendChild(listItem);
+    });
+
+    // Mostrar selector
+    selectorOverlay.classList.add("active");
+    isSelectorVisible = true;
+  }
+
+  function closePdfSelector() {
+    const selectorOverlay = document.querySelector(".pdf-selector-overlay");
+    if (selectorOverlay) {
+      selectorOverlay.classList.remove("active");
+      isSelectorVisible = false;
+    }
+  }
+
+  function formatPdfDisplayName(filename) {
+    // Remover extensión .pdf
+    let name = filename.replace(/\.pdf$/i, "");
+
+    // Reemplazar guiones por espacios
+    name = name.replace(/-/g, " ");
+
+    // Reemplazar paréntesis por espacios
+    name = name.replace(/[()]/g, " ");
+
+    // Capitalizar primera letra de cada palabra
+    name = name
+      .split(" ")
+      .map((word) => {
+        if (word.length > 0) {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
+        return word;
+      })
+      .join(" ");
+
+    return name;
   }
 
   async function loadPdfInModal(pdfUrl) {
@@ -115,7 +326,7 @@
       if (error.name === "AbortError" || error.message.includes("destroy")) {
         return;
       }
-      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error</p>`;
+      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error cargando PDF</p>`;
     }
   }
 
@@ -123,7 +334,6 @@
   function cancelAllRenders() {
     currentRenderPromises.forEach((promise) => {
       try {
-        // Marcamos las promesas como canceladas
         if (promise.cancel) promise.cancel();
       } catch (e) {}
     });
@@ -192,7 +402,6 @@
         canvas.style.webkitFontSmoothing = "antialiased";
       }
     } catch (error) {
-      // *** IGNORAR ERRORES DE RENDERIZADO CANCELADO ***
       if (error.name === "AbortError") {
         return;
       }
@@ -200,6 +409,11 @@
   }
 
   function openPdf(pdfFile) {
+    // *** ASEGURARSE QUE EL MODAL ESTÉ INICIALIZADO ***
+    if (!isModalInitialized) {
+      createModal();
+    }
+
     if (!modal) return;
 
     const paths = getPaths();
@@ -211,6 +425,12 @@
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
     isOpen = true;
+
+    // *** CERRAR SELECTOR SI ESTÁ ABIERTO ***
+    closePdfSelector();
+
+    // *** ACTUALIZAR IDIOMA ***
+    currentLanguage = localStorage.getItem("language") || "es";
 
     loadPdfInModal(pdfUrl);
   }
@@ -225,7 +445,6 @@
     }
     cancelAllRenders();
 
-    // También limpiar el contenido inmediatamente
     const content = document.getElementById("pdf-modal-content");
     if (content) {
       content.innerHTML = "";
@@ -233,8 +452,12 @@
   }
 
   function openRandomPdf() {
-    if (pdfFiles.length === 0) return;
+    if (pdfFiles.length === 0) {
+      console.warn("No hay PDFs disponibles");
+      return;
+    }
     const randomIndex = Math.floor(Math.random() * pdfFiles.length);
+    console.log("Abriendo PDF aleatorio:", pdfFiles[randomIndex]);
     openPdf(pdfFiles[randomIndex]);
   }
 
@@ -243,6 +466,9 @@
 
     // *** CANCELAR CARGA AL CERRAR ***
     cancelCurrentLoad();
+
+    // *** CERRAR SELECTOR SI ESTÁ ABIERTO ***
+    closePdfSelector();
 
     modal.style.display = "none";
     document.body.style.overflow = "";
@@ -274,41 +500,76 @@
   function bindRandomButton() {
     const button = document.getElementById("random-pdf-btn");
     if (button) {
-      button.addEventListener("click", function (e) {
+      // *** LIMPIAR EVENTOS ANTERIORES PARA EVITAR DUPLICADOS ***
+      button.replaceWith(button.cloneNode(true));
+      const newButton = document.getElementById("random-pdf-btn");
+
+      newButton.addEventListener("click", function (e) {
         e.preventDefault();
+        e.stopPropagation();
+        console.log("Botón random clickeado");
         openRandomPdf();
       });
+
+      console.log("Botón random configurado:", newButton);
+    } else {
+      console.warn("No se encontró el botón random-pdf-btn");
     }
   }
 
   function handleKeydown(e) {
-    if (e.key === "Escape" && isOpen) closeModal();
+    if (e.key === "Escape" && isOpen) {
+      if (isSelectorVisible) {
+        closePdfSelector();
+      } else {
+        closeModal();
+      }
+    }
   }
 
   async function init() {
+    console.log("Inicializando PDF Modal...");
+
+    // *** PRIMERO CARGAR EL MANIFEST ***
+    await loadManifest();
+    console.log("PDFs cargados:", pdfFiles.length);
+
+    // *** LUEGO CONFIGURAR EL BOTÓN ***
+    bindRandomButton();
+    bindPdfLinks();
+
+    // *** CONFIGURAR PDF.JS SI ES NECESARIO ***
     if (!window.pdfjsLib) {
+      console.log("Cargando PDF.js...");
       const script = document.createElement("script");
       script.src =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
       script.onload = async () => {
+        console.log("PDF.js cargado");
         window.pdfjsLib.GlobalWorkerOptions.workerSrc =
           "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-        await loadManifest();
+
+        // *** CREAR MODAL DESPUÉS DE QUE PDF.JS CARGUE ***
         createModal();
-        bindRandomButton();
-        bindPdfLinks();
+        document.addEventListener("keydown", handleKeydown);
+        console.log("Modal inicializado");
+      };
+      script.onerror = () => {
+        console.error("Error cargando PDF.js");
+        // Crear modal de todas formas (para el botón de selector)
+        createModal();
         document.addEventListener("keydown", handleKeydown);
       };
       document.head.appendChild(script);
     } else {
-      await loadManifest();
+      console.log("PDF.js ya está cargado");
+      // *** CREAR MODAL INMEDIATAMENTE ***
       createModal();
-      bindRandomButton();
-      bindPdfLinks();
       document.addEventListener("keydown", handleKeydown);
     }
   }
 
+  // *** INICIALIZAR INMEDIATAMENTE ***
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
@@ -319,6 +580,10 @@
     open: openPdf,
     openRandom: openRandomPdf,
     close: closeModal,
-    cancelCurrentLoad: cancelCurrentLoad, // *** EXPORTAR PARA DEBUG ***
+    cancelCurrentLoad: cancelCurrentLoad,
+    openSelector: openPdfSelector,
+    closeSelector: closePdfSelector,
   };
+
+  console.log("PDF Modal Module cargado");
 })();
