@@ -9,6 +9,10 @@
       navigator.userAgent,
     );
 
+  // *** VARIABLE PARA CANCELAR LA CARGA ANTERIOR ***
+  let currentLoadingTask = null;
+  let currentRenderPromises = [];
+
   function getPaths() {
     const isInSubdir = window.location.pathname.includes("/pages/");
     return {
@@ -67,6 +71,7 @@
     const content = document.getElementById("pdf-modal-content");
     if (!content) return;
 
+    // *** LIMPIAR CONTENIDO COMPLETAMENTE ***
     content.innerHTML = "";
 
     try {
@@ -74,16 +79,55 @@
         throw new Error("PDF.js no disponible");
       }
 
+      // *** CANCELAR CARGA ANTERIOR SI EXISTE ***
+      if (currentLoadingTask) {
+        try {
+          currentLoadingTask.destroy();
+        } catch (e) {}
+        currentLoadingTask = null;
+      }
+
+      // *** CANCELAR RENDERIZADOS ANTERIORES ***
+      cancelAllRenders();
+
+      // *** NUEVA CARGA ***
       const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
+      currentLoadingTask = loadingTask;
+
       const pdfDoc = await loadingTask.promise;
 
+      // *** GUARDAR PROMESAS DE RENDERIZADO ***
+      currentRenderPromises = [];
+
       for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-        await renderPageForMobileQuality(pdfDoc, pageNum, content);
+        const renderPromise = renderPageForMobileQuality(
+          pdfDoc,
+          pageNum,
+          content,
+        );
+        currentRenderPromises.push(renderPromise);
       }
+
+      // *** ESPERAR A QUE TODAS LAS PÁGINAS SE RENDERICEN ***
+      await Promise.all(currentRenderPromises);
     } catch (error) {
-      console.error("Error cargando PDF:", error);
+      // *** IGNORAR ERRORES DE CANCELACIÓN ***
+      if (error.name === "AbortError" || error.message.includes("destroy")) {
+        return;
+      }
       content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error</p>`;
     }
+  }
+
+  // *** FUNCIÓN PARA CANCELAR TODOS LOS RENDERIZADOS ***
+  function cancelAllRenders() {
+    currentRenderPromises.forEach((promise) => {
+      try {
+        // Marcamos las promesas como canceladas
+        if (promise.cancel) promise.cancel();
+      } catch (e) {}
+    });
+    currentRenderPromises = [];
   }
 
   async function renderPageForMobileQuality(pdfDoc, pageNum, container) {
@@ -94,23 +138,17 @@
       const originalHeight = viewport.height;
       const isLandscape = originalWidth > originalHeight;
 
-      // **LA CLAVE ESTÁ AQUÍ:**
       let scale;
 
       if (isMobile) {
-        // Para móvil: NO reducir demasiado la escala
         if (isLandscape) {
-          // PDF horizontal: mantener buena calidad aunque sea ancho
-          // En lugar de ajustar al ancho de pantalla, usar escala fija
-          scale = 0.9; // 90% del tamaño original (más grande, mejor calidad)
+          scale = 0.9;
         } else {
-          // PDF vertical: ajustar al ancho pero con escala mínima
           const containerWidth = window.innerWidth - 20;
-          scale = (containerWidth * 0.9) / originalWidth; // 90% del ancho
-          scale = Math.max(scale, 0.7); // Mínimo 70% para mantener calidad
+          scale = (containerWidth * 0.9) / originalWidth;
+          scale = Math.max(scale, 0.7);
         }
       } else {
-        // Desktop: escala normal
         const containerWidth = window.innerWidth - 100;
         scale = containerWidth / originalWidth;
       }
@@ -122,14 +160,12 @@
 
       const canvas = document.createElement("canvas");
 
-      // **RENDERIZAR CON MEJOR CALIDAD:**
       const pixelRatio = window.devicePixelRatio || 1;
       const qualityMultiplier = isMobile ? Math.min(pixelRatio, 1.5) : 1;
 
       canvas.width = renderViewport.width * qualityMultiplier;
       canvas.height = renderViewport.height * qualityMultiplier;
 
-      // Tamaño visual (más pequeño que el renderizado para calidad)
       canvas.style.width = renderViewport.width + "px";
       canvas.style.height = renderViewport.height + "px";
       canvas.style.maxWidth = "100%";
@@ -140,7 +176,6 @@
 
       const ctx = canvas.getContext("2d");
 
-      // Escalar contexto si renderizamos más grande
       if (qualityMultiplier > 1) {
         ctx.scale(qualityMultiplier, qualityMultiplier);
       }
@@ -152,13 +187,15 @@
 
       await page.render(renderContext).promise;
 
-      // **APLICAR FILTRO DE NITIDEZ PARA MÓVIL:**
       if (isMobile) {
         canvas.style.imageRendering = "crisp-edges";
         canvas.style.webkitFontSmoothing = "antialiased";
       }
     } catch (error) {
-      console.error("Error en página " + pageNum + ":", error);
+      // *** IGNORAR ERRORES DE RENDERIZADO CANCELADO ***
+      if (error.name === "AbortError") {
+        return;
+      }
     }
   }
 
@@ -168,11 +205,31 @@
     const paths = getPaths();
     const pdfUrl = paths.assets + pdfFile;
 
+    // *** PRIMERO CERRAR CUALQUIER CARGA ANTERIOR ***
+    cancelCurrentLoad();
+
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
     isOpen = true;
 
     loadPdfInModal(pdfUrl);
+  }
+
+  // *** FUNCIÓN PARA CANCELAR CARGA ACTUAL ***
+  function cancelCurrentLoad() {
+    if (currentLoadingTask) {
+      try {
+        currentLoadingTask.destroy();
+      } catch (e) {}
+      currentLoadingTask = null;
+    }
+    cancelAllRenders();
+
+    // También limpiar el contenido inmediatamente
+    const content = document.getElementById("pdf-modal-content");
+    if (content) {
+      content.innerHTML = "";
+    }
   }
 
   function openRandomPdf() {
@@ -183,9 +240,14 @@
 
   function closeModal() {
     if (!modal) return;
+
+    // *** CANCELAR CARGA AL CERRAR ***
+    cancelCurrentLoad();
+
     modal.style.display = "none";
     document.body.style.overflow = "";
     isOpen = false;
+
     setTimeout(() => {
       const content = document.getElementById("pdf-modal-content");
       if (content) content.innerHTML = "";
@@ -257,5 +319,6 @@
     open: openPdf,
     openRandom: openRandomPdf,
     close: closeModal,
+    cancelCurrentLoad: cancelCurrentLoad, // *** EXPORTAR PARA DEBUG ***
   };
 })();
