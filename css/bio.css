@@ -86,7 +86,7 @@
 }
 
 .glow-text {
-  color: #4a2a21; /* Color base */
+  color: #e21111; /* Color base */
   text-shadow:
     0 0 2px rgba(125, 63, 51, 0.4),
     /* Tu color base */ 0 0 4px rgba(166, 84, 68, 0.3),
