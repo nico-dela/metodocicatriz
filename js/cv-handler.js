@@ -1,59 +1,24 @@
-/**
- * CV Handler - Maneja específicamente la apertura del CV en modal
- * Solo para la página bio.html
- */
 (function () {
   "use strict";
 
-  // Nombre fijo del archivo CV
   const CV_FILENAME = "CV_Candela_Gencarelli.pdf";
   let modal = null;
   let isCVModalOpen = false;
+  let isMobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent,
+    );
 
   function createCVModal() {
-    // Si ya existe el modal, solo devolverlo
     if (document.getElementById("cv-modal-overlay")) {
       modal = document.getElementById("cv-modal-overlay");
       return;
     }
 
     const modalHTML = `
-      <div id="cv-modal-overlay" class="pdf-modal-overlay" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.95);
-        z-index: 9999;
-        display: none;
-      ">
-        <!-- Botón de cerrar -->
-        <button class="cv-modal-close" style="
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: rgba(255, 255, 255, 0.9);
-          border: none;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          font-size: 24px;
-          cursor: pointer;
-          z-index: 10001;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #333;
-        ">&times;</button>
-        
-        <!-- Contenedor del PDF -->
-        <div id="cv-modal-content" style="
-          width: 100%;
-          height: 100%;
-          overflow: auto;
-          padding: 20px;
-        "></div>
+      <div id="cv-modal-overlay" class="pdf-modal-overlay">
+        <button class="cv-modal-close">&times;</button>
+        <div id="cv-modal-content"></div>
       </div>
     `;
 
@@ -61,35 +26,28 @@
 
     modal = document.getElementById("cv-modal-overlay");
 
-    // Configurar eventos UNA SOLA VEZ
     const closeBtn = modal.querySelector(".cv-modal-close");
     if (closeBtn) {
       closeBtn.addEventListener("click", closeModal);
     }
 
-    // Cerrar al hacer click fuera del contenido
     modal.addEventListener("click", function (e) {
       if (e.target === modal) closeModal();
     });
   }
 
   function init() {
-    // CREAR EL MODAL AL INICIO, no cuando se haga clic
     createCVModal();
 
-    // Configurar botón de CV
     const cvButton = document.getElementById("cv-button");
     if (cvButton) {
       cvButton.addEventListener("click", function (e) {
         e.preventDefault();
         openCV();
       });
-
-      // También configurar el texto del botón según idioma
       updateButtonText();
     }
 
-    // Configurar enlaces de texto del CV
     const cvLinkEs = document.getElementById("cv-link-es");
     const cvLinkEn = document.getElementById("cv-link-en");
 
@@ -107,20 +65,17 @@
       });
     }
 
-    // Manejar tecla Escape para cerrar modal
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && isCVModalOpen) {
         closeModal();
       }
     });
 
-    // Actualizar textos cuando cambie el idioma
     document.addEventListener("languageChanged", function () {
       updateButtonText();
       updateLinkTexts();
     });
 
-    // Inicializar textos
     updateLinkTexts();
   }
 
@@ -132,7 +87,6 @@
 
     try {
       if (!window.pdfjsLib) {
-        // Cargar PDF.js si no está disponible
         const script = document.createElement("script");
         script.src =
           "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
@@ -147,16 +101,12 @@
 
       const pdfUrl = "../assets/pdfs/" + CV_FILENAME;
 
-      // Cargar el PDF
       const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
       const pdfDoc = await loadingTask.promise;
 
-      // Obtener ancho disponible para el modal
-      const modalWidth = window.innerWidth - 40;
-
-      // Renderizar todas las páginas
+      // **NUEVO: usar la misma lógica de calidad que random-pdf.js**
       for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-        await renderCVPage(pdfDoc, pageNum, modalWidth, content);
+        await renderCVPageForMobileQuality(pdfDoc, pageNum, content);
       }
     } catch (error) {
       console.error("Error cargando CV:", error);
@@ -187,73 +137,80 @@
     }
   }
 
-  async function renderCVPage(pdfDoc, pageNum, containerWidth, container) {
+  // **NUEVA FUNCIÓN: Render con calidad para móvil (igual que random-pdf.js)**
+  async function renderCVPageForMobileQuality(pdfDoc, pageNum, container) {
     try {
       const page = await pdfDoc.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1 });
+      const originalWidth = viewport.width;
+      const originalHeight = viewport.height;
+      const isLandscape = originalWidth > originalHeight;
 
-      // Calcular escala manteniendo proporciones
-      const scale = calculateOptimalScaleForPage(page, containerWidth);
+      let scale;
 
-      // Crear contenedor para la página
+      if (isMobile) {
+        // Misma lógica de calidad que random-pdf.js
+        if (isLandscape) {
+          // PDF horizontal: mantener buena calidad aunque sea ancho
+          scale = 0.9; // 90% del tamaño original
+        } else {
+          // PDF vertical: ajustar al ancho con escala mínima
+          const containerWidth = window.innerWidth - 20;
+          scale = (containerWidth * 0.9) / originalWidth;
+          scale = Math.max(scale, 0.7); // Mínimo 70% para calidad
+        }
+      } else {
+        // Desktop: escala normal
+        const containerWidth = window.innerWidth - 100;
+        scale = containerWidth / originalWidth;
+      }
+
+      const renderViewport = page.getViewport({ scale: scale });
+
       const pageDiv = document.createElement("div");
-      pageDiv.style.cssText = `
-        margin: 0 auto 20px auto;
-        background: white;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        display: block;
-        max-width: 100%;
-      `;
+      pageDiv.className = "pdf-page-container";
 
       const canvas = document.createElement("canvas");
-      canvas.style.cssText = `
-        display: block;
-        max-width: 100%;
-        height: auto;
-      `;
+
+      // Renderizar con mejor calidad
+      const pixelRatio = window.devicePixelRatio || 1;
+      const qualityMultiplier = isMobile ? Math.min(pixelRatio, 1.5) : 1;
+
+      canvas.width = renderViewport.width * qualityMultiplier;
+      canvas.height = renderViewport.height * qualityMultiplier;
+
+      canvas.style.width = renderViewport.width + "px";
+      canvas.style.height = renderViewport.height + "px";
+      canvas.style.maxWidth = "100%";
+      canvas.style.height = "auto";
 
       pageDiv.appendChild(canvas);
       container.appendChild(pageDiv);
 
-      // Calcular viewport
-      const viewport = page.getViewport({ scale: scale });
-
-      // Configurar canvas
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      canvas.style.width = viewport.width + "px";
-      canvas.style.height = viewport.height + "px";
-
       const ctx = canvas.getContext("2d");
+
+      if (qualityMultiplier > 1) {
+        ctx.scale(qualityMultiplier, qualityMultiplier);
+      }
+
       const renderContext = {
         canvasContext: ctx,
-        viewport: viewport,
+        viewport: renderViewport,
       };
 
       await page.render(renderContext).promise;
+
+      // Aplicar filtro de nitidez para móvil
+      if (isMobile) {
+        canvas.style.imageRendering = "crisp-edges";
+        canvas.style.webkitFontSmoothing = "antialiased";
+      }
     } catch (error) {
-      console.error("Error renderizando página " + pageNum + ":", error);
-      throw error;
-    }
-  }
-
-  function calculateOptimalScaleForPage(page, containerWidth) {
-    // Obtener el tamaño natural de la página
-    const naturalViewport = page.getViewport({ scale: 1 });
-    const pageWidth = naturalViewport.width;
-
-    // Calcular escala para que la página quepa en el ancho disponible
-    const scale = containerWidth / pageWidth;
-
-    // Para móvil: limitar la escala máxima
-    if (window.innerWidth <= 768) {
-      return Math.min(scale, 1.3);
-    } else {
-      return Math.min(scale, 1.8);
+      console.error("Error en página " + pageNum + ":", error);
     }
   }
 
   function openCV() {
-    // Asegurarse de que el modal existe
     if (!modal) {
       createCVModal();
     }
@@ -274,7 +231,6 @@
     document.body.style.overflow = "";
     isCVModalOpen = false;
 
-    // Limpiar contenido después de cerrar
     setTimeout(() => {
       const content = document.getElementById("cv-modal-content");
       if (content) content.innerHTML = "";
@@ -295,7 +251,6 @@
   function updateLinkTexts() {
     const lang = localStorage.getItem("language") || "es";
 
-    // Solo actualizar el enlace del idioma activo
     if (lang === "es") {
       const cvLinkEs = document.getElementById("cv-link-es");
       if (cvLinkEs) {
@@ -321,7 +276,6 @@
     }
   }
 
-  // Inicializar cuando el DOM esté listo
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
