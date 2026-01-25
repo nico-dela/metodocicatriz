@@ -85,6 +85,16 @@
   align-self: flex-end;
 }
 
+.glow-text {
+  color: #4a2a21; /* Color base */
+  text-shadow:
+    0 0 2px rgba(125, 63, 51, 0.4),
+    /* Tu color base */ 0 0 4px rgba(166, 84, 68, 0.3),
+    /* Versión más clara */ 0 0 6px rgba(197, 100, 81, 0.2),
+    /* Más claro aún */ 0 0 8px rgba(225, 114, 93, 0.1); /* Muy sutil */
+  transition: all 0.3s ease;
+}
+
 /* Bio Responsive */
 @media (max-width: 768px) {
   .bio-content {
