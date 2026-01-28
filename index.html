@@ -55,16 +55,26 @@
             class="open-button"
             aria-label="Abrir proceso"
           >
-            <img
-              id="boton-abrir"
-              class="boton-image lang-es"
-              src="assets/images/boton-abrir-es.webp"
-              data-src-es="assets/images/boton-abrir-es.webp"
-              data-src-en="assets/images/boton-abrir-en.webp"
-              alt="Abrir proceso"
-              data-alt-es="Abrir proceso"
-              data-alt-en="Open a process"
-            />
+            <picture>
+              <!-- Versión mobile -->
+              <source
+                media="(max-width: 768px)"
+                srcset="assets/images/boton-abrir-mobile-es.webp"
+                data-src-es="assets/images/boton-abrir-mobile-es.webp"
+                data-src-en="assets/images/boton-abrir-mobile-en.webp"
+              />
+              <!-- Versión desktop (actual) -->
+              <img
+                id="boton-abrir"
+                class="boton-image lang-es"
+                src="assets/images/boton-abrir-es.webp"
+                data-src-es="assets/images/boton-abrir-es.webp"
+                data-src-en="assets/images/boton-abrir-en.webp"
+                alt="Abrir proceso"
+                data-alt-es="Abrir proceso"
+                data-alt-en="Open a process"
+              />
+            </picture>
           </button>
 
           <footer>
