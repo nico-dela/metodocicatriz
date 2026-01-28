@@ -72,10 +72,10 @@
           <div class="pdf-selector-container">
             <div class="pdf-selector-header">
               <h3 
-                data-es="Procesos disponibles" 
-                data-en="Available processes"
+                data-es="Archivo de procesos disponibles" 
+                data-en="Available process archive"
               >
-                Procesos disponibles
+                Archivo de procesos disponibles
               </h3>
               <button class="pdf-selector-close">&times;</button>
             </div>
