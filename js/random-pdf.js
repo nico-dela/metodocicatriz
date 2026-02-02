@@ -64,7 +64,7 @@
         
         <!-- Botón para abrir selector de PDFs -->
         <button class="pdf-selector-toggle" title="Ver todos los procesos">
-          📂
+          ☰
         </button>
         
         <!-- Selector de PDFs (inicialmente oculto) -->
