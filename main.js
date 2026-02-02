@@ -91,6 +91,21 @@ class App {
         img.setAttribute("alt", newAlt);
       }
     });
+
+    // Update <source> elements inside <picture> (mobile images)
+    const langSources = document.querySelectorAll(
+      "source[data-src-es][data-src-en]",
+    );
+
+    langSources.forEach((source) => {
+      const newSrc = source.getAttribute(`data-src-${lang}`);
+      if (!newSrc) return;
+
+      // iOS / Safari fix
+      source.setAttribute("srcset", "");
+      source.offsetHeight; // force reflow
+      source.setAttribute("srcset", newSrc);
+    });
   }
 
   initGallery() {
