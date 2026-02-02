@@ -20,8 +20,8 @@
 .home-layout {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
-  min-width: 100vw;
+  min-height: calc(100vh - 80px);
+  width: 100%;
   padding-top: 80px;
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@ footer {
 
 .instagram-link {
   position: fixed;
-  bottom: -5px;
+  bottom: 0px;
   right: 10px;
   z-index: 10;
   transition: transform 0.3s ease;
@@ -112,7 +112,6 @@ footer {
     padding-top: 60px;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
   }
 
   .home-content {
