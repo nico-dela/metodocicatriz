@@ -153,26 +153,44 @@
   }
 }
 
-/* Móvil horizontal / viewport bajo: cabecera más baja para ganar altura útil */
-@media (orientation: landscape) and (max-height: 500px) {
+/*
+ * Móvil horizontal: muchos dispositivos tienen alto > 500px; subimos el tope
+ * para que siempre aplique cabecera compacta en apaisado.
+ */
+@media (orientation: landscape) and (max-height: 720px) {
   .navigation {
-    padding: 8px 16px;
+    padding: 6px 14px;
+    line-height: 1.15;
   }
 
   .nav-left .artist-name {
-    font-size: 17px;
+    font-size: clamp(14px, 3.8vw, 17px);
   }
 
   .nav-right {
-    gap: 12px;
+    gap: 10px;
   }
 
   .nav-right a {
-    font-size: 16px;
+    font-size: clamp(13px, 3.2vw, 16px);
   }
 
   .nav-right .lang-option,
   .nav-right .separator {
-    font-size: 12px;
+    font-size: clamp(11px, 2.8vw, 13px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 400px) {
+  .navigation {
+    padding: 5px 12px;
+  }
+
+  .nav-left .artist-name {
+    font-size: 14px;
+  }
+
+  .nav-right a {
+    font-size: 14px;
   }
 }
