@@ -6,12 +6,60 @@ class PdfLoader {
   constructor() {
     this.pdfDoc = null;
     this.viewer = null;
+    this.pdfEntries = [];
+  }
+
+  formatFilename(filename) {
+    let name = filename.replace(/\.pdf$/i, "");
+    name = name.replace(/-/g, " ");
+    name = name.replace(/[()]/g, " ");
+    return name
+      .split(" ")
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+
+  normalizeManifestEntries(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .map((entry) => {
+        if (typeof entry === "string") {
+          return { file: entry, title: this.formatFilename(entry) };
+        }
+        if (entry && typeof entry.file === "string") {
+          return {
+            file: entry.file,
+            title: entry.title || this.formatFilename(entry.file),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  async loadManifest() {
+    try {
+      const response = await fetch("../assets/pdfs/manifest.json");
+      if (response.ok) {
+        const data = await response.json();
+        this.pdfEntries = this.normalizeManifestEntries(data.pdfs || []);
+      }
+    } catch (e) {
+      console.warn("No se pudo cargar el manifiesto de PDFs");
+    }
+  }
+
+  getTitleForFile(filename) {
+    const entry = this.pdfEntries.find((e) => e.file === filename);
+    return entry ? entry.title : this.formatFilename(filename);
   }
 
   async init() {
     this.viewer = document.getElementById("pdf-viewer");
     if (!this.viewer) return;
 
+    await this.loadManifest();
     await this.loadPdfFromUrl();
   }
 
@@ -20,11 +68,28 @@ class PdfLoader {
     const pdfFile = urlParams.get("pdf");
 
     if (!pdfFile) {
+      this.viewer.setAttribute("aria-busy", "false");
       this.showError("No se especificó un archivo PDF");
       return;
     }
 
     const pdfUrl = "../assets/pdfs/" + decodeURIComponent(pdfFile);
+
+    const titleEl = document.getElementById("pdf-viewer-title");
+    const displayTitle = this.getTitleForFile(decodeURIComponent(pdfFile));
+    if (titleEl) {
+      titleEl.textContent = displayTitle;
+    }
+    const pageTitle = document.querySelector("title");
+    if (pageTitle) {
+      const baseEs = pageTitle.getAttribute("data-es") || "";
+      const baseEn = pageTitle.getAttribute("data-en") || "";
+      const lang = localStorage.getItem("language") || "es";
+      const base = lang === "en" ? baseEn : baseEs;
+      document.title = base
+        ? displayTitle + " • " + base.replace(/^[^•]*•\s*/, "").trim()
+        : displayTitle;
+    }
 
     try {
       // Verificar que PDF.js esté cargado
@@ -43,8 +108,10 @@ class PdfLoader {
       for (let pageNum = 1; pageNum <= this.pdfDoc.numPages; pageNum++) {
         await this.renderPage(pageNum);
       }
+      this.viewer.setAttribute("aria-busy", "false");
     } catch (error) {
       console.error("Error cargando PDF:", error);
+      this.viewer.setAttribute("aria-busy", "false");
       this.showError("Error al cargar el PDF: " + error.message);
     }
   }

@@ -30,17 +30,70 @@
     };
   }
 
+  function formatPdfDisplayName(filename) {
+    let name = filename.replace(/\.pdf$/i, "");
+    name = name.replace(/-/g, " ");
+    name = name.replace(/[()]/g, " ");
+    name = name
+      .split(" ")
+      .map((word) => {
+        if (word.length > 0) {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
+        return word;
+      })
+      .join(" ");
+    return name;
+  }
+
+  function normalizePdfList(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .map(function (entry) {
+        if (typeof entry === "string") {
+          return { file: entry, title: formatPdfDisplayName(entry) };
+        }
+        if (entry && typeof entry.file === "string") {
+          return {
+            file: entry.file,
+            title: entry.title || formatPdfDisplayName(entry.file),
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  }
+
   async function loadManifest() {
     const paths = getPaths();
     try {
       const response = await fetch(paths.manifest);
       if (response.ok) {
         const data = await response.json();
-        pdfFiles = data.pdfs || [];
+        pdfFiles = normalizePdfList(data.pdfs || []);
       }
     } catch (error) {
       console.warn("No se pudo cargar el manifest de PDFs");
     }
+  }
+
+  function getTitleForFile(filename) {
+    const entry = pdfFiles.find(function (e) {
+      return e.file === filename;
+    });
+    return entry ? entry.title : formatPdfDisplayName(filename);
+  }
+
+  function setPdfModalTitle(filename) {
+    const el = document.getElementById("pdf-modal-title");
+    if (el) {
+      el.textContent = getTitleForFile(filename);
+    }
+  }
+
+  function clearPdfModalTitle() {
+    const el = document.getElementById("pdf-modal-title");
+    if (el) el.textContent = "";
   }
 
   function createModal() {
@@ -58,12 +111,14 @@
     }
 
     const modalHTML = `
-      <div id="pdf-modal-overlay" class="pdf-modal-overlay" style="display: none;">
-        <button class="pdf-modal-close">&times;</button>
+      <div id="pdf-modal-overlay" class="pdf-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+        <header class="pdf-modal-toolbar">
+          <p id="pdf-modal-title" class="pdf-modal-title" aria-live="polite"></p>
+          <button type="button" class="pdf-modal-close" aria-label="Cerrar">&times;</button>
+        </header>
         <div id="pdf-modal-content"></div>
         
-        <!-- Botón para abrir selector de PDFs -->
-        <button class="pdf-selector-toggle" title="Ver todos los procesos">
+        <button type="button" class="pdf-selector-toggle" title="Ver todos los procesos" aria-label="Ver todos los procesos">
           ☰
         </button>
         
@@ -77,7 +132,7 @@
               >
                 Archivo de procesos disponibles
               </h3>
-              <button class="pdf-selector-close">&times;</button>
+              <button type="button" class="pdf-selector-close" aria-label="Cerrar">&times;</button>
             </div>
             <div class="pdf-selector-list" id="pdf-selector-list">
               <!-- Los PDFs se cargarán aquí dinámicamente -->
@@ -218,23 +273,19 @@
     // Limpiar lista anterior
     selectorList.innerHTML = "";
 
-    // Crear elementos de lista para cada PDF
-    pdfFiles.forEach((pdfFile, index) => {
+    pdfFiles.forEach(function (entry, index) {
       const listItem = document.createElement("div");
       listItem.className = "pdf-selector-item";
-      listItem.dataset.pdfFile = pdfFile;
-
-      // Formatear nombre para mostrar
-      const displayName = formatPdfDisplayName(pdfFile);
+      listItem.dataset.pdfFile = entry.file;
 
       listItem.innerHTML = `
         <span class="pdf-selector-number">${index + 1}</span>
-        <span class="pdf-selector-name">${displayName}</span>
+        <span class="pdf-selector-name">${entry.title}</span>
       `;
 
       listItem.addEventListener("click", function () {
-        const pdfFile = this.dataset.pdfFile;
-        openPdf(pdfFile);
+        const file = this.dataset.pdfFile;
+        openPdf(file);
         closePdfSelector();
       });
 
@@ -254,36 +305,12 @@
     }
   }
 
-  function formatPdfDisplayName(filename) {
-    // Remover extensión .pdf
-    let name = filename.replace(/\.pdf$/i, "");
-
-    // Reemplazar guiones por espacios
-    name = name.replace(/-/g, " ");
-
-    // Reemplazar paréntesis por espacios
-    name = name.replace(/[()]/g, " ");
-
-    // Capitalizar primera letra de cada palabra
-    name = name
-      .split(" ")
-      .map((word) => {
-        if (word.length > 0) {
-          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }
-        return word;
-      })
-      .join(" ");
-
-    return name;
-  }
-
   async function loadPdfInModal(pdfUrl) {
     const content = document.getElementById("pdf-modal-content");
     if (!content) return;
 
-    // *** LIMPIAR CONTENIDO COMPLETAMENTE ***
-    content.innerHTML = "";
+    content.innerHTML =
+      '<div class="pdf-loading" role="status" aria-live="polite"><span class="pdf-loading-text">Cargando…</span></div>';
 
     try {
       if (!window.pdfjsLib) {
@@ -301,13 +328,13 @@
       // *** CANCELAR RENDERIZADOS ANTERIORES ***
       cancelAllRenders();
 
-      // *** NUEVA CARGA ***
       const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
       currentLoadingTask = loadingTask;
 
       const pdfDoc = await loadingTask.promise;
 
-      // *** GUARDAR PROMESAS DE RENDERIZADO ***
+      content.innerHTML = "";
+
       currentRenderPromises = [];
 
       for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
@@ -426,12 +453,11 @@
     document.body.style.overflow = "hidden";
     isOpen = true;
 
-    // *** CERRAR SELECTOR SI ESTÁ ABIERTO ***
     closePdfSelector();
 
-    // *** ACTUALIZAR IDIOMA ***
     currentLanguage = localStorage.getItem("language") || "es";
 
+    setPdfModalTitle(pdfFile);
     loadPdfInModal(pdfUrl);
   }
 
@@ -457,7 +483,7 @@
       return;
     }
     const randomIndex = Math.floor(Math.random() * pdfFiles.length);
-    openPdf(pdfFiles[randomIndex]);
+    openPdf(pdfFiles[randomIndex].file);
   }
 
   function closeModal() {
@@ -472,6 +498,8 @@
     modal.style.display = "none";
     document.body.style.overflow = "";
     isOpen = false;
+
+    clearPdfModalTitle();
 
     setTimeout(() => {
       const content = document.getElementById("pdf-modal-content");

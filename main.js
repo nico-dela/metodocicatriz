@@ -77,6 +77,22 @@ class App {
       }
     }
 
+    if (
+      document.body.classList.contains("pdf-viewer-page") &&
+      titleElement
+    ) {
+      const pdfTitleEl = document.getElementById("pdf-viewer-title");
+      if (pdfTitleEl && pdfTitleEl.textContent.trim()) {
+        const base = titleElement.getAttribute(`data-${lang}`) || "";
+        const suffix = base.includes("•")
+          ? base.split("•").pop().trim()
+          : base;
+        document.title = suffix
+          ? pdfTitleEl.textContent.trim() + " • " + suffix
+          : pdfTitleEl.textContent.trim();
+      }
+    }
+
     // Update images with language-specific sources (leyenda and button)
     const langImages = document.querySelectorAll(
       "img[data-src-es][data-src-en]",

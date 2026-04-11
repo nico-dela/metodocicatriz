@@ -25,8 +25,19 @@
     </script>
   </head>
   <body class="pdf-viewer-page">
+    <header class="pdf-viewer-header">
+      <a
+        href="../index.html"
+        class="pdf-viewer-back"
+        data-es="← Inicio"
+        data-en="← Home"
+      >
+        ← Inicio
+      </a>
+      <h1 id="pdf-viewer-title" class="pdf-viewer-title"></h1>
+    </header>
     <div class="pdf-container">
-      <div id="pdf-viewer"></div>
+      <div id="pdf-viewer" role="main" aria-busy="true"></div>
     </div>
 
     <!-- Scripts -->

@@ -28,6 +28,12 @@
   color: #666;
 }
 
+.nav-left a.artist-name:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
 .nav-right {
   display: flex;
   align-items: center;
@@ -52,6 +58,12 @@
   color: #666;
 }
 
+.nav-right a:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
 /* Language Toggle */
 .language-toggle {
   display: flex;
@@ -72,6 +84,12 @@
 
 .nav-right .lang-option:hover {
   color: blue;
+}
+
+.nav-right .lang-option:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 .nav-right .separator {

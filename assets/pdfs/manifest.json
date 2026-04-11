@@ -1,11 +1,36 @@
 {
   "pdfs": [
-    "Caleidoscopios (2022–2025).pdf",
-    "Nubila (2025).pdf",
-    "Motin (2024).pdf",
-    "Irmanas (2023).pdf",
-    "Maizena (2023-25).pdf",
-    "Maizena Armaduras (2025).pdf",
-    "Gozerio (2025).pdf"
+    {
+      "file": "Ensayo para un archivo colectivo.pdf",
+      "title": "Ensayo para un archivo colectivo (Curaduría)"
+    },
+    {
+      "file": "Maizena Armaduras (2025).pdf",
+      "title": "Maizena Armaduras (vestuarios)"
+    },
+    {
+      "file": "Maizena (2023-25).pdf",
+      "title": "Maizena (vestuarios)"
+    },
+    {
+      "file": "Nubila (2025).pdf",
+      "title": "Nubila (vestuarios)"
+    },
+    {
+      "file": "Irmanas (2023).pdf",
+      "title": "Irmanas (vestuarios)"
+    },
+    {
+      "file": "Motin (2024).pdf",
+      "title": "Motín (dirección artística y vestuarios)"
+    },
+    {
+      "file": "Gozerio (2025).pdf",
+      "title": "Gozerio (propuesta escenográfica)"
+    },
+    {
+      "file": "Caleidoscopios (2022–2025).pdf",
+      "title": "Caleidoscopios (creación de objetos)"
+    }
   ]
 }
