@@ -152,3 +152,27 @@
     font-size: 13px;
   }
 }
+
+/* Móvil horizontal / viewport bajo: cabecera más baja para ganar altura útil */
+@media (orientation: landscape) and (max-height: 500px) {
+  .navigation {
+    padding: 8px 16px;
+  }
+
+  .nav-left .artist-name {
+    font-size: 17px;
+  }
+
+  .nav-right {
+    gap: 12px;
+  }
+
+  .nav-right a {
+    font-size: 16px;
+  }
+
+  .nav-right .lang-option,
+  .nav-right .separator {
+    font-size: 12px;
+  }
+}

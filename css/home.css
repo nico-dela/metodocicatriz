@@ -67,10 +67,10 @@ body.page-home {
 
 /* Legend Image - The main text image */
 .leyenda-image {
-  max-width: 80vw;
+  max-width: min(88vw, 960px);
   width: auto;
   height: auto;
-  max-height: 50vh;
+  max-height: min(56vh, 640px);
   object-fit: contain;
 }
 
@@ -97,6 +97,25 @@ body.page-home {
   box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
 }
 
+/* Escritorio / trackpad: hover animado que invita al clic */
+@media (hover: hover) and (pointer: fine) {
+  .open-button:hover {
+    animation: openButtonHoverInvite 1.05s ease-in-out infinite;
+  }
+}
+
+@keyframes openButtonHoverInvite {
+  0%,
+  100% {
+    transform: scale(1.06) translateX(0);
+    filter: brightness(1.14) drop-shadow(0 0 14px rgba(255, 255, 255, 0.38));
+  }
+  50% {
+    transform: scale(1.1) translateX(5px);
+    filter: brightness(1.24) drop-shadow(0 0 28px rgba(255, 255, 255, 0.55));
+  }
+}
+
 .open-button:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.95);
   outline-offset: 6px;
@@ -121,6 +140,7 @@ body.page-home {
   }
 
   .open-button:hover {
+    animation: none;
     transform: none;
     filter: brightness(1.1);
   }
@@ -128,7 +148,7 @@ body.page-home {
 
 /* Button Image */
 .boton-image {
-  max-width: 600px;
+  max-width: min(92vw, 680px);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -187,8 +207,8 @@ footer {
   }
 
   .leyenda-image {
-    max-width: 85vw;
-    max-height: 35vh;
+    max-width: 90vw;
+    max-height: 44vh;
   }
 
   .open-button {
@@ -196,7 +216,7 @@ footer {
   }
 
   .boton-image {
-    max-width: 220px;
+    max-width: min(88vw, 340px);
   }
 
   footer {
@@ -240,8 +260,12 @@ footer {
   }
 
   .leyenda-image {
-    max-width: 90vw;
-    max-height: 30vh;
+    max-width: 92vw;
+    max-height: 40vh;
+  }
+
+  .boton-image {
+    max-width: min(90vw, 300px);
   }
 
   footer {
@@ -258,5 +282,96 @@ footer {
   .instagram-link img {
     width: 32px;
     height: 32px;
+  }
+}
+
+/*
+ * Móvil horizontal (poca altura): el footer fijo solapaba leyenda y botón.
+ * Reservamos espacio inferior, compactamos bloques y permitimos scroll.
+ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .home-layout {
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-top: 52px;
+    padding-bottom: max(104px, 20vh);
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .home-content {
+    padding: 10px 16px 8px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .vertical-banner {
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .leyenda-image {
+    max-width: min(88vw, 720px);
+    max-height: min(46vh, 260px);
+    width: auto;
+    height: auto;
+  }
+
+  .open-button {
+    margin-top: 2px;
+  }
+
+  .boton-image {
+    max-width: min(62vw, 320px);
+  }
+
+  footer {
+    left: 10px;
+    right: 10px;
+    bottom: max(4px, env(safe-area-inset-bottom, 0px));
+    align-items: flex-end;
+  }
+
+  .footer-text {
+    font-size: 8px;
+    line-height: 1.25;
+    max-width: calc(100vw - 48px);
+  }
+
+  .instagram-link {
+    bottom: max(0px, env(safe-area-inset-bottom, 0px));
+    right: 8px;
+  }
+
+  .instagram-link img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Teléfonos muy bajos en horizontal (p.ej. 320px de alto) */
+@media (orientation: landscape) and (max-height: 380px) {
+  .home-layout {
+    padding-top: 48px;
+    padding-bottom: max(96px, 24vh);
+  }
+
+  .leyenda-image {
+    max-height: min(42vh, 220px);
+  }
+
+  .boton-image {
+    max-width: min(56vw, 280px);
+  }
+
+  .footer-text {
+    font-size: 7px;
+    line-height: 1.2;
   }
 }
