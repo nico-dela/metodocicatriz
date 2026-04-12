@@ -12,7 +12,8 @@
 
   // *** VARIABLE PARA CANCELAR LA CARGA ANTERIOR ***
   let currentLoadingTask = null;
-  let currentRenderPromises = [];
+  /** Se incrementa al cancelar o abrir otro PDF; invalida renders en curso. */
+  let pdfLoadGeneration = 0;
 
   // *** NUEVA VARIABLE: Controlar si el selector está visible ***
   let isSelectorVisible = false;
@@ -97,6 +98,11 @@
   }
 
   function createModal() {
+    const existingOverlay = document.getElementById("pdf-modal-overlay");
+    if (existingOverlay && !existingOverlay.querySelector(".pdf-modal-toolbar-actions")) {
+      existingOverlay.remove();
+    }
+
     // *** EVITAR DUPLICADOS: Si ya existe, solo configurar ***
     if (document.getElementById("pdf-modal-overlay")) {
       modal = document.getElementById("pdf-modal-overlay");
@@ -114,13 +120,14 @@
       <div id="pdf-modal-overlay" class="pdf-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
         <header class="pdf-modal-toolbar">
           <p id="pdf-modal-title" class="pdf-modal-title" aria-live="polite"></p>
-          <button type="button" class="pdf-modal-close" aria-label="Cerrar">&times;</button>
+          <div class="pdf-modal-toolbar-actions">
+            <button type="button" class="pdf-selector-toggle" title="Ver todos los procesos" aria-label="Ver todos los procesos">
+              ☰
+            </button>
+            <button type="button" class="pdf-modal-close" aria-label="Cerrar">&times;</button>
+          </div>
         </header>
         <div id="pdf-modal-content"></div>
-        
-        <button type="button" class="pdf-selector-toggle" title="Ver todos los procesos" aria-label="Ver todos los procesos">
-          ☰
-        </button>
         
         <!-- Selector de PDFs (inicialmente oculto) -->
         <div class="pdf-selector-overlay">
@@ -309,6 +316,8 @@
     const content = document.getElementById("pdf-modal-content");
     if (!content) return;
 
+    const gen = pdfLoadGeneration;
+
     content.innerHTML =
       '<div class="pdf-loading" role="status" aria-live="polite"><span class="pdf-loading-text">Cargando…</span></div>';
 
@@ -317,7 +326,6 @@
         throw new Error("PDF.js no disponible");
       }
 
-      // *** CANCELAR CARGA ANTERIOR SI EXISTE ***
       if (currentLoadingTask) {
         try {
           currentLoadingTask.destroy();
@@ -325,31 +333,24 @@
         currentLoadingTask = null;
       }
 
-      // *** CANCELAR RENDERIZADOS ANTERIORES ***
-      cancelAllRenders();
-
       const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
       currentLoadingTask = loadingTask;
 
       const pdfDoc = await loadingTask.promise;
 
-      content.innerHTML = "";
-
-      currentRenderPromises = [];
-
-      for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-        const renderPromise = renderPageForMobileQuality(
-          pdfDoc,
-          pageNum,
-          content,
-        );
-        currentRenderPromises.push(renderPromise);
+      if (gen !== pdfLoadGeneration) {
+        return;
       }
 
-      // *** ESPERAR A QUE TODAS LAS PÁGINAS SE RENDERICEN ***
-      await Promise.all(currentRenderPromises);
+      content.innerHTML = "";
+
+      for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+        if (gen !== pdfLoadGeneration) {
+          return;
+        }
+        await renderPageForMobileQuality(pdfDoc, pageNum, content, gen);
+      }
     } catch (error) {
-      // *** IGNORAR ERRORES DE CANCELACIÓN ***
       if (error.name === "AbortError" || error.message.includes("destroy")) {
         return;
       }
@@ -357,19 +358,12 @@
     }
   }
 
-  // *** FUNCIÓN PARA CANCELAR TODOS LOS RENDERIZADOS ***
-  function cancelAllRenders() {
-    currentRenderPromises.forEach((promise) => {
-      try {
-        if (promise.cancel) promise.cancel();
-      } catch (e) {}
-    });
-    currentRenderPromises = [];
-  }
-
-  async function renderPageForMobileQuality(pdfDoc, pageNum, container) {
+  async function renderPageForMobileQuality(pdfDoc, pageNum, container, gen) {
     try {
       const page = await pdfDoc.getPage(pageNum);
+      if (gen !== pdfLoadGeneration) {
+        return;
+      }
       const viewport = page.getViewport({ scale: 1 });
       const originalWidth = viewport.width;
       const originalHeight = viewport.height;
@@ -397,41 +391,60 @@
 
       const canvas = document.createElement("canvas");
 
-      const pixelRatio = window.devicePixelRatio || 1;
-      const qualityMultiplier = isMobile ? Math.min(pixelRatio, 1.5) : 1;
-
-      canvas.width = renderViewport.width * qualityMultiplier;
-      canvas.height = renderViewport.height * qualityMultiplier;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.floor(renderViewport.width * outputScale);
+      const h = Math.floor(renderViewport.height * outputScale);
+      canvas.width = w;
+      canvas.height = h;
 
       canvas.style.width = renderViewport.width + "px";
-      canvas.style.height = renderViewport.height + "px";
-      canvas.style.maxWidth = "100%";
       canvas.style.height = "auto";
-
-      pageDiv.appendChild(canvas);
-      container.appendChild(pageDiv);
+      canvas.style.maxWidth = "100%";
 
       const ctx = canvas.getContext("2d");
 
-      if (qualityMultiplier > 1) {
-        ctx.scale(qualityMultiplier, qualityMultiplier);
+      if (outputScale !== 1) {
+        ctx.scale(outputScale, outputScale);
       }
 
-      const renderContext = {
-        canvasContext: ctx,
-        viewport: renderViewport,
-      };
+      await page
+        .render({
+          canvasContext: ctx,
+          viewport: renderViewport,
+          background: "rgb(255, 255, 255)",
+        })
+        .promise;
 
-      await page.render(renderContext).promise;
-
-      if (isMobile) {
-        canvas.style.imageRendering = "crisp-edges";
-        canvas.style.webkitFontSmoothing = "antialiased";
+      if (gen !== pdfLoadGeneration) {
+        return;
       }
+
+      const wrapped =
+        typeof window.wrapCanvasForPdfLinks === "function"
+          ? window.wrapCanvasForPdfLinks(canvas)
+          : { wrap: canvas, linkLayer: null };
+      if (wrapped.linkLayer && typeof window.attachPdfLinkAnnotations === "function") {
+        try {
+          await window.attachPdfLinkAnnotations(
+            page,
+            wrapped.linkLayer,
+            renderViewport,
+          );
+        } catch (e) {
+          console.warn("Capa de enlaces PDF (pág. " + pageNum + "):", e);
+        }
+      }
+      if (gen !== pdfLoadGeneration) {
+        return;
+      }
+
+      pageDiv.appendChild(wrapped.wrap);
+      container.appendChild(pageDiv);
     } catch (error) {
       if (error.name === "AbortError") {
         return;
       }
+      console.error("Error renderizando PDF pág. " + pageNum + ":", error);
     }
   }
 
@@ -463,13 +476,14 @@
 
   // *** FUNCIÓN PARA CANCELAR CARGA ACTUAL ***
   function cancelCurrentLoad() {
+    pdfLoadGeneration++;
+
     if (currentLoadingTask) {
       try {
         currentLoadingTask.destroy();
       } catch (e) {}
       currentLoadingTask = null;
     }
-    cancelAllRenders();
 
     const content = document.getElementById("pdf-modal-content");
     if (content) {

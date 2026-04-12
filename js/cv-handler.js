@@ -172,39 +172,48 @@
 
       const canvas = document.createElement("canvas");
 
-      // Renderizar con mejor calidad
-      const pixelRatio = window.devicePixelRatio || 1;
-      const qualityMultiplier = isMobile ? Math.min(pixelRatio, 1.5) : 1;
-
-      canvas.width = renderViewport.width * qualityMultiplier;
-      canvas.height = renderViewport.height * qualityMultiplier;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.floor(renderViewport.width * outputScale);
+      const h = Math.floor(renderViewport.height * outputScale);
+      canvas.width = w;
+      canvas.height = h;
 
       canvas.style.width = renderViewport.width + "px";
-      canvas.style.height = renderViewport.height + "px";
-      canvas.style.maxWidth = "100%";
       canvas.style.height = "auto";
-
-      pageDiv.appendChild(canvas);
-      container.appendChild(pageDiv);
+      canvas.style.maxWidth = "100%";
 
       const ctx = canvas.getContext("2d");
 
-      if (qualityMultiplier > 1) {
-        ctx.scale(qualityMultiplier, qualityMultiplier);
+      if (outputScale !== 1) {
+        ctx.scale(outputScale, outputScale);
       }
 
-      const renderContext = {
-        canvasContext: ctx,
-        viewport: renderViewport,
-      };
+      await page
+        .render({
+          canvasContext: ctx,
+          viewport: renderViewport,
+          background: "rgb(255, 255, 255)",
+        })
+        .promise;
 
-      await page.render(renderContext).promise;
-
-      // Aplicar filtro de nitidez para móvil
-      if (isMobile) {
-        canvas.style.imageRendering = "crisp-edges";
-        canvas.style.webkitFontSmoothing = "antialiased";
+      const wrapped =
+        typeof window.wrapCanvasForPdfLinks === "function"
+          ? window.wrapCanvasForPdfLinks(canvas)
+          : { wrap: canvas, linkLayer: null };
+      if (wrapped.linkLayer && typeof window.attachPdfLinkAnnotations === "function") {
+        try {
+          await window.attachPdfLinkAnnotations(
+            page,
+            wrapped.linkLayer,
+            renderViewport,
+          );
+        } catch (e) {
+          console.warn("Capa de enlaces PDF (pág. " + pageNum + "):", e);
+        }
       }
+
+      pageDiv.appendChild(wrapped.wrap);
+      container.appendChild(pageDiv);
     } catch (error) {
       console.error("Error en página " + pageNum + ":", error);
     }

@@ -32,19 +32,16 @@
   max-width: 100%;
   background: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
+  overflow: visible;
   border-radius: 2px;
 }
 
-/* Canvas del CV - Calidad optimizada */
+/* Canvas del CV */
 #cv-modal-content canvas {
   display: block;
   max-width: 100%;
   height: auto;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  image-rendering: auto;
 }
 
 /* Botón cerrar del CV */
@@ -94,21 +91,6 @@
     height: 36px;
     font-size: 22px;
     background: rgba(255, 255, 255, 0.98);
-  }
-
-  /* Forzar máxima calidad en móvil */
-  #cv-modal-content canvas {
-    image-rendering: crisp-edges !important;
-    -webkit-font-smoothing: antialiased !important;
-  }
-}
-
-/* ==========================================================================
-   High-DPI Screens (Retina)
-   ========================================================================== */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  #cv-modal-content canvas {
-    image-rendering: crisp-edges;
   }
 }
 

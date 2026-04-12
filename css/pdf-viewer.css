@@ -25,12 +25,42 @@
   max-width: 100%;
   background: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  overflow: visible;
 }
 
 #pdf-modal-content canvas {
   display: block;
   max-width: 100%;
   height: auto;
+  image-rendering: auto;
+}
+
+.pdf-page-canvas-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  vertical-align: top;
+}
+
+.pdf-page-canvas-wrap > canvas {
+  pointer-events: none;
+}
+
+.pdf-link-layer {
+  pointer-events: auto;
+}
+
+.pdf-link-layer .pdf-link-annotation {
+  cursor: pointer;
+  z-index: 2;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.15);
+}
+
+.pdf-link-layer .pdf-link-annotation:focus-visible {
+  outline: 2px solid rgba(120, 170, 255, 0.95);
+  outline-offset: 2px;
 }
 
 .pdf-modal-toolbar {
@@ -40,7 +70,7 @@
   right: 0;
   z-index: 10002;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
@@ -53,11 +83,18 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.pdf-modal-toolbar-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
 .pdf-modal-title {
   margin: 0;
   flex: 1;
   min-width: 0;
-  padding-top: 4px;
+  padding-top: 0;
   font-family: "DINNextLTPro", sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -101,6 +138,46 @@
 .pdf-modal-close:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.9);
   outline-offset: 3px;
+}
+
+/* Lista de procesos (☰) en la barra superior (no tapa el PDF ni los enlaces) */
+.pdf-selector-toggle {
+  position: static;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.pdf-selector-toggle:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-selector-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdf-selector-toggle:hover {
+    transform: none;
+  }
 }
 
 .pdf-loading {
@@ -161,93 +238,11 @@
     height: 44px;
     font-size: 28px;
   }
-}
 
-/* Contenedor de página */
-.pdf-page-container {
-  margin-bottom: 20px;
-  max-width: 100%;
-  background: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  overflow: hidden; /* Importante para canvas */
-}
-
-/* Canvas con CALIDAD para móvil */
-#pdf-modal-content canvas {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Botón lista de procesos (☰) — pulso visible + hover claro */
-.pdf-selector-toggle {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 10005;
-  color: #222;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 2px 12px rgba(0, 0, 0, 0.35),
-    0 0 0 0 rgba(255, 255, 255, 0.45);
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background 0.25s ease,
-    color 0.25s ease;
-  animation: pdfSelectorTogglePulse 2.4s ease-in-out infinite;
-}
-
-.pdf-selector-toggle:hover {
-  animation: none;
-  color: #000;
-  background: #fff;
-  transform: scale(1.1);
-  box-shadow:
-    0 6px 24px rgba(0, 0, 0, 0.45),
-    0 0 0 3px rgba(255, 255, 255, 0.35);
-}
-
-.pdf-selector-toggle:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.95);
-  outline-offset: 3px;
-}
-
-@keyframes pdfSelectorTogglePulse {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.35),
-      0 0 0 0 rgba(255, 255, 255, 0.35);
-  }
-  50% {
-    transform: scale(1.06);
-    box-shadow:
-      0 4px 18px rgba(0, 0, 0, 0.4),
-      0 0 0 6px rgba(255, 255, 255, 0.12);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
   .pdf-selector-toggle {
-    animation: none;
-  }
-
-  .pdf-selector-toggle:hover {
-    transform: none;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
   }
 }
 
@@ -381,20 +376,6 @@
     margin-bottom: 15px;
   }
 
-  /* FORZAR CALIDAD EN MÓVIL */
-  #pdf-modal-content canvas {
-    image-rendering: crisp-edges !important;
-    -webkit-font-smoothing: antialiased !important;
-  }
-
-  .pdf-selector-toggle {
-    bottom: 15px;
-    right: 15px;
-    width: 44px;
-    height: 44px;
-    font-size: 20px;
-  }
-
   .pdf-selector-overlay {
     padding: 15px;
   }
@@ -442,8 +423,6 @@
 /* Para pantallas muy pequeñas */
 @media (max-width: 480px) {
   .pdf-selector-toggle {
-    bottom: 10px;
-    right: 10px;
     width: 40px;
     height: 40px;
     font-size: 18px;
@@ -479,13 +458,6 @@
 
 .pdf-selector-list::-webkit-scrollbar-thumb:hover {
   background: #aaa;
-}
-
-/* Para pantallas Retina */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  #pdf-modal-content canvas {
-    image-rendering: crisp-edges;
-  }
 }
 
 @keyframes selectorSlideIn {
@@ -572,6 +544,11 @@ body.pdf-viewer-page {
   box-shadow: 0 2px 14px rgba(0, 0, 0, 0.15);
   border-radius: 2px;
   overflow: hidden;
+}
+
+.pdf-viewer-page .pdf-page-canvas-wrap {
+  display: block;
+  max-width: 100%;
 }
 
 @media (max-width: 768px) {

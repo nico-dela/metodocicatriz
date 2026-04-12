@@ -129,28 +129,45 @@ class PdfLoader {
       const canvas = document.createElement("canvas");
       canvas.id = "canvas-" + pageNum;
 
-      pageDiv.appendChild(canvas);
-      this.viewer.appendChild(pageDiv);
-
       // Calcular escala manteniendo proporciones originales
       const scale = this.calculateOptimalScale(page);
 
       // Obtener viewport con la escala calculada
       const viewport = page.getViewport({ scale: scale });
 
-      // Configurar canvas SIN devicePixelRatio para evitar estiramiento
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
       canvas.style.width = viewport.width + "px";
       canvas.style.height = viewport.height + "px";
 
       const ctx = canvas.getContext("2d");
-      const renderContext = {
-        canvasContext: ctx,
-        viewport: viewport,
-      };
+      if (outputScale !== 1) {
+        ctx.scale(outputScale, outputScale);
+      }
 
-      await page.render(renderContext).promise;
+      await page
+        .render({
+          canvasContext: ctx,
+          viewport: viewport,
+          background: "rgb(255, 255, 255)",
+        })
+        .promise;
+
+      const wrapped =
+        typeof window.wrapCanvasForPdfLinks === "function"
+          ? window.wrapCanvasForPdfLinks(canvas)
+          : { wrap: canvas, linkLayer: null };
+      if (wrapped.linkLayer && typeof window.attachPdfLinkAnnotations === "function") {
+        try {
+          await window.attachPdfLinkAnnotations(page, wrapped.linkLayer, viewport);
+        } catch (e) {
+          console.warn("Capa de enlaces PDF (pág. " + pageNum + "):", e);
+        }
+      }
+
+      pageDiv.appendChild(wrapped.wrap);
+      this.viewer.appendChild(pageDiv);
     } catch (error) {
       console.error("Error renderizando página " + pageNum + ":", error);
       throw error;
