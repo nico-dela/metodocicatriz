@@ -44,29 +44,48 @@
   image-rendering: auto;
 }
 
-/* Botón cerrar del CV */
+/* Botón cerrar: mismos estilos que .pdf-modal-close (visor de PDFs en inicio) */
 .cv-modal-close {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
   z-index: 10001;
-  color: #333;
-  font-weight: 300;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  color: #222;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .cv-modal-close:hover {
-  background: rgba(255, 255, 255, 1);
+  background: #fff;
+  color: #000;
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
+}
+
+.cv-modal-close:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-modal-close:hover {
+    transform: none;
+  }
 }
 
 /* ==========================================================================
@@ -85,12 +104,11 @@
   }
 
   .cv-modal-close {
-    top: 15px;
-    right: 15px;
-    width: 36px;
-    height: 36px;
-    font-size: 22px;
-    background: rgba(255, 255, 255, 0.98);
+    top: max(10px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
   }
 }
 
@@ -117,6 +135,11 @@
 
   .cv-modal-close {
     background: rgba(255, 255, 255, 0.95);
-    color: #111;
+    color: #222;
+  }
+
+  .cv-modal-close:hover {
+    background: #fff;
+    color: #000;
   }
 }
