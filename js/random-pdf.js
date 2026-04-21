@@ -329,10 +329,14 @@
     const content = document.getElementById("pdf-modal-content");
     if (!content) return;
 
+    currentLanguage = localStorage.getItem("language") || "es";
     const gen = pdfLoadGeneration;
+    const loadingText = currentLanguage === "en" ? "Loading…" : "Cargando…";
 
     content.innerHTML =
-      '<div class="pdf-loading" role="status" aria-live="polite"><span class="pdf-loading-text">Cargando…</span></div>';
+      '<div class="pdf-loading" role="status" aria-live="polite"><span class="pdf-loading-text">' +
+      loadingText +
+      "</span></div>";
 
     try {
       if (!window.pdfjsLib) {
@@ -367,7 +371,8 @@
       if (error.name === "AbortError" || error.message.includes("destroy")) {
         return;
       }
-      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">Error</p>`;
+      const errorText = currentLanguage === "en" ? "Error" : "Error";
+      content.innerHTML = `<p style="color: white; text-align: center; padding: 20px;">${errorText}</p>`;
     }
   }
 
