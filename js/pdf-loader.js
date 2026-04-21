@@ -25,12 +25,20 @@ class PdfLoader {
     return raw
       .map((entry) => {
         if (typeof entry === "string") {
-          return { file: entry, title: this.formatFilename(entry) };
+          return {
+            file: entry,
+            title: this.formatFilename(entry),
+            titleEs: this.formatFilename(entry),
+            titleEn: this.formatFilename(entry),
+          };
         }
         if (entry && typeof entry.file === "string") {
+          const fallbackTitle = this.formatFilename(entry.file);
           return {
             file: entry.file,
-            title: entry.title || this.formatFilename(entry.file),
+            title: entry.title || fallbackTitle,
+            titleEs: entry.title_es || entry.titleEs || entry.title || fallbackTitle,
+            titleEn: entry.title_en || entry.titleEn || entry.title || fallbackTitle,
           };
         }
         return null;
@@ -50,9 +58,11 @@ class PdfLoader {
     }
   }
 
-  getTitleForFile(filename) {
+  getTitleForFile(filename, language) {
     const entry = this.pdfEntries.find((e) => e.file === filename);
-    return entry ? entry.title : this.formatFilename(filename);
+    if (!entry) return this.formatFilename(filename);
+    if (language === "en") return entry.titleEn || entry.title || this.formatFilename(filename);
+    return entry.titleEs || entry.title || this.formatFilename(filename);
   }
 
   async init() {
@@ -76,7 +86,8 @@ class PdfLoader {
     const pdfUrl = "../assets/pdfs/" + decodeURIComponent(pdfFile);
 
     const titleEl = document.getElementById("pdf-viewer-title");
-    const displayTitle = this.getTitleForFile(decodeURIComponent(pdfFile));
+    const lang = localStorage.getItem("language") || "es";
+    const displayTitle = this.getTitleForFile(decodeURIComponent(pdfFile), lang);
     if (titleEl) {
       titleEl.textContent = displayTitle;
     }
@@ -84,7 +95,6 @@ class PdfLoader {
     if (pageTitle) {
       const baseEs = pageTitle.getAttribute("data-es") || "";
       const baseEn = pageTitle.getAttribute("data-en") || "";
-      const lang = localStorage.getItem("language") || "es";
       const base = lang === "en" ? baseEn : baseEs;
       document.title = base
         ? displayTitle + " • " + base.replace(/^[^•]*•\s*/, "").trim()

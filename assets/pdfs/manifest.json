@@ -2,35 +2,43 @@
   "pdfs": [
     {
       "file": "Ensayo para un archivo colectivo.pdf",
-      "title": "Ensayo para un archivo colectivo (Curaduría)"
+      "title": "Ensayo para un archivo colectivo (Curaduría)",
+      "title_en": "Ensayo para un archivo colectivo (Curatorship)"
     },
     {
       "file": "Maizena Armaduras (2025).pdf",
-      "title": "Maizena Armaduras (vestuarios)"
+      "title": "Maizena Armaduras (vestuarios)",
+      "title_en": "Maizena Armaduras (costumes)"
     },
     {
       "file": "Maizena (2023-25).pdf",
-      "title": "Maizena (vestuarios)"
+      "title": "Maizena (vestuarios)",
+      "title_en": "Maizena (costumes)"
     },
     {
       "file": "Nubila (2025).pdf",
-      "title": "Nubila (vestuarios)"
+      "title": "Nubila (vestuarios)",
+      "title_en": "Nubila (costumes)"
     },
     {
       "file": "Irmanas (2023).pdf",
-      "title": "Irmanas (vestuarios)"
+      "title": "Irmanas (vestuarios)",
+      "title_en": "Irmanas (costumes)"
     },
     {
       "file": "Motin (2024).pdf",
-      "title": "Motín (dirección artística y vestuarios)"
+      "title": "Motín (dirección artística y vestuarios)",
+      "title_en": "Motín (art direction and costumes)"
     },
     {
       "file": "Gozerio (2025).pdf",
-      "title": "Gozerio (propuesta escenográfica)"
+      "title": "Gozerio (propuesta escenográfica)",
+      "title_en": "Gozerio (scenographic proposal)"
     },
     {
       "file": "Caleidoscopios (2022–2025).pdf",
-      "title": "Caleidoscopios (creación de objetos)"
+      "title": "Caleidoscopios (creación de objetos)",
+      "title_en": "Caleidoscopios (object creation)"
     }
   ]
 }

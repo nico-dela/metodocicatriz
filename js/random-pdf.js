@@ -52,12 +52,20 @@
     return raw
       .map(function (entry) {
         if (typeof entry === "string") {
-          return { file: entry, title: formatPdfDisplayName(entry) };
+          return {
+            file: entry,
+            title: formatPdfDisplayName(entry),
+            titleEs: formatPdfDisplayName(entry),
+            titleEn: formatPdfDisplayName(entry),
+          };
         }
         if (entry && typeof entry.file === "string") {
+          const fallbackTitle = formatPdfDisplayName(entry.file);
           return {
             file: entry.file,
-            title: entry.title || formatPdfDisplayName(entry.file),
+            title: entry.title || fallbackTitle,
+            titleEs: entry.title_es || entry.titleEs || entry.title || fallbackTitle,
+            titleEn: entry.title_en || entry.titleEn || entry.title || fallbackTitle,
           };
         }
         return null;
@@ -82,7 +90,11 @@
     const entry = pdfFiles.find(function (e) {
       return e.file === filename;
     });
-    return entry ? entry.title : formatPdfDisplayName(filename);
+    if (!entry) return formatPdfDisplayName(filename);
+    if (currentLanguage === "en") {
+      return entry.titleEn || entry.title || formatPdfDisplayName(filename);
+    }
+    return entry.titleEs || entry.title || formatPdfDisplayName(filename);
   }
 
   function setPdfModalTitle(filename) {
