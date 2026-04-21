@@ -296,10 +296,11 @@
       const listItem = document.createElement("div");
       listItem.className = "pdf-selector-item";
       listItem.dataset.pdfFile = entry.file;
+      const localizedTitle = getTitleForFile(entry.file);
 
       listItem.innerHTML = `
         <span class="pdf-selector-number">${index + 1}</span>
-        <span class="pdf-selector-name">${entry.title}</span>
+        <span class="pdf-selector-name">${localizedTitle}</span>
       `;
 
       listItem.addEventListener("click", function () {
