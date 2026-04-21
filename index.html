@@ -12,7 +12,25 @@
     />
     <!-- favicon -->
     <link rel="icon" type="x-icon" href="favicon.ico" />
-    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="preload"
+      href="assets/fonts/C_tesis-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/DINNextLTPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/navigation.css" />
+    <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/pdf-viewer.css" />
     <title
       data-es="Método Cicatriz • Candela Gencarelli"
       data-en="Método Cicatriz • Candela Gencarelli"
@@ -104,6 +122,8 @@
                 alt="Logo Instagram"
                 width="48"
                 height="48"
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </footer>
@@ -111,10 +131,10 @@
       </div>
     </main>
 
-    <script src="js/translations.js"></script>
-    <script src="js/random-background.js"></script>
-    <script src="js/pdf-link-layer.js"></script>
-    <script src="js/random-pdf.js"></script>
-    <script src="main.js"></script>
+    <script defer src="js/translations.js"></script>
+    <script defer src="js/random-background.js"></script>
+    <script defer src="js/pdf-link-layer.js"></script>
+    <script defer src="js/random-pdf.js"></script>
+    <script defer src="main.js"></script>
   </body>
 </html>

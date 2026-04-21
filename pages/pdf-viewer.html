@@ -7,22 +7,34 @@
       name="description"
       content="Visualizador de PDF de Candela Gencarelli - Artista, educadora e investigadora. PDF Viewer of Candela Gencarelli's - Artist, educator, and researcher."
     />
+    <link
+      rel="preload"
+      href="../assets/fonts/C_tesis-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="../assets/fonts/DINNextLTPro-Regular.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
     <title
       data-es="Visualizador de PDF • Candela Gencarelli"
       data-en="PDF Viewer • Candela Gencarelli"
     >
       Visualizador de PDF • Candela Gencarelli
     </title>
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/pdf-viewer.css" />
     <!-- Incluir PDF.js desde CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-      // Configurar el worker de PDF.js
-      if (window.pdfjsLib) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-      }
-    </script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+    ></script>
   </head>
   <body class="pdf-viewer-page">
     <header class="pdf-viewer-header">
@@ -41,9 +53,9 @@
     </div>
 
     <!-- Scripts -->
-    <script src="../js/translations.js"></script>
-    <script src="../js/pdf-link-layer.js"></script>
-    <script src="../main.js"></script>
-    <script src="../js/pdf-loader.js"></script>
+    <script defer src="../js/translations.js"></script>
+    <script defer src="../js/pdf-link-layer.js"></script>
+    <script defer src="../main.js"></script>
+    <script defer src="../js/pdf-loader.js"></script>
   </body>
 </html>

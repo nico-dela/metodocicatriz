@@ -135,7 +135,18 @@ class RandomBackground {
 
   schedulePreloadAll() {
     const run = () => {
-      this.images.forEach((name) => {
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const isDataSaver = !!(connection && connection.saveData);
+      const isSlowConnection = !!(
+        connection &&
+        typeof connection.effectiveType === "string" &&
+        /2g/.test(connection.effectiveType)
+      );
+      if (isDataSaver || isSlowConnection) return;
+
+      // Avoid saturating bandwidth/CPU by preloading only a subset.
+      const preloadLimit = 8;
+      this.images.slice(0, preloadLimit).forEach((name) => {
         const img = new Image();
         img.src = this.resolveUrl(name);
       });

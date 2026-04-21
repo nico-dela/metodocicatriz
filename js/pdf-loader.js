@@ -106,6 +106,10 @@ class PdfLoader {
       if (!window.pdfjsLib) {
         throw new Error("PDF.js no está disponible");
       }
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      }
 
       // Cargar el PDF
       const loadingTask = window.pdfjsLib.getDocument(pdfUrl);
