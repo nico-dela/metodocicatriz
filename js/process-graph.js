@@ -727,26 +727,71 @@
       node.fy += (target.y - node.y) * nodePull;
     }
 
-    // Soft repulsion so crossings don't stack
+    // Soft repulsion — dragged node gently bumps others aside
     for (i = 0; i < n; i++) {
       for (j = i + 1; j < n; j++) {
         var a = nodes[i];
         var b = nodes[j];
-        if (a.pinned || b.pinned) continue;
+        if (a.pinned && b.pinned) continue;
+        if ((a.visibility || 1) < 0.2 || (b.visibility || 1) < 0.2) continue;
+
         var dx = a.x - b.x;
         var dy = a.y - b.y;
         var dist2 = dx * dx + dy * dy + 0.01;
         var dist = Math.sqrt(dist2);
-        var minDist = a.r + b.r + 22;
-        if (dist >= minDist * 2.2) continue;
-        var force =
-          (dist < minDist ? (minDist - dist) * 0.14 : 220 / dist2) * repelScale;
+        var ra = a.r * (a.scale || 1);
+        var rb = b.r * (b.scale || 1);
+        var minDist = ra + rb + (a.pinned || b.pinned ? 6 : 22);
+        var reach = a.pinned || b.pinned ? minDist * 1.35 : minDist * 2.2;
+        if (dist >= reach) continue;
+
+        var overlap = minDist - dist;
+        var force;
+        if (a.pinned || b.pinned) {
+          // Subtle collision while dragging: soft push on the free node only
+          force = Math.max(0, overlap) * 0.55 + 80 / dist2;
+        } else {
+          force =
+            (dist < minDist ? overlap * 0.14 : 220 / dist2) * repelScale;
+        }
+
         var fx = (dx / dist) * force;
         var fy = (dy / dist) * force;
-        a.fx += fx;
-        a.fy += fy;
-        b.fx -= fx;
-        b.fy -= fy;
+
+        if (a.pinned && !b.pinned) {
+          b.fx -= fx;
+          b.fy -= fy;
+          // Carry orbit hub a little so the bump sticks
+          b.orbitCx -= fx * 0.35;
+          b.orbitCy -= fy * 0.35;
+          b.bump = Math.min(1, (b.bump || 0) + 0.35);
+          // Separate slightly so they don't stick overlapping
+          if (overlap > 0) {
+            var sep = overlap * 0.45;
+            b.x -= (dx / dist) * sep;
+            b.y -= (dy / dist) * sep;
+            b.orbitCx -= (dx / dist) * sep;
+            b.orbitCy -= (dy / dist) * sep;
+          }
+        } else if (b.pinned && !a.pinned) {
+          a.fx += fx;
+          a.fy += fy;
+          a.orbitCx += fx * 0.35;
+          a.orbitCy += fy * 0.35;
+          a.bump = Math.min(1, (a.bump || 0) + 0.35);
+          if (overlap > 0) {
+            var sepA = overlap * 0.45;
+            a.x += (dx / dist) * sepA;
+            a.y += (dy / dist) * sepA;
+            a.orbitCx += (dx / dist) * sepA;
+            a.orbitCy += (dy / dist) * sepA;
+          }
+        } else {
+          a.fx += fx;
+          a.fy += fy;
+          b.fx -= fx;
+          b.fy -= fy;
+        }
       }
     }
 
@@ -801,14 +846,20 @@
         node.fy -= (node.y - (state.height - margin)) * 0.02;
 
       var flightAmt = node.freeFlight || 0;
+      if (node.bump) {
+        node.bump *= 0.88;
+        if (node.bump < 0.02) node.bump = 0;
+      }
+      var bumpAmt = node.bump || 0;
       var nodeDamp = damp + (node.releaseEase || 0) * 0.02 - flightAmt * 0.04;
       if (nodeDamp > 0.98) nodeDamp = 0.98;
       if (nodeDamp < 0.88) nodeDamp = 0.88;
       node.vx = (node.vx + node.fx) * nodeDamp;
       node.vy = (node.vy + node.fy) * nodeDamp;
-      var maxV = 0.45 + settleEase * 1.1 + flightAmt * 3.5;
+      var maxV =
+        0.45 + settleEase * 1.1 + flightAmt * 3.5 + bumpAmt * 2.2;
       if (node.releaseEase && !flightAmt) maxV = Math.min(maxV, 1.2);
-      if (settle < 0.85 && !flightAmt) maxV = Math.min(maxV, 0.55);
+      if (settle < 0.85 && !flightAmt && !bumpAmt) maxV = Math.min(maxV, 0.55);
       var spd = Math.sqrt(node.vx * node.vx + node.vy * node.vy);
       if (spd > maxV) {
         node.vx = (node.vx / spd) * maxV;
@@ -881,30 +932,45 @@
       var pulse = state.reducedMotion
         ? 0
         : Math.sin(t * 0.55 + node.phase) * 0.035 + 0.04;
+      var bump = node.bump || 0;
+      var drawR = r * (1 + bump * 0.08);
 
       ctx.globalAlpha = vis;
 
       ctx.beginPath();
-      ctx.arc(node.x, node.y, r + 8 + pulse * 8, 0, Math.PI * 2);
-      ctx.fillStyle = hexToRgba(color, 0.08 + pulse * 0.08);
+      ctx.arc(
+        node.x,
+        node.y,
+        drawR + 8 + pulse * 8 + bump * 6,
+        0,
+        Math.PI * 2,
+      );
+      ctx.fillStyle = hexToRgba(color, 0.08 + pulse * 0.08 + bump * 0.1);
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, drawR, 0, Math.PI * 2);
       ctx.fillStyle = color;
       ctx.globalAlpha = 0.88 * vis;
       ctx.fill();
       ctx.globalAlpha = vis;
 
       ctx.beginPath();
-      ctx.arc(node.x - r * 0.28, node.y - r * 0.28, r * 0.28, 0, Math.PI * 2);
+      ctx.arc(
+        node.x - drawR * 0.28,
+        node.y - drawR * 0.28,
+        drawR * 0.28,
+        0,
+        Math.PI * 2,
+      );
       ctx.fillStyle = "rgba(255,255,255,0.22)";
       ctx.fill();
 
-      if (state.hoverIndex === i || state.dragIndex === i) {
+      if (state.hoverIndex === i || state.dragIndex === i || bump > 0.15) {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, r + 3, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(255,255,255,0.45)";
+        ctx.arc(node.x, node.y, drawR + 3 + bump * 2, 0, Math.PI * 2);
+        ctx.strokeStyle =
+          "rgba(255,255,255," + (0.45 + bump * 0.25) + ")";
         ctx.lineWidth = 1.1;
         ctx.stroke();
       }
