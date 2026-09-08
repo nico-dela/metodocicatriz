@@ -74,7 +74,7 @@ body.page-home {
   object-fit: contain;
 }
 
-/* Open Button — pulso visible (escala + brillo) + hover marcado */
+/* Open Button — estático; solo glow al hover (sin escala) */
 .open-button {
   align-self: center;
   background: transparent;
@@ -82,37 +82,22 @@ body.page-home {
   cursor: pointer;
   padding: 0;
   border-radius: 8px;
-  transition:
-    transform 0.28s ease,
-    filter 0.28s ease,
-    box-shadow 0.28s ease;
-  animation: openButtonInvite 2.6s ease-in-out infinite;
-  will-change: transform;
+  transform: none;
+  animation: none;
+  transition: filter 0.28s ease;
 }
 
 .open-button:hover {
+  transform: none;
   animation: none;
-  transform: scale(1.07);
-  filter: brightness(1.15) drop-shadow(0 0 18px rgba(255, 255, 255, 0.45));
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  filter: brightness(1.12) drop-shadow(0 0 16px rgba(255, 255, 255, 0.42));
 }
 
-/* Escritorio / trackpad: hover animado que invita al clic */
 @media (hover: hover) and (pointer: fine) {
   .open-button:hover {
-    animation: openButtonHoverInvite 1.05s ease-in-out infinite;
-  }
-}
-
-@keyframes openButtonHoverInvite {
-  0%,
-  100% {
-    transform: scale(1.06) translateX(0);
-    filter: brightness(1.14) drop-shadow(0 0 14px rgba(255, 255, 255, 0.38));
-  }
-  50% {
-    transform: scale(1.1) translateX(5px);
-    filter: brightness(1.24) drop-shadow(0 0 28px rgba(255, 255, 255, 0.55));
+    animation: none;
+    transform: none;
+    filter: brightness(1.14) drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
   }
 }
 
@@ -120,29 +105,19 @@ body.page-home {
   outline: 2px solid rgba(255, 255, 255, 0.95);
   outline-offset: 6px;
   border-radius: 4px;
-}
-
-@keyframes openButtonInvite {
-  0%,
-  100% {
-    transform: scale(1);
-    filter: brightness(1.02);
-  }
-  50% {
-    transform: scale(1.055);
-    filter: brightness(1.12) drop-shadow(0 0 14px rgba(255, 255, 255, 0.25));
-  }
+  filter: brightness(1.1) drop-shadow(0 0 14px rgba(255, 255, 255, 0.4));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .open-button {
     animation: none;
+    transition: none;
   }
 
   .open-button:hover {
     animation: none;
     transform: none;
-    filter: brightness(1.1);
+    filter: brightness(1.1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
   }
 }
 

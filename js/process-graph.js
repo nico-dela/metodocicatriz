@@ -43,6 +43,8 @@
     motionClock: 0,
     selectedCategories: {},
     reducedMotion: false,
+    resizeAdapt: 0,
+    layoutBase: null,
   };
 
   var els = {
@@ -57,6 +59,68 @@
 
   function getLanguage() {
     return localStorage.getItem("language") || "es";
+  }
+
+  function viewportPad(node) {
+    var r = (node && node.r ? node.r : 22) * ((node && node.scale) || 1);
+    return Math.max(28, r + 14);
+  }
+
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+
+  /** Keep node + its orbit fully inside the visible stage. */
+  function containNodeInViewport(node, hard) {
+    if (!node || state.width < 8 || state.height < 8) return;
+    var pad = viewportPad(node);
+    var minX = pad;
+    var maxX = state.width - pad;
+    var minY = pad;
+    var maxY = state.height - pad;
+    if (maxX <= minX || maxY <= minY) return;
+
+    // Limit orbit radius so the ellipse can't leave the screen
+    var maxR = Math.min(maxX - minX, maxY - minY) * 0.42;
+    if (node.orbitR > maxR) node.orbitR = maxR;
+
+    var aspect = node.orbitAspect || 0.85;
+    var orbitPadX = node.orbitR + pad * 0.35;
+    var orbitPadY = node.orbitR * aspect + pad * 0.35;
+    node.orbitCx = clamp(
+      node.orbitCx,
+      orbitPadX,
+      state.width - orbitPadX,
+    );
+    node.orbitCy = clamp(
+      node.orbitCy,
+      orbitPadY,
+      state.height - orbitPadY,
+    );
+
+    if (hard) {
+      if (node.x < minX) {
+        node.x = minX;
+        if (node.vx < 0) node.vx = 0;
+      } else if (node.x > maxX) {
+        node.x = maxX;
+        if (node.vx > 0) node.vx = 0;
+      }
+      if (node.y < minY) {
+        node.y = minY;
+        if (node.vy < 0) node.vy = 0;
+      } else if (node.y > maxY) {
+        node.y = maxY;
+        if (node.vy > 0) node.vy = 0;
+      }
+    } else {
+      // Soft wall: strong pull back before hard edge
+      var wall = 0.14;
+      if (node.x < minX) node.fx += (minX - node.x) * wall;
+      if (node.x > maxX) node.fx -= (node.x - maxX) * wall;
+      if (node.y < minY) node.fy += (minY - node.y) * wall;
+      if (node.y > maxY) node.fy -= (node.y - maxY) * wall;
+    }
   }
 
   function categoryColor(id) {
@@ -339,24 +403,114 @@
     els.ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
   }
 
+  function captureLayoutBase() {
+    state.layoutBase = {
+      w: state.width,
+      h: state.height,
+      hubs: (state.hubs || []).map(function (h) {
+        return { x: h.x, y: h.y };
+      }),
+      nodes: state.nodes.map(function (n) {
+        return {
+          x: n.x,
+          y: n.y,
+          orbitCx: n.orbitCx,
+          orbitCy: n.orbitCy,
+          orbitR: n.orbitR,
+          epicycleR: n.epicycleR,
+        };
+      }),
+    };
+  }
+
+  function setOrganicResizeTargets() {
+    var base = state.layoutBase;
+    if (!base || !base.w || !base.h || !state.nodes.length) return;
+
+    var sx = state.width / base.w;
+    var sy = state.height / base.h;
+    var sr = Math.sqrt(sx * sy); // softer than min(sx,sy) — less squish jump
+    // Ease scale toward uniform so widescreen↔mobile feels less harsh
+    var uni = (sx + sy) * 0.5;
+    sx = sx * 0.65 + uni * 0.35;
+    sy = sy * 0.65 + uni * 0.35;
+    sr = sr * 0.7 + uni * 0.3;
+
+    var hubTargets = orbitHubs(state.width, state.height);
+    state.hubResizeTargets = hubTargets;
+
+    state.nodes.forEach(function (n, i) {
+      var snap = base.nodes[i];
+      if (!snap) return;
+      n.resizeTargetX = snap.x * sx;
+      n.resizeTargetY = snap.y * sy;
+      n.resizeTargetCx = snap.orbitCx * sx;
+      n.resizeTargetCy = snap.orbitCy * sy;
+      n.resizeTargetR = Math.max(40, snap.orbitR * sr);
+      n.resizeTargetEpi = Math.max(2, (snap.epicycleR || n.epicycleR) * sr);
+      // Keep planned targets inside the new viewport
+      var pad = viewportPad(n);
+      n.resizeTargetX = clamp(n.resizeTargetX, pad, state.width - pad);
+      n.resizeTargetY = clamp(n.resizeTargetY, pad, state.height - pad);
+      var maxR = Math.min(state.width, state.height) * 0.38;
+      n.resizeTargetR = Math.min(n.resizeTargetR, maxR);
+    });
+
+    state.resizeAdapt = 1;
+  }
+
   function onResize() {
     if (!state.open) return;
-    var prevW = state.width;
-    var prevH = state.height;
     resizeCanvas();
-    if (prevW > 0 && prevH > 0) {
-      var sx = state.width / prevW;
-      var sy = state.height / prevH;
-      state.hubs = orbitHubs(state.width, state.height);
-      state.nodes.forEach(function (n) {
-        n.x *= sx;
-        n.y *= sy;
-        n.orbitR *= Math.min(sx, sy);
-        n.epicycleR *= Math.min(sx, sy);
-        var hub = state.hubs[n.hubIndex] || state.hubs[0];
-        n.orbitCx = hub.x;
-        n.orbitCy = hub.y;
+    // Retarget continuously from the last settled layout (no hard snaps)
+    if (!state.layoutBase) captureLayoutBase();
+    setOrganicResizeTargets();
+  }
+
+  function easeResizeLayout() {
+    if (!state.resizeAdapt || state.resizeAdapt <= 0) return;
+
+    var k = state.reducedMotion ? 0.35 : 0.055 + (1 - state.resizeAdapt) * 0.04;
+    var maxErr = 0;
+
+    if (state.hubResizeTargets && state.hubs) {
+      state.hubs.forEach(function (hub, i) {
+        var t = state.hubResizeTargets[i];
+        if (!t) return;
+        hub.x += (t.x - hub.x) * k;
+        hub.y += (t.y - hub.y) * k;
       });
+    }
+
+    state.nodes.forEach(function (n) {
+      if (n.pinned) return;
+      if (n.resizeTargetX == null) return;
+
+      n.orbitCx += (n.resizeTargetCx - n.orbitCx) * k;
+      n.orbitCy += (n.resizeTargetCy - n.orbitCy) * k;
+      n.orbitR += (n.resizeTargetR - n.orbitR) * k;
+      if (n.resizeTargetEpi != null) {
+        n.epicycleR += (n.resizeTargetEpi - n.epicycleR) * k;
+      }
+      n.x += (n.resizeTargetX - n.x) * k;
+      n.y += (n.resizeTargetY - n.y) * k;
+      n.vx *= 0.85;
+      n.vy *= 0.85;
+      containNodeInViewport(n, true);
+
+      maxErr = Math.max(
+        maxErr,
+        Math.abs(n.resizeTargetX - n.x),
+        Math.abs(n.resizeTargetY - n.y),
+        Math.abs(n.resizeTargetCx - n.orbitCx),
+        Math.abs(n.resizeTargetR - n.orbitR),
+      );
+    });
+
+    state.resizeAdapt *= state.reducedMotion ? 0.7 : 0.965;
+    if (maxErr < 1.2 || state.resizeAdapt < 0.04) {
+      state.resizeAdapt = 0;
+      captureLayoutBase();
     }
   }
 
@@ -558,6 +712,7 @@
           node.orbitCy += dy * follow;
           node.vx = 0;
           node.vy = 0;
+          containNodeInViewport(node, true);
         }
         if (e.cancelable) e.preventDefault();
         return;
@@ -591,9 +746,12 @@
           var pos = pointerPos(e);
           node.x = pos.x - (node.dragGrabX || 0);
           node.y = pos.y - (node.dragGrabY || 0);
+          containNodeInViewport(node, true);
         }
         node.pinned = false;
         reanchorOrbit(node, throwVx, throwVy);
+        containNodeInViewport(node, true);
+        captureLayoutBase();
       }
 
       state.dragging = false;
@@ -678,6 +836,12 @@
     var i;
     var j;
     var dt = 1 / 60;
+
+    easeResizeLayout();
+    // While easing a resize, keep orbital pull soft so motion stays organic
+    if (state.resizeAdapt > 0) {
+      pull *= 0.25 + (1 - state.resizeAdapt) * 0.75;
+    }
 
     for (i = 0; i < n; i++) {
       nodes[i].fx = 0;
@@ -772,6 +936,7 @@
             b.y -= (dy / dist) * sep;
             b.orbitCx -= (dx / dist) * sep;
             b.orbitCy -= (dy / dist) * sep;
+            containNodeInViewport(b, true);
           }
         } else if (b.pinned && !a.pinned) {
           a.fx += fx;
@@ -785,6 +950,7 @@
             a.y += (dy / dist) * sepA;
             a.orbitCx += (dx / dist) * sepA;
             a.orbitCy += (dy / dist) * sepA;
+            containNodeInViewport(a, true);
           }
         } else {
           a.fx += fx;
@@ -834,16 +1000,11 @@
       if (node.pinned) {
         var pinnedScale = appearEase * 1.08;
         node.scale += (pinnedScale - node.scale) * 0.05;
+        containNodeInViewport(node, true);
         continue;
       }
 
-      var margin = 40;
-      if (node.x < margin) node.fx += (margin - node.x) * 0.02;
-      if (node.x > state.width - margin)
-        node.fx -= (node.x - (state.width - margin)) * 0.02;
-      if (node.y < margin) node.fy += (margin - node.y) * 0.02;
-      if (node.y > state.height - margin)
-        node.fy -= (node.y - (state.height - margin)) * 0.02;
+      containNodeInViewport(node, false);
 
       var flightAmt = node.freeFlight || 0;
       if (node.bump) {
@@ -867,6 +1028,7 @@
       }
       node.x += node.vx;
       node.y += node.vy;
+      containNodeInViewport(node, true);
 
       var targetScale = appearEase;
       if (state.hoverIndex === i) targetScale *= 1.08;
@@ -1109,6 +1271,8 @@
     buildGraph(list);
     buildLabels();
     updateI18n();
+    captureLayoutBase();
+    state.resizeAdapt = 0;
 
     requestAnimationFrame(function () {
       els.overlay.classList.add("is-visible");
