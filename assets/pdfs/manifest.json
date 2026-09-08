@@ -3,42 +3,50 @@
     {
       "file": "Ensayo para un archivo colectivo.pdf",
       "title": "Ensayo para un archivo colectivo (Curaduría)",
-      "title_en": "Ensayo para un archivo colectivo (Curatorship)"
+      "title_en": "Ensayo para un archivo colectivo (Curatorship)",
+      "category": "cat1"
     },
     {
       "file": "Maizena Armaduras (2025).pdf",
       "title": "Maizena Armaduras (vestuarios)",
-      "title_en": "Maizena Armaduras (costumes)"
+      "title_en": "Maizena Armaduras (costumes)",
+      "category": "cat2"
     },
     {
       "file": "Maizena (2023-25).pdf",
       "title": "Maizena (vestuarios)",
-      "title_en": "Maizena (costumes)"
+      "title_en": "Maizena (costumes)",
+      "category": "cat2"
     },
     {
       "file": "Nubila (2025).pdf",
       "title": "Nubila (vestuarios)",
-      "title_en": "Nubila (costumes)"
+      "title_en": "Nubila (costumes)",
+      "category": "cat2"
     },
     {
       "file": "Irmanas (2023).pdf",
       "title": "Irmanas (vestuarios)",
-      "title_en": "Irmanas (costumes)"
+      "title_en": "Irmanas (costumes)",
+      "category": "cat2"
     },
     {
       "file": "Motin (2024).pdf",
       "title": "Motín (dirección artística y vestuarios)",
-      "title_en": "Motín (art direction and costumes)"
+      "title_en": "Motín (art direction and costumes)",
+      "category": "cat2"
     },
     {
       "file": "Gozerio (2025).pdf",
       "title": "Gozerio (propuesta escenográfica)",
-      "title_en": "Gozerio (scenographic proposal)"
+      "title_en": "Gozerio (scenographic proposal)",
+      "category": "cat3"
     },
     {
       "file": "Caleidoscopios (2022–2025).pdf",
       "title": "Caleidoscopios (creación de objetos)",
-      "title_en": "Caleidoscopios (object creation)"
+      "title_en": "Caleidoscopios (object creation)",
+      "category": "cat3"
     }
   ]
 }
