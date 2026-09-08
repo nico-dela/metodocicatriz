@@ -1,33 +1,27 @@
-# Preview en Netlify — Método Cicatriz
+# Preview Netlify — Método Cicatriz (mapa de procesos PoC)
 
-La demo para el cliente se publica desde la rama **`preview`**.  
-Cada `push` a esa rama actualiza el sitio en Netlify (una vez conectado el repo).
+Carpeta lista para desplegar la versión de prueba con el **mapa-grafo de procesos**.
 
-## Setup (una sola vez)
+## Opción A — Drag & drop (más simple)
 
-1. Entrá a [Netlify](https://app.netlify.com) → **Add new site** → **Import an existing project**
-2. Conectá el repo `nico-dela/metodocicatriz`
-3. Configuración:
-   - **Branch to deploy:** `preview`
-   - **Build command:** *(vacío)*
-   - **Publish directory:** `.`
-4. Deploy. Netlify te da una URL tipo `https://….netlify.app`
+1. Entrá a https://app.netlify.com/drop  
+2. Arrastrá la carpeta `preview-netlify` completa  
+3. Netlify te da una URL tipo `https://random-name.netlify.app`  
+4. Mandale esa URL a tu cliente  
 
-Podés fijar un subdomain legible en **Site settings → Domain management**  
-(ej. `metodocicatriz-preview.netlify.app`).
-
-## Flujo de trabajo
+## Opción B — Netlify CLI
 
 ```bash
-# Trabajar en main o en una feature…
-git checkout preview
-git merge main          # o cherry-pick / rebase
-git push origin preview # → Netlify redeploy automático
+npx netlify deploy --dir=preview-netlify
 ```
 
-O pushear commits directo a `preview` mientras iterás con el cliente.
+Para publicar en el sitio “production” del draft site:
 
-## Nota
+```bash
+npx netlify deploy --dir=preview-netlify --prod
+```
 
-La carpeta local `preview-netlify/` ya no es el camino recomendado (quedaba desactualizada).  
-Usá la rama `preview` + Git ↔ Netlify.
+## Contenido
+
+Incluye home, bio, PDFs, y el PoC del mapa (`Mapa de procesos` + botón ☰ del visor).  
+No incluye el `CNAME` de producción (`cicatriz.ar`) para no chocar con el dominio actual.
