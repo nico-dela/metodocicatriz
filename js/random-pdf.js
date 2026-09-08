@@ -57,7 +57,6 @@
             title: formatPdfDisplayName(entry),
             titleEs: formatPdfDisplayName(entry),
             titleEn: formatPdfDisplayName(entry),
-            category: "cat1",
           };
         }
         if (entry && typeof entry.file === "string") {
@@ -67,7 +66,6 @@
             title: entry.title || fallbackTitle,
             titleEs: entry.title_es || entry.titleEs || entry.title || fallbackTitle,
             titleEn: entry.title_en || entry.titleEn || entry.title || fallbackTitle,
-            category: entry.category || "cat1",
           };
         }
         return null;
@@ -135,7 +133,7 @@
         <header class="pdf-modal-toolbar">
           <p id="pdf-modal-title" class="pdf-modal-title" aria-live="polite"></p>
           <div class="pdf-modal-toolbar-actions">
-            <button type="button" class="pdf-selector-toggle" title="Mapa de procesos" aria-label="Mapa de procesos">
+            <button type="button" class="pdf-selector-toggle" title="Ver todos los procesos" aria-label="Ver todos los procesos">
               ☰
             </button>
             <button type="button" class="pdf-modal-close" aria-label="Cerrar">&times;</button>
@@ -265,35 +263,19 @@
     const selectorToggle = document.querySelector(".pdf-selector-toggle");
     if (selectorToggle) {
       const toggleTitle =
-        currentLanguage === "es" ? "Mapa de procesos" : "Process map";
+        currentLanguage === "es"
+          ? "Ver todos los procesos"
+          : "View all processes";
       selectorToggle.title = toggleTitle;
-      selectorToggle.setAttribute("aria-label", toggleTitle);
     }
   }
 
   // *** FUNCIONES PARA EL SELECTOR DE PDFs ***
   function togglePdfSelector() {
-    openProcessMapFromToggle();
-  }
-
-  /** ☰ → mapa de procesos (PoC), en lugar del listado archivo. */
-  function openProcessMapFromToggle() {
-    closePdfSelector();
-
-    const graphAlreadyOpen =
-      window.ProcessGraph &&
-      typeof window.ProcessGraph.isOpen === "function" &&
-      window.ProcessGraph.isOpen();
-
-    closeModal();
-
-    if (graphAlreadyOpen) {
-      document.body.style.overflow = "hidden";
-      return;
-    }
-
-    if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
-      window.ProcessGraph.open(pdfFiles.slice());
+    if (isSelectorVisible) {
+      closePdfSelector();
+    } else {
+      openPdfSelector();
     }
   }
 
@@ -546,11 +528,7 @@
     closePdfSelector();
 
     modal.style.display = "none";
-    var graphOpen =
-      window.ProcessGraph &&
-      window.ProcessGraph.isOpen &&
-      window.ProcessGraph.isOpen();
-    document.body.style.overflow = graphOpen ? "hidden" : "";
+    document.body.style.overflow = "";
     isOpen = false;
 
     clearPdfModalTitle();
@@ -654,11 +632,5 @@
     cancelCurrentLoad: cancelCurrentLoad,
     openSelector: openPdfSelector,
     closeSelector: closePdfSelector,
-    getFiles: function () {
-      return pdfFiles.slice();
-    },
-    isOpen: function () {
-      return isOpen;
-    },
   };
 })();
