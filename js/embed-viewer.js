@@ -17,6 +17,8 @@
     "www.academia.edu",
     "revistas.unc.edu.ar",
     "ojs.ides.org.ar",
+    "canva.com",
+    "www.canva.com",
     "facebook.com",
     "www.facebook.com",
     "instagram.com",
