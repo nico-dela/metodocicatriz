@@ -57,20 +57,27 @@
             title: formatPdfDisplayName(entry),
             titleEs: formatPdfDisplayName(entry),
             titleEn: formatPdfDisplayName(entry),
-            category: "cat1",
+            category: "cuerpo",
+            tags: [],
           };
         }
-        if (entry && typeof entry.file === "string") {
-          const fallbackTitle = formatPdfDisplayName(entry.file);
-          return {
-            file: entry.file,
-            title: entry.title || fallbackTitle,
-            titleEs: entry.title_es || entry.titleEs || entry.title || fallbackTitle,
-            titleEn: entry.title_en || entry.titleEn || entry.title || fallbackTitle,
-            category: entry.category || "cat1",
-          };
-        }
-        return null;
+        if (!entry || typeof entry !== "object") return null;
+        const file =
+          typeof entry.file === "string" && entry.file.trim()
+            ? entry.file.trim()
+            : "";
+        if (!file || !/\.pdf$/i.test(file)) return null;
+        const fallbackTitle = formatPdfDisplayName(file);
+        return {
+          file: file,
+          title: entry.title || fallbackTitle,
+          titleEs:
+            entry.title_es || entry.titleEs || entry.title || fallbackTitle,
+          titleEn:
+            entry.title_en || entry.titleEn || entry.title || fallbackTitle,
+          category: entry.category || "cuerpo",
+          tags: Array.isArray(entry.tags) ? entry.tags.slice() : [],
+        };
       })
       .filter(Boolean);
   }
@@ -81,7 +88,10 @@
       const response = await fetch(paths.manifest);
       if (response.ok) {
         const data = await response.json();
-        pdfFiles = normalizePdfList(data.pdfs || []);
+        const raw = Array.isArray(data.processes)
+          ? data.processes
+          : data.pdfs || [];
+        pdfFiles = normalizePdfList(raw);
       }
     } catch (error) {
       console.warn("No se pudo cargar el manifest de PDFs");
@@ -293,7 +303,7 @@
     }
 
     if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
-      window.ProcessGraph.open(pdfFiles.slice());
+      window.ProcessGraph.open();
     }
   }
 
