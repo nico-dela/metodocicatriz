@@ -120,10 +120,8 @@
     for (const box of merged) {
       const a = document.createElement("a");
       a.href = box.href;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
       a.className = "pdf-link-annotation";
-      a.setAttribute("aria-label", "Abrir enlace en nueva pestaña");
+      a.setAttribute("aria-label", "Abrir enlace");
       a.style.cssText = [
         "position:absolute",
         "left:" + box.left + "%",
@@ -133,6 +131,17 @@
         "min-height:32px",
         "box-sizing:border-box",
       ].join(";");
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (
+          global.EmbedViewer &&
+          typeof global.EmbedViewer.open === "function"
+        ) {
+          global.EmbedViewer.open(box.href, box.href);
+        } else {
+          global.open(box.href, "_blank", "noopener,noreferrer");
+        }
+      });
       linkLayer.appendChild(a);
     }
   }

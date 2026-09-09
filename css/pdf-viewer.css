@@ -560,3 +560,177 @@ body.pdf-viewer-page {
     font-size: 13px;
   }
 }
+
+/* ==========================================================================
+   Embed viewer (in-page iframe for external URLs)
+   ========================================================================== */
+
+#embed-modal-overlay,
+.embed-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10010;
+  display: none;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.95);
+  overflow: hidden;
+}
+
+.embed-modal-toolbar {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.embed-modal-title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-family: "DINNextLTPro", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.96);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.embed-modal-toolbar-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.embed-modal-close,
+.embed-modal-external {
+  position: static;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  color: #222;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.embed-modal-external {
+  font-size: 20px;
+  padding: 0;
+}
+
+.embed-modal-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.embed-modal-close:hover,
+.embed-modal-external:hover {
+  background: #fff;
+  color: #000;
+  transform: scale(1.06);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.2);
+}
+
+.embed-modal-close:focus-visible,
+.embed-modal-external:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.embed-modal-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  background: #111;
+}
+
+.embed-modal-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #111;
+}
+
+.embed-modal-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  background: rgba(12, 12, 12, 0.96);
+  text-align: center;
+}
+
+.embed-modal-fallback[hidden] {
+  display: none !important;
+}
+
+.embed-modal-fallback-text {
+  margin: 0;
+  max-width: 36ch;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  line-height: 1.45;
+  color: rgba(242, 240, 235, 0.88);
+}
+
+.embed-modal-fallback-btn {
+  appearance: none;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-family: "DINNextLTPro", sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #111;
+  background: #fff;
+}
+
+.embed-modal-fallback-btn:hover {
+  background: #f2f0eb;
+}
+
+@media (max-width: 768px) {
+  .embed-modal-close,
+  .embed-modal-external {
+    width: 44px;
+    height: 44px;
+  }
+}
