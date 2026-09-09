@@ -1390,6 +1390,13 @@
       );
       var appearEase = 1 - Math.pow(1 - nodeAppear, 3.2);
 
+      // Category filter fades must run even when motion is frozen (mobile)
+      var wantVisible = isNodeVisible(node) ? 1 : 0;
+      var vis = node.visibility == null ? 1 : node.visibility;
+      node.visibility = vis + (wantVisible - vis) * 0.14;
+      if (node.visibility < 0.01) node.visibility = 0;
+      if (node.visibility > 0.99) node.visibility = 1;
+
       if (node.pinned) {
         var pinnedScale = appearEase * 1.08;
         node.scale += (pinnedScale - node.scale) * 0.05;
@@ -1436,12 +1443,6 @@
       var targetScale = appearEase;
       if (state.hoverIndex === i) targetScale *= 1.08;
       node.scale += (targetScale - node.scale) * 0.035;
-
-      var wantVisible = isNodeVisible(node) ? 1 : 0;
-      var vis = node.visibility == null ? 1 : node.visibility;
-      node.visibility = vis + (wantVisible - vis) * 0.14;
-      if (node.visibility < 0.01) node.visibility = 0;
-      if (node.visibility > 0.99) node.visibility = 1;
     }
   }
 
