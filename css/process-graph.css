@@ -30,7 +30,7 @@
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
   padding: 18px 22px;
@@ -41,6 +41,10 @@
   pointer-events: auto;
 }
 
+.process-graph-heading {
+  max-width: min(640px, calc(100% - 64px));
+}
+
 .process-graph-title {
   margin: 0;
   font-family: "C_tesis", Georgia, serif;
@@ -48,6 +52,53 @@
   font-weight: normal;
   letter-spacing: 0.02em;
   color: #f2f0eb;
+}
+
+.process-graph-desc {
+  appearance: none;
+  display: block;
+  margin: 8px 0 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: 52ch;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+  font-weight: normal;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  text-align: left;
+  color: rgba(242, 240, 235, 0.72);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.process-graph-desc:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.85);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.process-graph-heading.is-desc-expanded {
+  z-index: 6;
+  max-width: min(92vw, 440px);
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(18, 18, 18, 0.88);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.process-graph-heading.is-desc-expanded .process-graph-desc,
+.process-graph-desc.is-expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+  overflow: visible;
+  max-width: none;
+  color: rgba(242, 240, 235, 0.92);
 }
 
 .process-graph-close {
@@ -110,21 +161,22 @@
 .process-graph-label {
   position: absolute;
   transform: translate(-50%, 0);
-  max-width: min(180px, 42vw);
+  max-width: min(160px, 38vw);
   padding: 2px 6px;
-  margin-top: 10px;
-  font-size: clamp(0.7rem, 1.6vw, 0.85rem);
-  line-height: 1.25;
+  margin-top: 0;
+  font-size: clamp(0.65rem, 1.45vw, 0.8rem);
+  line-height: 1.2;
   text-align: center;
   color: rgba(242, 240, 235, 0.92);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 0, 0, 0.45);
   opacity: 0;
-  transition: opacity 0.7s ease;
+  /* Opacity is driven every frame by JS — CSS transitions cause flicker */
+  transition: none;
   pointer-events: none;
-}
-
-.process-graph-label.is-ready {
-  opacity: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .process-graph-label.is-active {
@@ -141,7 +193,8 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px 12px;
-  pointer-events: auto;
+  /* Let clicks reach nodes in empty padding; only buttons capture input */
+  pointer-events: none;
 }
 
 .process-graph-legend-item {
@@ -161,6 +214,7 @@
   text-align: left;
   border-radius: 4px;
   transition: opacity 0.25s ease, color 0.25s ease, background 0.25s ease;
+  pointer-events: auto;
 }
 
 .process-graph-legend-item:hover {
@@ -253,10 +307,52 @@
     padding: 14px 14px 8px;
   }
 
+  .process-graph-heading {
+    max-width: calc(100% - 52px);
+    padding: 8px 10px 10px;
+    border-radius: 8px;
+    background: rgba(20, 20, 20, 0.42);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .process-graph-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .process-graph-heading.is-desc-expanded {
+    max-width: min(92vw, 420px);
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(18, 18, 18, 0.88);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  .process-graph-heading.is-desc-expanded .process-graph-desc {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  .process-graph-label {
+    max-width: min(112px, 36vw);
+    font-size: clamp(0.52rem, 2.4vw, 0.66rem);
+    line-height: 1.15;
+  }
+
   .process-graph-legend {
     left: 12px;
     bottom: 12px;
     padding: 8px 10px;
+    max-height: 42vh;
+    overflow-y: auto;
   }
 
   .process-graph-hint {
@@ -265,6 +361,114 @@
 
   .process-map-entry {
     font-size: 0.78rem;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 720px) {
+  /* Full-bleed canvas; heading floats over empty space without eating stage height */
+  .process-graph-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    padding: 6px 10px 6px 12px;
+    align-items: flex-start;
+  }
+
+  .process-graph-heading {
+    max-width: min(40vw, 320px);
+    padding: 4px 8px 6px;
+    border-radius: 8px;
+    background: rgba(20, 20, 20, 0.42);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .process-graph-title {
+    font-size: clamp(0.95rem, 2.8vh, 1.25rem);
+  }
+
+  .process-graph-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 40ch;
+    margin-top: 4px;
+    font-size: clamp(0.55rem, 2.2vh, 0.7rem);
+    line-height: 1.3;
+    cursor: pointer;
+  }
+
+  .process-graph-heading.is-desc-expanded {
+    max-width: min(70vw, 420px);
+    padding: 8px 10px;
+  }
+
+  .process-graph-heading.is-desc-expanded .process-graph-desc {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    max-width: none;
+    font-size: clamp(0.62rem, 2.4vh, 0.78rem);
+    line-height: 1.4;
+  }
+
+  .process-graph-close {
+    width: 40px;
+    height: 40px;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+
+  .process-graph-stage {
+    position: absolute;
+    inset: 0;
+    flex: none;
+    width: 100%;
+    height: 100%;
+  }
+
+  .process-graph-labels {
+    overflow: visible;
+  }
+
+  .process-graph-legend {
+    left: 8px;
+    bottom: 8px;
+    z-index: 4;
+    padding: 6px 8px;
+    gap: 3px;
+    max-height: 62vh;
+    font-size: 0.68rem;
+    background: rgba(20, 20, 20, 0.4);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+  }
+
+  .process-graph-legend-item {
+    gap: 6px;
+  }
+
+  .process-graph-hint {
+    display: none;
+  }
+
+  .process-graph-label {
+    max-width: min(100px, 22vw);
+    font-size: clamp(0.48rem, 2vh, 0.62rem);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .process-graph-heading {
+    max-width: min(38vw, 280px);
+  }
+
+  .process-graph-desc {
+    -webkit-line-clamp: 2;
   }
 }
 
