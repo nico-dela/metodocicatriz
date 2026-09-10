@@ -74,6 +74,7 @@
     resizeAdapt: 0,
     layoutBase: null,
     layoutMode: null,
+    layoutSeed: 1,
   };
 
   var els = {
@@ -125,14 +126,34 @@
   }
 
   function viewportPad(node) {
-    var r = (node && node.r ? node.r : 22) * ((node && node.scale) || 1);
+    // Use full radius (ignore appear scale) so margins stay stable while nodes grow in
+    var r = node && node.r ? node.r : 22;
     var short = state.height < 560 && state.width > state.height;
-    // Extra room for labels above/below the node
-    return Math.max(short ? 26 : 40, r + (short ? 18 : 28));
+    // Labels are centered (max ~160px wide) and sit above/below the node (~3 lines)
+    var labelHalf = short ? 68 : 84;
+    var labelStack = short ? 40 : 56;
+    return Math.max(
+      short ? 58 : 78,
+      r + (short ? 22 : 32),
+      labelHalf * 0.55 + r * 0.35,
+      labelStack + r * 0.25,
+    );
   }
 
   function clamp(val, min, max) {
     return Math.max(min, Math.min(max, val));
+  }
+
+  /** Seeded PRNG (Mulberry32) — same seed yields the same layout for a session. */
+  function makeRng(seed) {
+    var s = seed >>> 0;
+    if (!s) s = 1;
+    return function () {
+      s = (s + 0x6d2b79f5) | 0;
+      var t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   }
 
   /** Top-left pocket reserved for title + map description in landscape. */
@@ -140,10 +161,20 @@
     if (!(state.width > state.height && state.height < 560)) {
       return null;
     }
-    return {
-      w: Math.min(state.width * 0.42, 340),
-      h: Math.min(state.height * 0.38, 108),
-    };
+    var w = Math.min(state.width * 0.42, 340);
+    var h = Math.min(state.height * 0.38, 108);
+    if (els.heading && els.overlay) {
+      var stage = els.overlay.querySelector(".process-graph-stage");
+      if (stage) {
+        var hr = els.heading.getBoundingClientRect();
+        var sr = stage.getBoundingClientRect();
+        if (hr.width > 0 && hr.height > 0) {
+          w = Math.max(w, hr.right - sr.left + 12);
+          h = Math.max(h, hr.bottom - sr.top + 12);
+        }
+      }
+    }
+    return { w: w, h: h };
   }
 
   function pushOutOfHeading(node, hard) {
@@ -216,38 +247,86 @@
     }
   }
 
-  /** Keep node + its orbit fully inside the visible stage. */
-  function containNodeInViewport(node, hard) {
+  /** Teleport a point fully out of heading/legend pockets (spawn / hub clamp). */
+  function snapPointOutOfReserves(x, y, margin) {
+    var m = margin == null ? 10 : margin;
+    var heading = headingReserve();
+    if (heading && x < heading.w && y < heading.h) {
+      var outX = heading.w - x;
+      var outY = heading.h - y;
+      if (outX <= outY) x = heading.w + m;
+      else y = heading.h + m;
+    }
+    var legend = legendReserve();
+    if (legend && x < legend.left + legend.w && y > legend.top) {
+      var lx = legend.left + legend.w - x;
+      var ly = y - legend.top;
+      if (lx * 0.85 <= ly) x = legend.left + legend.w + m;
+      else y = legend.top - m;
+    }
+    return { x: x, y: y };
+  }
+
+  /** Hard snap used when nodes are first placed so they never spawn under UI. */
+  function snapOutOfReserves(node) {
+    if (!node) return;
+    var margin = Math.max(10, (node.r || 12) * 0.55);
+    var next = snapPointOutOfReserves(node.x, node.y, margin);
+    var dx = next.x - node.x;
+    var dy = next.y - node.y;
+    if (dx || dy) {
+      node.x = next.x;
+      node.y = next.y;
+      node.orbitCx += dx;
+      node.orbitCy += dy;
+    }
+    // Snapping out of UI must not push past the stage edges
+    clampNodePosition(node, true);
+  }
+
+  function clampHubPosition(hub, w, h) {
+    if (!hub) return;
+    var pad = Math.min(w, h) * 0.14;
+    hub.x = clamp(hub.x, pad, w - pad);
+    hub.y = clamp(hub.y, pad, h - pad);
+    var cleared = snapPointOutOfReserves(hub.x, hub.y, pad * 0.35);
+    hub.x = clamp(cleared.x, pad, w - pad);
+    hub.y = clamp(cleared.y, pad, h - pad);
+  }
+
+  /** Shrink orbit so the ellipse + epicycle fits inside the stage with padding. */
+  function fitOrbitInViewport(node) {
+    if (!node || state.width < 8 || state.height < 8) return;
+    var pad = viewportPad(node);
+    var epic = node.epicycleR || 0;
+    var aspect = node.orbitAspect || 0.85;
+    var availW = Math.max(8, state.width - pad * 2);
+    var availH = Math.max(8, state.height - pad * 2);
+    var maxR = Math.min(availW / 2, availH / (2 * aspect)) - epic - pad * 0.15;
+    if (maxR < 12) maxR = 12;
+    if (node.orbitR > maxR) node.orbitR = maxR;
+
+    var orbitPadX = node.orbitR + epic + pad * 0.35;
+    var orbitPadY = node.orbitR * aspect + epic + pad * 0.35;
+    // When pads exceed half the stage, pin the orbit center to mid-screen
+    var minCx = Math.min(orbitPadX, state.width * 0.5);
+    var maxCx = Math.max(state.width - orbitPadX, state.width * 0.5);
+    var minCy = Math.min(orbitPadY, state.height * 0.5);
+    var maxCy = Math.max(state.height - orbitPadY, state.height * 0.5);
+    node.orbitCx = clamp(node.orbitCx, minCx, maxCx);
+    node.orbitCy = clamp(node.orbitCy, minCy, maxCy);
+  }
+
+  function clampNodePosition(node, hard) {
     if (!node || state.width < 8 || state.height < 8) return;
     var pad = viewportPad(node);
     var minX = pad;
     var maxX = state.width - pad;
     var minY = pad;
     var maxY = state.height - pad;
-    if (maxX <= minX || maxY <= minY) return;
-
-    // Limit orbit radius so the ellipse can't leave the screen
-    var maxR = Math.min(maxX - minX, maxY - minY) * 0.42;
-    if (node.orbitR > maxR) node.orbitR = maxR;
-
-    var aspect = node.orbitAspect || 0.85;
-    var orbitPadX = node.orbitR + pad * 0.35;
-    var orbitPadY = node.orbitR * aspect + pad * 0.35;
-    node.orbitCx = clamp(
-      node.orbitCx,
-      orbitPadX,
-      state.width - orbitPadX,
-    );
-    node.orbitCy = clamp(
-      node.orbitCy,
-      orbitPadY,
-      state.height - orbitPadY,
-    );
-
-    pushOutOfHeading(node, hard);
-    pushOutOfLegend(node, hard);
-
-    if (hard) {
+    if (maxX < minX) {
+      node.x = state.width * 0.5;
+    } else if (hard) {
       if (node.x < minX) {
         node.x = minX;
         if (node.vx < 0) node.vx = 0;
@@ -255,6 +334,14 @@
         node.x = maxX;
         if (node.vx > 0) node.vx = 0;
       }
+    } else {
+      var wall = 0.18;
+      if (node.x < minX) node.fx += (minX - node.x) * wall;
+      if (node.x > maxX) node.fx -= (node.x - maxX) * wall;
+    }
+    if (maxY < minY) {
+      node.y = state.height * 0.5;
+    } else if (hard) {
       if (node.y < minY) {
         node.y = minY;
         if (node.vy < 0) node.vy = 0;
@@ -263,13 +350,21 @@
         if (node.vy > 0) node.vy = 0;
       }
     } else {
-      // Soft wall: strong pull back before hard edge
-      var wall = 0.14;
-      if (node.x < minX) node.fx += (minX - node.x) * wall;
-      if (node.x > maxX) node.fx -= (node.x - maxX) * wall;
-      if (node.y < minY) node.fy += (minY - node.y) * wall;
-      if (node.y > maxY) node.fy -= (node.y - maxY) * wall;
+      var wallY = 0.18;
+      if (node.y < minY) node.fy += (minY - node.y) * wallY;
+      if (node.y > maxY) node.fy -= (node.y - maxY) * wallY;
     }
+  }
+
+  /** Keep node + its orbit fully inside the visible stage. */
+  function containNodeInViewport(node, hard) {
+    if (!node || state.width < 8 || state.height < 8) return;
+
+    fitOrbitInViewport(node);
+    pushOutOfHeading(node, hard);
+    pushOutOfLegend(node, hard);
+    if (hard) fitOrbitInViewport(node);
+    clampNodePosition(node, hard);
   }
 
   function categoryColor(id) {
@@ -316,7 +411,7 @@
       .trim();
   }
 
-  function orbitHubs(w, h) {
+  function baseOrbitHubs(w, h) {
     var narrow = w < 700;
     var short = h < 500;
     if (narrow && !short) {
@@ -353,6 +448,20 @@
       { x: w * 0.7, y: h * 0.7, category: "digital" },
       { x: w * 0.86, y: h * 0.48, category: "escrituras" },
     ];
+  }
+
+  /** Category hubs with per-open seeded jitter, clamped away from UI pockets. */
+  function orbitHubs(w, h) {
+    var hubs = baseOrbitHubs(w, h);
+    var rng = makeRng(state.layoutSeed != null ? state.layoutSeed : 1);
+    var jitterX = w * 0.08;
+    var jitterY = h * 0.08;
+    hubs.forEach(function (hub) {
+      hub.x += (rng() * 2 - 1) * jitterX;
+      hub.y += (rng() * 2 - 1) * jitterY;
+      clampHubPosition(hub, w, h);
+    });
+    return hubs;
   }
 
   function layoutMode(w, h) {
@@ -421,6 +530,17 @@
       hubByCat[hub.category] = idx;
     });
 
+    // Separate stream from hub jitter so phase variety is stable across reflows
+    var phaseRng = makeRng(
+      (state.layoutSeed != null ? state.layoutSeed : 1) ^ 0x85ebca6b,
+    );
+    var phaseOffByHub = hubs.map(function () {
+      return phaseRng() * Math.PI * 2;
+    });
+    var radiusScaleByHub = hubs.map(function () {
+      return 0.9 + phaseRng() * 0.16;
+    });
+
     var catCounts = {};
     files.forEach(function (entry) {
       var cat = entry.category || "cuerpo";
@@ -429,6 +549,7 @@
     var catIndex = {};
     var minSide = Math.min(state.width, state.height);
     var compact = state.width < 700 || state.height < 500;
+    var edgePad = compact ? 58 : 82;
 
     var nodes = files.map(function (entry, i) {
       var cat = entry.category || "cuerpo";
@@ -448,14 +569,27 @@
       var phase =
         (idxInRing / Math.max(countInRing, 1)) * Math.PI * 2 +
         ring * 0.45 +
-        hubIndex * 0.18;
+        hubIndex * 0.18 +
+        (phaseOffByHub[hubIndex] || 0);
       var dir = local % 2 === 0 ? 1 : -1;
       var density = Math.min(1.55, 0.9 + groupSize * 0.06);
       var orbitR =
-        minSide * (compact ? 0.12 : 0.1 + ring * 0.09) * density +
-        ring * (compact ? minSide * 0.08 : minSide * 0.09) +
-        (compact ? 6 : 10) +
-        idxInRing * (compact ? 4 : 5);
+        (minSide * (compact ? 0.12 : 0.1 + ring * 0.09) * density +
+          ring * (compact ? minSide * 0.08 : minSide * 0.09) +
+          (compact ? 6 : 10) +
+          idxInRing * (compact ? 4 : 5)) *
+        (radiusScaleByHub[hubIndex] || 1);
+      // Cap orbit so the spawn point stays inside the stage from this hub
+      var maxOrbitFromHub = Math.max(
+        24,
+        Math.min(
+          hub.x - edgePad,
+          state.width - edgePad - hub.x,
+          (hub.y - edgePad) / 0.82,
+          (state.height - edgePad - hub.y) / 0.82,
+        ),
+      );
+      if (orbitR > maxOrbitFromHub) orbitR = maxOrbitFromHub;
       var omega = dir * (0.028 + (local % 4) * 0.007);
       var birth = 0.92 + (local % 5) * 0.01;
       var startX = hub.x + Math.cos(phase) * orbitR * birth;
@@ -488,6 +622,13 @@
         visibility: 1,
         hubIndex: hubIndex,
       };
+    });
+
+    nodes.forEach(function (n) {
+      snapOutOfReserves(n);
+      containNodeInViewport(n, true);
+      // Final hard pin after snap+contain so nothing starts off-screen
+      clampNodePosition(n, true);
     });
 
     state.hubs = hubs;
@@ -719,6 +860,13 @@
       var pad = viewportPad(n);
       n.resizeTargetX = clamp(n.resizeTargetX, pad, state.width - pad);
       n.resizeTargetY = clamp(n.resizeTargetY, pad, state.height - pad);
+      var cleared = snapPointOutOfReserves(
+        n.resizeTargetX,
+        n.resizeTargetY,
+        pad * 0.45,
+      );
+      n.resizeTargetX = clamp(cleared.x, pad, state.width - pad);
+      n.resizeTargetY = clamp(cleared.y, pad, state.height - pad);
     });
 
     state.resizeAdapt = 1;
@@ -740,6 +888,7 @@
       n.visibility = isCategorySelected(n.category) ? 1 : 0.08;
       n.vx = 0;
       n.vy = 0;
+      snapOutOfReserves(n);
       containNodeInViewport(n, true);
     });
     buildLabels();
@@ -1558,6 +1707,7 @@
     var boxes = [];
     var i;
     var labelAlpha = Math.min(1, Math.max(0, (state.enterProgress - 0.35) / 0.35));
+    var edge = 10;
 
     for (i = 0; i < children.length; i++) {
       var node = state.nodes[i];
@@ -1570,7 +1720,37 @@
       if (node.labelNudge == null) node.labelNudge = 0;
       // Decay nudge toward rest so labels don't vibrate
       node.labelNudge *= 0.82;
+
+      var w = el.offsetWidth || 120;
+      var h = Math.min(el.offsetHeight || 28, 54);
+      var halfW = w * 0.5;
+
+      // Keep the full label box inside the stage (text was clipping at edges)
+      if (x - halfW < edge) x = edge + halfW;
+      if (x + halfW > state.width - edge) x = state.width - edge - halfW;
+
       var y = baseY + node.labelNudge;
+      if (below) {
+        if (y + h > state.height - edge) {
+          below = false;
+          node.labelSide = "above";
+          baseY = node.y - drawR - 6;
+          y = baseY + node.labelNudge;
+        }
+      } else if (y - h < edge) {
+        below = true;
+        node.labelSide = "below";
+        baseY = node.y + drawR + 6;
+        y = baseY + node.labelNudge;
+      }
+      if (below) {
+        if (y + h > state.height - edge) y = state.height - edge - h;
+        if (y < edge) y = edge;
+      } else {
+        if (y - h < edge) y = edge + h;
+        if (y > state.height - edge) y = state.height - edge;
+      }
+
       el.style.left = x + "px";
       el.style.top = y + "px";
       el.style.transform = below
@@ -1584,8 +1764,6 @@
       el.classList.toggle("is-filtered-out", vis < 0.15);
 
       if (vis < 0.15 || labelAlpha < 0.2) continue;
-      var w = el.offsetWidth || 120;
-      var h = Math.min(el.offsetHeight || 28, 54);
       boxes.push({
         node: node,
         el: el,
@@ -1595,6 +1773,7 @@
         h: h,
         below: below,
         baseY: baseY,
+        labelX: x,
       });
     }
 
@@ -1623,6 +1802,16 @@
       var box = boxes[i];
       box.node.labelNudge = clamp(box.node.labelNudge, -36, 36);
       var settledY = box.baseY + box.node.labelNudge;
+      if (box.below) {
+        if (settledY + box.h > state.height - edge) {
+          settledY = state.height - edge - box.h;
+        }
+        if (settledY < edge) settledY = edge;
+      } else {
+        if (settledY - box.h < edge) settledY = edge + box.h;
+        if (settledY > state.height - edge) settledY = state.height - edge;
+      }
+      box.el.style.left = box.labelX + "px";
       box.el.style.top = settledY + "px";
     }
   }
@@ -1756,6 +1945,7 @@
     }
 
     state.open = true;
+    state.layoutSeed = (Math.random() * 0x100000000) >>> 0;
     state.dragIndex = -1;
     state.dragging = false;
     state.hoverIndex = -1;
