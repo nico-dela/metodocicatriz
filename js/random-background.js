@@ -164,8 +164,25 @@ class RandomBackground {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const randomBg = new RandomBackground();
-  randomBg.init();
+  const start = () => {
+    const randomBg = new RandomBackground();
+    randomBg.init();
+  };
+
+  // Let LCP (leyenda) settle before competing for bandwidth with the full-bleed BG.
+  const schedule = () => {
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(start, { timeout: 1800 });
+    } else {
+      setTimeout(start, 400);
+    }
+  };
+
+  if (document.readyState === "complete") {
+    schedule();
+  } else {
+    window.addEventListener("load", schedule, { once: true });
+  }
 });
 
 window.RandomBackground = RandomBackground;

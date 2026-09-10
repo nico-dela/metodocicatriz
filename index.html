@@ -8,9 +8,8 @@
     />
     <meta
       name="description"
-      content="Método Cicatriz - Plataforma artística de Candela Gencarelli. Una web que no funciona como archivo exhaustivo sino como experiencia situada y contingente. Procesos que aparecen parcial y aleatoriamente, reflejando la práctica artística como investigación en proceso. Método Cicatriz - Artistic platform by Candela Gencarelli. A website that functions not as an exhaustive archive but as a situated and contingent experience. Processes appear partially and at random, reflecting artistic practice as ongoing research."
+      content="Método Cicatriz - Plataforma artística de Candela Gencarelli. Una web que no funciona como archivo exhaustivo sino como experiencia situada y contingente. Procesos que aparecen parcial y aleatoriamente, reflejando la práctica artística como investigación en proceso."
     />
-    <!-- favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link
       rel="preload"
@@ -21,15 +20,9 @@
     />
     <link
       rel="preload"
-      href="assets/fonts/DINNextLTPro-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
       href="assets/images/leyenda-home-es.webp"
       as="image"
+      type="image/webp"
       fetchpriority="high"
     />
     <link rel="stylesheet" href="css/base.css" />
@@ -86,25 +79,23 @@
             aria-label="Abrir proceso"
           >
             <picture>
-              <!-- Versión mobile -->
               <source
-                media="(max-width: 768px)"
-                srcset="assets/images/boton-abrir-mobile-es.webp"
-                data-src-es="assets/images/boton-abrir-mobile-es.webp"
-                data-src-en="assets/images/boton-abrir-mobile-en.webp"
+                media="(min-width: 769px)"
+                srcset="assets/images/boton-abrir-es.webp"
+                data-src-es="assets/images/boton-abrir-es.webp"
+                data-src-en="assets/images/boton-abrir-en.webp"
               />
-              <!-- Versión desktop (actual) -->
               <img
                 id="boton-abrir"
                 class="boton-image lang-es"
-                src="assets/images/boton-abrir-es.webp"
-                data-src-es="assets/images/boton-abrir-es.webp"
-                data-src-en="assets/images/boton-abrir-en.webp"
+                src="assets/images/boton-abrir-mobile-es.webp"
+                data-src-es="assets/images/boton-abrir-mobile-es.webp"
+                data-src-en="assets/images/boton-abrir-mobile-en.webp"
                 alt="Abrir proceso"
                 data-alt-es="Abrir proceso"
                 data-alt-en="Open a process"
-                width="1524"
-                height="289"
+                width="315"
+                height="60"
                 decoding="async"
                 loading="lazy"
               />
@@ -153,36 +144,94 @@
       </div>
     </main>
 
-    <script defer src="js/translations.js"></script>
     <script defer src="js/random-background.js"></script>
-    <script defer src="js/pdf-link-layer.js"></script>
-    <script defer src="js/random-pdf.js"></script>
-    <script defer src="js/embed-viewer.js"></script>
     <script defer src="main.js"></script>
     <script>
       (function () {
-        var loaded = false;
+        function loadScript(src) {
+          return new Promise(function (resolve, reject) {
+            if (document.querySelector('script[src="' + src + '"]')) {
+              resolve();
+              return;
+            }
+            var s = document.createElement("script");
+            s.src = src;
+            s.async = true;
+            s.onload = function () {
+              resolve();
+            };
+            s.onerror = reject;
+            document.body.appendChild(s);
+          });
+        }
+
+        var pdfStackPromise = null;
+        function ensurePdfStack() {
+          if (window.PdfModal) return Promise.resolve();
+          if (pdfStackPromise) return pdfStackPromise;
+          pdfStackPromise = loadScript("js/pdf-link-layer.js")
+            .then(function () {
+              return loadScript("js/embed-viewer.js");
+            })
+            .then(function () {
+              return loadScript("js/random-pdf.js");
+            });
+          return pdfStackPromise;
+        }
+
+        var mapLoaded = false;
         function loadMap() {
-          if (loaded) return;
-          loaded = true;
-          var link = document.createElement("link");
-          link.id = "process-graph-css";
-          link.rel = "stylesheet";
-          link.href = "css/process-graph.css";
-          document.head.appendChild(link);
+          if (mapLoaded) return;
+          mapLoaded = true;
+          if (!document.getElementById("process-graph-css")) {
+            var link = document.createElement("link");
+            link.id = "process-graph-css";
+            link.rel = "stylesheet";
+            link.href = "css/process-graph.css";
+            document.head.appendChild(link);
+          }
           var script = document.createElement("script");
           script.src = "js/process-graph.js";
           script.onload = function () {
-            if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
+            if (
+              window.ProcessGraph &&
+              typeof window.ProcessGraph.open === "function"
+            ) {
               window.ProcessGraph.open();
             }
           };
           document.body.appendChild(script);
         }
+
         function bind() {
-          var btn = document.getElementById("process-map-btn");
-          if (!btn) return;
-          btn.addEventListener(
+          var pdfBtn = document.getElementById("random-pdf-btn");
+          if (pdfBtn) {
+            var warm = function () {
+              ensurePdfStack().catch(function () {});
+            };
+            pdfBtn.addEventListener("pointerenter", warm, { once: true });
+            pdfBtn.addEventListener("focus", warm, { once: true });
+            pdfBtn.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              ensurePdfStack()
+                .then(function () {
+                  if (
+                    window.PdfModal &&
+                    typeof window.PdfModal.openRandom === "function"
+                  ) {
+                    window.PdfModal.openRandom();
+                  }
+                })
+                .catch(function (err) {
+                  console.error(err);
+                });
+            });
+          }
+
+          var mapBtn = document.getElementById("process-map-btn");
+          if (!mapBtn) return;
+          mapBtn.addEventListener(
             "pointerenter",
             function () {
               if (document.getElementById("process-graph-css")) return;
@@ -194,15 +243,19 @@
             },
             { once: true },
           );
-          btn.addEventListener("click", function (e) {
+          mapBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
+            if (
+              window.ProcessGraph &&
+              typeof window.ProcessGraph.open === "function"
+            ) {
               window.ProcessGraph.open();
               return;
             }
             loadMap();
           });
         }
+
         if (document.readyState === "loading") {
           document.addEventListener("DOMContentLoaded", bind);
         } else {

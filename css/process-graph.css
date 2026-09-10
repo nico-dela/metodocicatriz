@@ -2,6 +2,16 @@
    Process Graph PoC — flowing category map overlay
    ========================================================================== */
 
+@font-face {
+  font-family: "DINNextLTPro";
+  src:
+    url("../assets/fonts/DINNextLTPro-Regular.woff2") format("woff2"),
+    url("../assets/fonts/DINNextLTPro-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 #process-graph-overlay {
   position: fixed;
   inset: 0;
