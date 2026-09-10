@@ -10,9 +10,8 @@
         "cuerpo",
         "escena",
         "música",
+        "dirección artística",
         "colectivo",
-        "dirección",
-        "memoria",
         "materialidad"
       ],
       "file": "Maizena (2023-25).pdf"
@@ -27,79 +26,26 @@
         "cuerpo",
         "escena",
         "música",
+        "dirección artística",
         "colectivo",
-        "dirección",
-        "memoria",
         "materialidad"
       ],
       "file": "Maizena Armaduras (2025).pdf"
     },
     {
       "id": "irmanas",
-      "title": "Irmanas",
-      "title_en": "Irmanas",
+      "title": "Irmanas — Vestuario y dirección visual",
+      "title_en": "Irmanas — Costume and visual direction",
       "category": "cuerpo",
       "tags": [
         "vestuario",
         "cuerpo",
         "escena",
         "música",
-        "colectivo",
-        "dirección",
-        "memoria",
-        "materialidad"
+        "dirección artística",
+        "colectivo"
       ],
       "file": "Irmanas (2023).pdf"
-    },
-    {
-      "id": "motin",
-      "title": "Motín",
-      "title_en": "Motín",
-      "category": "cuerpo",
-      "tags": [
-        "vestuario",
-        "cuerpo",
-        "escena",
-        "música",
-        "colectivo",
-        "dirección",
-        "memoria",
-        "materialidad"
-      ],
-      "file": "Motin (2024).pdf"
-    },
-    {
-      "id": "nubila-vestuarios",
-      "title": "Nubila — Vestuarios",
-      "title_en": "Nubila — Costumes",
-      "category": "cuerpo",
-      "tags": [
-        "vestuario",
-        "cuerpo",
-        "escena",
-        "música",
-        "colectivo",
-        "dirección",
-        "memoria",
-        "materialidad"
-      ],
-      "file": "Nubila (2025).pdf"
-    },
-    {
-      "id": "futuros-vestuario",
-      "title": "Futuros procesos de vestuario / cuerpo / performance",
-      "title_en": "Future costume / body / performance processes",
-      "category": "cuerpo",
-      "tags": [
-        "vestuario",
-        "cuerpo",
-        "escena",
-        "performance",
-        "colectivo",
-        "dirección",
-        "memoria",
-        "materialidad"
-      ]
     },
     {
       "id": "caleidoscopios",
@@ -108,237 +54,91 @@
       "category": "objetos",
       "tags": [
         "cerámica",
-        "objeto",
+        "fotografía",
+        "percepción",
         "dispositivo",
-        "herencia",
-        "memoria",
-        "archivo",
-        "cuerpo",
-        "materialidad",
-        "investigación"
+        "visión",
+        "mano",
+        "arte-investigación",
+        "individual"
       ],
       "file": "Caleidoscopios (2022–2025).pdf"
     },
     {
+      "id": "galletitas-infortunio",
+      "title": "Galletitas del Infortunio",
+      "title_en": "Cookies of Misfortune",
+      "category": "objetos",
+      "tags": [
+        "cerámica",
+        "objeto",
+        "talismán",
+        "escritura",
+        "ritual",
+        "psique",
+        "transformación",
+        "afectos"
+      ]
+    },
+    {
       "id": "tela-ceramica",
-      "title": "Tela Cerámica / Madre-hija-madre-hija/*",
-      "title_en": "Ceramic Cloth / Mother-daughter-mother-daughter/*",
+      "title": "Tela Cerámica Tejidas. Madre-hija-madre-hija/",
+      "title_en": "Woven Ceramic Cloth. Mother-daughter-mother-daughter/",
       "category": "objetos",
       "tags": [
         "cerámica",
-        "objeto",
-        "dispositivo",
+        "textil",
         "herencia",
+        "madres e hijas",
         "memoria",
-        "archivo",
-        "cuerpo",
+        "código",
         "materialidad",
-        "investigación"
+        "individual"
       ]
     },
     {
-      "id": "dispositivos-artefactos",
-      "title": "Dispositivos / artefactos",
-      "title_en": "Devices / artifacts",
+      "id": "lo-siniestro-juego-te",
+      "title": "Lo siniestro maravilloso en un Juego de Té",
+      "title_en": "The marvelous uncanny in a Tea Set",
       "category": "objetos",
       "tags": [
         "cerámica",
-        "objeto",
-        "dispositivo",
+        "archivo",
         "herencia",
+        "textil",
         "memoria",
-        "archivo",
-        "cuerpo",
-        "materialidad",
-        "investigación"
-      ]
-    },
-    {
-      "id": "procesos-fotograficos",
-      "title": "Procesos fotográficos",
-      "title_en": "Photographic processes",
-      "category": "imagen",
-      "tags": [
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria",
-        "dirección"
-      ]
-    },
-    {
-      "id": "no-entiendo-nada",
-      "title": "No entiendo nada",
-      "title_en": "I don't understand anything",
-      "category": "imagen",
-      "tags": [
-        "zine",
-        "fanzine",
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria",
-        "dirección"
-      ],
-      "url": "https://www.flipsnack.com/begonialibros/no-entiendo-nada.html"
-    },
-    {
-      "id": "sueno-mar",
-      "title": "Sueño mar",
-      "title_en": "Sea dream",
-      "category": "imagen",
-      "tags": [
-        "zine",
-        "fanzine",
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria",
-        "dirección"
-      ],
-      "url": "https://www.flipsnack.com/begonialibros/sue-o-mar.html"
-    },
-    {
-      "id": "ser-de-hielo",
-      "title": "Ser de Hielo",
-      "title_en": "Being of Ice",
-      "category": "imagen",
-      "tags": [
-        "zine",
-        "fanzine",
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria",
-        "dirección"
-      ],
-      "url": "https://www.flipsnack.com/begonialibros/ser-de-hielo.html"
-    },
-    {
-      "id": "alba-lunar",
-      "title": "aLba LuNaR",
-      "title_en": "aLba LuNaR",
-      "category": "imagen",
-      "tags": [
-        "zine",
-        "fanzine",
-        "fotografía",
-        "edición",
-        "montaje",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria",
-        "dirección"
-      ],
-      "file": "Albalunar.pdf"
-    },
-    {
-      "id": "futuros-fanzines",
-      "title": "Futuros fanzines",
-      "title_en": "Future fanzines",
-      "category": "imagen",
-      "tags": [
-        "zine",
-        "fanzine",
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
-        "colectivo",
-        "archivo",
-        "memoria"
+        "objeto",
+        "familia",
+        "ciencia ficción"
       ]
     },
     {
       "id": "videoclip-suenos-nubila",
-      "title": "Videoclip Sueños — Nubila",
-      "title_en": "Dreams music video — Nubila",
+      "title": "Sueños, Videoclip — Nubila",
+      "title_en": "Dreams, music video — Nubila",
       "category": "imagen",
       "tags": [
-        "fotografía",
-        "digital",
-        "colectivo",
-        "dirección",
+        "vídeo",
         "música",
-        "montaje",
-        "edición"
-      ]
-    },
-    {
-      "id": "futuros-fotograficos",
-      "title": "Futuros proyectos fotográficos",
-      "title_en": "Future photographic projects",
-      "category": "imagen",
-      "tags": [
-        "fotografía",
-        "edición",
-        "papel",
-        "digital",
         "archivo",
-        "memoria"
+        "collage",
+        "colectivo"
+      ],
+      "url": "https://www.youtube.com/watch?v=zO1L7Grx1VQ"
+    },
+    {
+      "id": "serie-collage",
+      "title": "Serie collage",
+      "title_en": "Collage series",
+      "category": "imagen",
+      "tags": [
+        "fotografía",
+        "archivo",
+        "visión",
+        "memoria",
+        "historia",
+        "tecnología"
       ]
-    },
-    {
-      "id": "terrario-nubila",
-      "title": "Terrario — Nubila",
-      "title_en": "Terrario — Nubila",
-      "category": "imagen",
-      "tags": [
-        "fotografía",
-        "digital",
-        "colectivo",
-        "dirección",
-        "música",
-        "montaje"
-      ],
-      "url": "https://youtu.be/uLttQvbXJgQ?si=-tqM8dLlyMkedKcv"
-    },
-    {
-      "id": "banda-cosas-tiradas",
-      "title": "Una banda de Cosas Tiradas — Maizena",
-      "title_en": "A band of Thrown Things — Maizena",
-      "category": "imagen",
-      "tags": [
-        "fotografía",
-        "digital",
-        "colectivo",
-        "dirección",
-        "música",
-        "montaje"
-      ],
-      "url": "https://youtu.be/bAHhNWa4MgM?si=u2YHRxLiR4aXyE7K"
-    },
-    {
-      "id": "gozerio",
-      "title": "Gozerío",
-      "title_en": "Gozerío",
-      "category": "escena",
-      "tags": [
-        "instalación",
-        "escenografía",
-        "performance",
-        "montaje",
-        "espacio",
-        "sonido",
-        "iluminación",
-        "colectivo",
-        "dirección"
-      ],
-      "file": "Gozerio (2025).pdf"
     },
     {
       "id": "ensayo-archivo-colectivo",
@@ -346,67 +146,173 @@
       "title_en": "Essay for a collective archive",
       "category": "escena",
       "tags": [
+        "curaduría",
+        "archivo",
         "instalación",
-        "escenografía",
-        "performance",
         "montaje",
+        "memoria colectiva",
         "espacio",
-        "sonido",
-        "iluminación",
-        "colectivo",
         "dirección",
-        "archivo"
+        "colectivo"
       ],
       "file": "Ensayo para un archivo colectivo.pdf"
     },
     {
-      "id": "instalaciones-montajes",
-      "title": "Instalaciones / escenografías / montajes / experiencias inmersivas",
-      "title_en": "Installations / scenographies / assemblies / immersive experiences",
+      "id": "gozerio",
+      "title": "Gozerío",
+      "title_en": "Gozerío",
       "category": "escena",
       "tags": [
+        "escena",
         "instalación",
-        "escenografía",
-        "performance",
-        "montaje",
-        "espacio",
-        "sonido",
-        "iluminación",
+        "dirección",
         "colectivo",
-        "dirección"
-      ]
+        "experiencia"
+      ],
+      "file": "Gozerio (2025).pdf"
+    },
+    {
+      "id": "motin",
+      "title": "Motín",
+      "title_en": "Motín",
+      "category": "escena",
+      "tags": [
+        "escena",
+        "instalación",
+        "dirección",
+        "colectivo",
+        "experiencia"
+      ],
+      "file": "Motin (2024).pdf"
+    },
+    {
+      "id": "no-entiendo-nada",
+      "title": "No entiendo nada",
+      "title_en": "I don't understand anything",
+      "category": "publicaciones",
+      "tags": [
+        "publicación digital",
+        "zine",
+        "fotografía",
+        "edición",
+        "colectivo"
+      ],
+      "url": "https://www.flipsnack.com/begonialibros/no-entiendo-nada"
+    },
+    {
+      "id": "sueno-mar",
+      "title": "Sueño mar",
+      "title_en": "Sea dream",
+      "category": "publicaciones",
+      "tags": [
+        "publicación digital",
+        "zine",
+        "fotografía",
+        "edición",
+        "colectivo"
+      ],
+      "url": "https://www.flipsnack.com/begonialibros/sue-o-mar"
+    },
+    {
+      "id": "ser-de-hielo",
+      "title": "Ser de Hielo",
+      "title_en": "Being of Ice",
+      "category": "publicaciones",
+      "tags": [
+        "publicación digital",
+        "zine",
+        "fotografía",
+        "edición",
+        "colectivo"
+      ],
+      "url": "https://www.flipsnack.com/begonialibros/ser-de-hielo"
+    },
+    {
+      "id": "alba-lunar",
+      "title": "aLba LuNaR",
+      "title_en": "aLba LuNaR",
+      "category": "publicaciones",
+      "tags": [
+        "fanzine",
+        "fotografía",
+        "montaje",
+        "edición",
+        "digital",
+        "colectivo"
+      ],
+      "file": "Albalunar.pdf"
+    },
+    {
+      "id": "oceanica-nubila",
+      "title": "Oceánica — Nubila",
+      "title_en": "Oceánica — Nubila",
+      "category": "publicaciones",
+      "tags": [
+        "álbum",
+        "música",
+        "dirección artística",
+        "imagen",
+        "digital",
+        "colectivo"
+      ],
+      "url": "https://open.spotify.com/album/6yGIz5ApYNwXXIIoa4DYCU"
+    },
+    {
+      "id": "terrario-nubila",
+      "title": "Terrario — Nubila",
+      "title_en": "Terrario — Nubila",
+      "category": "publicaciones",
+      "tags": [
+        "álbum",
+        "música",
+        "dirección artística",
+        "audiovisual",
+        "imagen",
+        "colectivo"
+      ],
+      "url": "https://youtu.be/uLttQvbXJgQ?si=-tqM8dLlyMkedKcv"
+    },
+    {
+      "id": "banda-cosas-tiradas",
+      "title": "Una banda de cosas tiradas — Maizena",
+      "title_en": "A band of thrown things — Maizena",
+      "category": "publicaciones",
+      "tags": [
+        "álbum",
+        "música",
+        "dirección artística",
+        "imagen",
+        "colectivo"
+      ],
+      "url": "https://www.youtube.com/watch?v=kM3BWElcpXs"
     },
     {
       "id": "web-cd-oceanica",
-      "title": "WEB-CD: OCÉANICA",
-      "title_en": "WEB-CD: OCÉANICA",
+      "title": "Web-Cd — Nubila",
+      "title_en": "Web-Cd — Nubila",
       "category": "digital",
       "tags": [
         "web",
         "interfaz",
-        "tecnología",
-        "programación",
-        "plataforma",
-        "contenido",
-        "dirección",
-        "música"
+        "música",
+        "dirección artística",
+        "digital",
+        "colectivo"
       ],
       "url": "https://nubila.ar/"
     },
     {
       "id": "maizena-webgame",
-      "title": "Maizena webgame",
-      "title_en": "Maizena webgame",
+      "title": "Webgame — Maizena",
+      "title_en": "Webgame — Maizena",
       "category": "digital",
       "tags": [
         "web",
-        "interfaz",
-        "tecnología",
-        "programación",
         "videojuego",
-        "plataforma",
-        "contenido",
-        "dirección"
+        "interfaz",
+        "dirección",
+        "música",
+        "colectivo"
       ],
       "url": "https://maizena.ar/"
     },
@@ -417,42 +323,25 @@
       "category": "digital",
       "tags": [
         "web",
-        "interfaz",
-        "tecnología",
-        "plataforma",
+        "diseño visual",
         "contenido",
-        "dirección"
+        "tecnología",
+        "colectivo"
       ],
       "url": "https://keylab.com.ar/"
     },
     {
-      "id": "futuros-digitales",
-      "title": "Futuros desarrollos web / interfaces / Wikimedia / Escena Abierta",
-      "title_en": "Future web / interface / Wikimedia / Escena Abierta developments",
-      "category": "digital",
-      "tags": [
-        "web",
-        "interfaz",
-        "tecnología",
-        "programación",
-        "plataforma",
-        "contenido"
-      ]
-    },
-    {
       "id": "por-que-abuela",
-      "title": "¿Por qué abuela era el monte y la peperina...?",
-      "title_en": "Why was grandma the mountain and the peperina...?",
+      "title": "¿Por qué abuela era el monte y la peperina, pero no la fotografía?",
+      "title_en": "Why was grandma the mountain and the peperina, but not photography?",
       "category": "escrituras",
       "tags": [
         "ensayo",
-        "crítica",
-        "academia",
+        "fotografía",
         "memoria",
-        "archivo",
-        "feminismo",
+        "crítica",
         "investigación",
-        "fotografía"
+        "escritura individual"
       ],
       "file": "Gencarelli+MAQUETADO+PAG.pdf"
     },
@@ -462,12 +351,11 @@
       "title_en": "Pull with a ribbon and buttonhole with a button",
       "category": "escrituras",
       "tags": [
-        "ensayo",
         "memoria",
-        "archivo",
+        "infancia",
         "afectos",
         "investigación",
-        "colectivo"
+        "escritura colectiva"
       ],
       "file": "Tira_con_tirita_y_ojal_con_boton.pdf"
     },
@@ -477,14 +365,13 @@
       "title_en": "An affective mapping in fictions made by grandchildren",
       "category": "escrituras",
       "tags": [
-        "ensayo",
-        "poesía",
         "memoria",
-        "archivo",
         "afectos",
-        "investigación"
+        "ficción",
+        "investigación",
+        "escritura individual"
       ],
-      "url": "https://revistas.unc.edu.ar/index.php/polemicasfeminista/article/view/39458"
+      "file": "Narrativas_autobiograficas_mapeo_afectivo.pdf"
     },
     {
       "id": "contrapunto",
@@ -492,85 +379,78 @@
       "title_en": "CONTRAPUNTO",
       "category": "escrituras",
       "tags": [
-        "ensayo",
-        "poesía",
         "memoria",
         "archivo",
-        "feminismo",
-        "investigación"
+        "familia",
+        "poesía",
+        "investigación",
+        "escritura individual"
       ],
       "file": "CONTRAPUNTO_Los_saberes_guardados_en_el.pdf"
     },
     {
       "id": "estetica-dimension-politica",
-      "title": "La estética como dimensión política...",
-      "title_en": "Aesthetics as a political dimension...",
+      "title": "La estética como dimensión política para pensar la enseñanza",
+      "title_en": "Aesthetics as a political dimension for thinking teaching",
       "category": "escrituras",
       "tags": [
-        "ensayo",
-        "crítica",
-        "academia",
-        "pedagogía",
+        "estética",
+        "política",
+        "educación",
         "investigación",
-        "colectivo"
+        "escritura colectiva"
       ],
       "file": "La_estetica_como_dimension_politica_para.pdf"
     },
     {
       "id": "itinerario-educacion-artistica",
-      "title": "Itinerario Educación artística y expresiva",
-      "title_en": "Artistic and expressive education itinerary",
+      "title": "Itinerario Pedagógico-Didáctico: Educación artística y expresiva",
+      "title_en": "Pedagogical-Didactic Itinerary: Artistic and expressive education",
       "category": "escrituras",
       "tags": [
         "pedagogía",
-        "academia",
-        "contenido",
-        "investigación"
-      ],
-      "url": "https://dges-cba.edu.ar/wp/index.php/profodi-mc-itinerarios/"
+        "educación",
+        "desarrollo de contenidos",
+        "escritura",
+        "colectivo"
+      ]
     },
     {
       "id": "itinerario-lenguaje-artistico",
-      "title": "Itinerario Lenguaje artístico y expresivo",
-      "title_en": "Artistic and expressive language itinerary",
+      "title": "Itinerario Pedagógico-Didáctico: Lenguaje artístico y expresivo",
+      "title_en": "Pedagogical-Didactic Itinerary: Artistic and expressive language",
       "category": "escrituras",
       "tags": [
         "pedagogía",
-        "academia",
-        "contenido",
-        "investigación"
-      ],
-      "url": "http://dges-cba.edu.ar/wp/wp-content/uploads/2022/12/03_IT-LENGUAJE-ARTISTICO-EXPRESIVO_v8.pdf"
+        "educación",
+        "desarrollo de contenidos",
+        "escritura",
+        "colectivo"
+      ]
     },
     {
       "id": "traduccion-nociones-artisticas",
-      "title": "Nociones artísticas histéricas sobre el progreso y la cultura (1978)",
-      "title_en": "Hysterical artistic notions on progress and culture (1978)",
+      "title": "Nociones artísticas histéricas sobre el progreso y la cultura",
+      "title_en": "Hysterical artistic notions on progress and culture",
       "category": "escrituras",
       "tags": [
         "traducción",
-        "ensayo",
-        "crítica",
-        "academia",
-        "memoria",
-        "archivo",
-        "feminismo"
+        "arte",
+        "teoría",
+        "escritura"
       ],
-      "url": "https://docs.google.com/document/d/16ajagkb0f3ixLkW5yUFNnVYn4vjmVQU7a9jq_wZOGHE/edit?usp=sharing"
+      "file": "Nociones_artisticas_histericas.pdf"
     },
     {
       "id": "traduccion-woolf",
-      "title": "¿Cómo una debe leer un libro? Virginia Woolf",
-      "title_en": "How should one read a book? Virginia Woolf",
+      "title": "¿Cómo una debe leer un libro? — Virginia Woolf",
+      "title_en": "How should one read a book? — Virginia Woolf",
       "category": "escrituras",
       "tags": [
         "traducción",
-        "ensayo",
-        "crítica",
-        "academia",
-        "memoria",
-        "archivo",
-        "feminismo"
+        "literatura",
+        "feminismos",
+        "escritura"
       ],
       "file": "Como_una_debe_leer_un_libro_Virgina_Wool.pdf"
     },
@@ -581,40 +461,26 @@
       "category": "escrituras",
       "tags": [
         "traducción",
-        "ensayo",
-        "crítica",
-        "academia",
-        "memoria",
-        "archivo",
-        "feminismo"
+        "arte",
+        "pensamiento",
+        "feminismos",
+        "escritura"
       ],
       "file": "El_gran_camuflaje_Suzanne_Cesaire.pdf"
     },
     {
       "id": "tesis",
-      "title": "Tesis",
-      "title_en": "Thesis",
+      "title": "Tesis doctoral",
+      "title_en": "Doctoral thesis",
       "category": "escrituras",
       "tags": [
-        "ensayo",
-        "academia",
-        "investigación",
-        "memoria",
-        "archivo"
-      ]
-    },
-    {
-      "id": "futuros-ensayos",
-      "title": "Futuros ensayos / poemas / textos",
-      "title_en": "Future essays / poems / texts",
-      "category": "escrituras",
-      "tags": [
-        "ensayo",
-        "poesía",
-        "crítica",
-        "memoria",
+        "fotografía",
+        "historia",
         "archivo",
-        "investigación"
+        "memoria",
+        "academia",
+        "arte-investigación",
+        "escritura"
       ]
     }
   ]
