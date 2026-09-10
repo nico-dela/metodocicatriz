@@ -14,6 +14,8 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Blocks Netlify's injected HUD/toolbar (needs unsafe-inline) without affecting our deferred scripts.
+    Content-Security-Policy = "script-src 'self' https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; object-src 'none'; base-uri 'self'"
 
 # Fonts change rarely — long cache helps PageSpeed repeat visits
 [[headers]]

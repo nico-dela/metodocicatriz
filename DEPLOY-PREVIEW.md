@@ -31,3 +31,12 @@ O pushear commits directo a `preview` mientras iterás con el cliente.
 
 La carpeta local `preview-netlify/` ya no es el camino recomendado (quedaba desactualizada).  
 Usá la rama `preview` + Git ↔ Netlify.
+
+### PageSpeed y el HUD de Netlify
+
+Mientras el proyecto esté **privado**, Netlify inyecta `/.netlify/scripts/hud` (~40 KB) en cada página. Eso aparece en PageSpeed como “Reduce unused JavaScript” / “Legacy JavaScript”.
+
+Opciones:
+1. En Netlify: **Project configuration → Project visibility → Make public** (el toolbar de pre-launch desaparece).
+2. Ocultar el toolbar desde la UI del propio badge (solo afecta tu navegador).
+3. El `Content-Security-Policy` del `netlify.toml` también bloquea el render del HUD.

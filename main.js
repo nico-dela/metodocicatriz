@@ -99,9 +99,13 @@ class App {
     );
     langImages.forEach((img) => {
       const newSrc = img.getAttribute(`data-src-${lang}`);
+      const newSrcset = img.getAttribute(`data-srcset-${lang}`);
       const newAlt = img.getAttribute(`data-alt-${lang}`);
       if (newSrc) {
         img.setAttribute("src", newSrc);
+      }
+      if (newSrcset) {
+        img.setAttribute("srcset", newSrcset);
       }
       if (newAlt) {
         img.setAttribute("alt", newAlt);
