@@ -49,7 +49,7 @@ class RandomBackground {
       localStorage.setItem(BG_STORAGE_KEY, nextName);
     } catch (e) {}
 
-    this.schedulePreloadAll();
+    this.schedulePreloadNext();
   }
 
   getStoredFilename() {
@@ -133,9 +133,12 @@ class RandomBackground {
     }
   }
 
-  schedulePreloadAll() {
+  schedulePreloadNext() {
     const run = () => {
-      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      const connection =
+        navigator.connection ||
+        navigator.mozConnection ||
+        navigator.webkitConnection;
       const isDataSaver = !!(connection && connection.saveData);
       const isSlowConnection = !!(
         connection &&
@@ -144,17 +147,18 @@ class RandomBackground {
       );
       if (isDataSaver || isSlowConnection) return;
 
-      // Avoid saturating bandwidth/CPU by preloading only a subset.
-      const preloadLimit = 8;
-      this.images.slice(0, preloadLimit).forEach((name) => {
-        const img = new Image();
-        img.src = this.resolveUrl(name);
-      });
+      // Only warm one extra image for the next visit — avoid multi-MB idle fetch.
+      const stored = this.getStoredFilename();
+      const next = this.pickRandomFilename(stored);
+      if (!next) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = this.resolveUrl(next);
     };
     if ("requestIdleCallback" in window) {
-      requestIdleCallback(run, { timeout: 4000 });
+      requestIdleCallback(run, { timeout: 6000 });
     } else {
-      setTimeout(run, 300);
+      setTimeout(run, 1200);
     }
   }
 }

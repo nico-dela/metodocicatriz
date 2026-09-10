@@ -93,6 +93,54 @@ body.page-home {
   filter: brightness(1.12) drop-shadow(0 0 16px rgba(255, 255, 255, 0.42));
 }
 
+/* Secondary home entry — discreet text link, glow on hover */
+.process-map-entry {
+  align-self: center;
+  margin-top: 4px;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: "DINNextLTPro", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transform: none;
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease,
+    filter 0.25s ease;
+}
+
+.process-map-entry:hover {
+  color: #fff;
+  transform: none;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.55),
+    0 0 22px rgba(255, 255, 255, 0.35);
+  filter: brightness(1.08);
+}
+
+.process-map-entry:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 4px;
+  border-radius: 2px;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+  .process-map-entry {
+    font-size: 0.78rem;
+  }
+}
+
 @media (hover: hover) and (pointer: fine) {
   .open-button:hover {
     animation: none;

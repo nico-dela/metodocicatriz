@@ -15,11 +15,67 @@
   /** Se incrementa al cancelar o abrir otro PDF; invalida renders en curso. */
   let pdfLoadGeneration = 0;
 
-  // *** NUEVA VARIABLE: Controlar si el selector está visible ***
+  // *** VARIABLE: Controlar si el selector está visible ***
   let isSelectorVisible = false;
 
   // *** VARIABLE: Controlar si el modal está inicializado ***
   let isModalInitialized = false;
+
+  let pdfJsLoading = null;
+
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      const existing = document.querySelector('script[src="' + src + '"]');
+      if (existing) {
+        if (window.pdfjsLib) {
+          resolve();
+          return;
+        }
+        existing.addEventListener("load", function () {
+          resolve();
+        });
+        existing.addEventListener("error", reject);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = function () {
+        resolve();
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  function ensurePdfViewerCss() {
+    if (document.getElementById("pdf-viewer-css")) return;
+    const link = document.createElement("link");
+    link.id = "pdf-viewer-css";
+    link.rel = "stylesheet";
+    const isInSubdir = window.location.pathname.includes("/pages/");
+    link.href = isInSubdir ? "../css/pdf-viewer.css" : "css/pdf-viewer.css";
+    document.head.appendChild(link);
+  }
+
+  function ensurePdfJs() {
+    if (window.pdfjsLib) {
+      if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      }
+      return Promise.resolve(window.pdfjsLib);
+    }
+    if (pdfJsLoading) return pdfJsLoading;
+    pdfJsLoading = loadScript(
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
+    ).then(function () {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      return window.pdfjsLib;
+    });
+    return pdfJsLoading;
+  }
 
   function getPaths() {
     const isInSubdir = window.location.pathname.includes("/pages/");
@@ -302,9 +358,31 @@
       return;
     }
 
+    ensureProcessGraph().then(function () {
+      if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
+        window.ProcessGraph.open();
+      }
+    });
+  }
+
+  function ensureProcessGraph() {
     if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
-      window.ProcessGraph.open();
+      return Promise.resolve();
     }
+    if (!document.getElementById("process-graph-css")) {
+      const link = document.createElement("link");
+      link.id = "process-graph-css";
+      link.rel = "stylesheet";
+      const isInSubdir = window.location.pathname.includes("/pages/");
+      link.href = isInSubdir
+        ? "../css/process-graph.css"
+        : "css/process-graph.css";
+      document.head.appendChild(link);
+    }
+    return loadScript(
+      (window.location.pathname.includes("/pages/") ? "../" : "") +
+        "js/process-graph.js",
+    );
   }
 
   function openPdfSelector() {
@@ -508,6 +586,7 @@
     // *** PRIMERO CERRAR CUALQUIER CARGA ANTERIOR ***
     cancelCurrentLoad();
 
+    ensurePdfViewerCss();
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
     isOpen = true;
@@ -517,7 +596,19 @@
     currentLanguage = localStorage.getItem("language") || "es";
 
     setPdfModalTitle(pdfFile);
-    loadPdfInModal(pdfUrl);
+
+    ensurePdfJs()
+      .then(function () {
+        return loadPdfInModal(pdfUrl);
+      })
+      .catch(function (err) {
+        console.error("Error cargando PDF.js", err);
+        const content = document.getElementById("pdf-modal-content");
+        if (content) {
+          content.innerHTML =
+            '<p style="color: white; text-align: center; padding: 20px;">Error</p>';
+        }
+      });
   }
 
   // *** FUNCIÓN PARA CANCELAR CARGA ACTUAL ***
@@ -595,6 +686,16 @@
       button.replaceWith(button.cloneNode(true));
       const newButton = document.getElementById("random-pdf-btn");
 
+      const warmPdfAssets = function () {
+        ensurePdfViewerCss();
+        // Start pdf.js download on intent, without blocking first paint
+        ensurePdfJs().catch(function () {});
+      };
+      newButton.addEventListener("pointerenter", warmPdfAssets, {
+        once: true,
+      });
+      newButton.addEventListener("focus", warmPdfAssets, { once: true });
+
       newButton.addEventListener("click", function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -623,31 +724,9 @@
     bindRandomButton();
     bindPdfLinks();
 
-    // *** CONFIGURAR PDF.JS SI ES NECESARIO ***
-    if (!window.pdfjsLib) {
-      const script = document.createElement("script");
-      script.src =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
-      script.onload = async () => {
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-        // *** CREAR MODAL DESPUÉS DE QUE PDF.JS CARGUE ***
-        createModal();
-        document.addEventListener("keydown", handleKeydown);
-      };
-      script.onerror = () => {
-        console.error("Error cargando PDF.js");
-        // Crear modal de todas formas (para el botón de selector)
-        createModal();
-        document.addEventListener("keydown", handleKeydown);
-      };
-      document.head.appendChild(script);
-    } else {
-      // *** CREAR MODAL INMEDIATAMENTE ***
-      createModal();
-      document.addEventListener("keydown", handleKeydown);
-    }
+    // PDF.js se carga bajo demanda al abrir un PDF (mejor LCP / PageSpeed)
+    createModal();
+    document.addEventListener("keydown", handleKeydown);
   }
 
   // *** INICIALIZAR INMEDIATAMENTE ***

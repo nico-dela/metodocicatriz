@@ -28,6 +28,17 @@
     "x.com",
     "twitter.com",
     "www.twitter.com",
+    "flipsnack.com",
+    "www.flipsnack.com",
+    "maizena.ar",
+    "www.maizena.ar",
+  ];
+
+  /** Open these in a new tab instead of the in-page previewer. */
+  var DIRECT_OPEN_HOSTS = [
+    "flipsnack.com",
+    "maizena.ar",
+    "cicatriz.ar",
   ];
 
   var overlay = null;
@@ -129,6 +140,16 @@
     return false;
   }
 
+  function shouldOpenDirect(rawUrl) {
+    var host = hostOf(rawUrl);
+    if (!host) return false;
+    for (var i = 0; i < DIRECT_OPEN_HOSTS.length; i++) {
+      var direct = DIRECT_OPEN_HOSTS[i].replace(/^www\./, "");
+      if (host === direct || host.endsWith("." + direct)) return true;
+    }
+    return false;
+  }
+
   /**
    * Rewrite known hosts to an embeddable URL when possible.
    */
@@ -200,6 +221,13 @@
 
   function open(url, title) {
     if (!url) return;
+
+    // Flipsnack / Maizena: skip previewer and go straight to the site
+    if (shouldOpenDirect(url)) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+
     ensureDom();
     applyI18n();
 

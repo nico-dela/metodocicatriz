@@ -22,6 +22,11 @@
       labelEs: "ESCENA",
       labelEn: "SCENE",
     },
+    publicaciones: {
+      color: "#e8550c",
+      labelEs: "PUBLICACIONES",
+      labelEn: "PUBLICATIONS",
+    },
     digital: {
       color: "#e8550c",
       labelEs: "DIGITAL",
@@ -317,33 +322,36 @@
     if (narrow && !short) {
       // Mobile portrait — keep bottom-left clear for category legend
       return [
-        { x: w * 0.34, y: h * 0.26, category: "cuerpo" },
-        { x: w * 0.7, y: h * 0.24, category: "objetos" },
-        { x: w * 0.74, y: h * 0.42, category: "imagen" },
-        { x: w * 0.42, y: h * 0.5, category: "escena" },
-        { x: w * 0.48, y: h * 0.7, category: "digital" },
-        { x: w * 0.76, y: h * 0.72, category: "escrituras" },
+        { x: w * 0.32, y: h * 0.24, category: "cuerpo" },
+        { x: w * 0.68, y: h * 0.22, category: "objetos" },
+        { x: w * 0.78, y: h * 0.4, category: "imagen" },
+        { x: w * 0.38, y: h * 0.48, category: "escena" },
+        { x: w * 0.7, y: h * 0.58, category: "publicaciones" },
+        { x: w * 0.42, y: h * 0.72, category: "digital" },
+        { x: w * 0.76, y: h * 0.78, category: "escrituras" },
       ];
     }
     if (short || (w > h && h < 560)) {
       // Mobile landscape — clear top-left heading + bottom-left legend
       return [
-        { x: w * 0.34, y: h * 0.5, category: "cuerpo" },
-        { x: w * 0.5, y: h * 0.3, category: "objetos" },
-        { x: w * 0.68, y: h * 0.28, category: "imagen" },
-        { x: w * 0.44, y: h * 0.72, category: "escena" },
-        { x: w * 0.62, y: h * 0.76, category: "digital" },
-        { x: w * 0.84, y: h * 0.55, category: "escrituras" },
+        { x: w * 0.3, y: h * 0.48, category: "cuerpo" },
+        { x: w * 0.46, y: h * 0.28, category: "objetos" },
+        { x: w * 0.64, y: h * 0.26, category: "imagen" },
+        { x: w * 0.4, y: h * 0.72, category: "escena" },
+        { x: w * 0.58, y: h * 0.78, category: "publicaciones" },
+        { x: w * 0.74, y: h * 0.7, category: "digital" },
+        { x: w * 0.86, y: h * 0.48, category: "escrituras" },
       ];
     }
     // Desktop — pull clusters toward corners/edges, clear legend
     return [
-      { x: w * 0.22, y: h * 0.3, category: "cuerpo" },
-      { x: w * 0.48, y: h * 0.24, category: "objetos" },
-      { x: w * 0.78, y: h * 0.28, category: "imagen" },
-      { x: w * 0.34, y: h * 0.66, category: "escena" },
-      { x: w * 0.56, y: h * 0.74, category: "digital" },
-      { x: w * 0.8, y: h * 0.66, category: "escrituras" },
+      { x: w * 0.2, y: h * 0.28, category: "cuerpo" },
+      { x: w * 0.42, y: h * 0.22, category: "objetos" },
+      { x: w * 0.68, y: h * 0.24, category: "imagen" },
+      { x: w * 0.28, y: h * 0.62, category: "escena" },
+      { x: w * 0.5, y: h * 0.72, category: "publicaciones" },
+      { x: w * 0.7, y: h * 0.7, category: "digital" },
+      { x: w * 0.86, y: h * 0.48, category: "escrituras" },
     ];
   }
 
@@ -487,7 +495,20 @@
     state.links = buildTagLinks(nodes);
   }
 
+  function ensureProcessGraphCss() {
+    if (document.getElementById("process-graph-css")) return;
+    var link = document.createElement("link");
+    link.id = "process-graph-css";
+    link.rel = "stylesheet";
+    var isInSubdir = window.location.pathname.indexOf("/pages/") !== -1;
+    link.href = isInSubdir
+      ? "../css/process-graph.css"
+      : "css/process-graph.css";
+    document.head.appendChild(link);
+  }
+
   function ensureDom() {
+    ensureProcessGraphCss();
     if (els.overlay) return;
 
     var overlay = document.createElement("div");
@@ -499,13 +520,13 @@
       '<header class="process-graph-toolbar">' +
       '  <div class="process-graph-heading">' +
       '    <h2 id="process-graph-title" class="process-graph-title" data-es="Mapa de procesos" data-en="Process map">Mapa de procesos</h2>' +
-      '    <button type="button" class="process-graph-desc" aria-expanded="false" data-es="' +
+      '    <p class="process-graph-desc" data-es="' +
       MAP_DESC_ES.replace(/"/g, "&quot;") +
       '" data-en="' +
       MAP_DESC_EN.replace(/"/g, "&quot;") +
-      '" data-es-aria="Mostrar descripción completa" data-en-aria="Show full description">' +
+      '">' +
       MAP_DESC_ES +
-      "</button>" +
+      "</p>" +
       "  </div>" +
       '  <button type="button" class="process-graph-close" aria-label="Cerrar" data-es-aria="Cerrar" data-en-aria="Close">&times;</button>' +
       "</header>" +
@@ -532,22 +553,6 @@
       .querySelector(".process-graph-close")
       .addEventListener("click", close);
 
-    if (els.desc) {
-      els.desc.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleDescExpanded();
-      });
-    }
-
-    overlay.addEventListener("click", function (e) {
-      if (!els.heading || !els.heading.classList.contains("is-desc-expanded")) {
-        return;
-      }
-      if (els.heading.contains(e.target)) return;
-      setDescExpanded(false);
-    });
-
     bindPointer();
     window.addEventListener("resize", onResize);
     window.addEventListener("orientationchange", function () {
@@ -556,30 +561,6 @@
       setTimeout(onResize, 320);
     });
     document.addEventListener("keydown", onKeydown);
-  }
-
-  function setDescExpanded(expanded) {
-    if (!els.desc || !els.heading) return;
-    var lang = getLanguage();
-    els.heading.classList.toggle("is-desc-expanded", !!expanded);
-    els.desc.classList.toggle("is-expanded", !!expanded);
-    els.desc.setAttribute("aria-expanded", expanded ? "true" : "false");
-    els.desc.setAttribute(
-      "aria-label",
-      expanded
-        ? lang === "en"
-          ? "Hide full description"
-          : "Ocultar descripción completa"
-        : els.desc.getAttribute("data-" + lang + "-aria") ||
-            (lang === "en"
-              ? "Show full description"
-              : "Mostrar descripción completa"),
-    );
-  }
-
-  function toggleDescExpanded() {
-    if (!els.heading) return;
-    setDescExpanded(!els.heading.classList.contains("is-desc-expanded"));
   }
 
   function updateI18n() {
@@ -591,9 +572,6 @@
     if (els.desc) {
       els.desc.textContent =
         els.desc.getAttribute("data-" + lang) || els.desc.textContent;
-      var expanded =
-        els.heading && els.heading.classList.contains("is-desc-expanded");
-      setDescExpanded(!!expanded);
     }
     if (els.hint) {
       els.hint.textContent =
@@ -1125,6 +1103,25 @@
     canvas.addEventListener("touchend", onUp);
   }
 
+  /** Sites that break or block iframes — open in a new tab. */
+  function shouldOpenExternally(rawUrl) {
+    try {
+      var host = new URL(rawUrl).hostname.replace(/^www\./, "").toLowerCase();
+      if (host === "flipsnack.com" || host.endsWith(".flipsnack.com")) {
+        return true;
+      }
+      if (host === "maizena.ar" || host.endsWith(".maizena.ar")) {
+        return true;
+      }
+      if (host === "cicatriz.ar" || host.endsWith(".cicatriz.ar")) {
+        return true;
+      }
+    } catch (err) {
+      /* ignore */
+    }
+    return false;
+  }
+
   function openNode(node) {
     if (!node || !node.entry) return;
     var entry = node.entry;
@@ -1133,6 +1130,10 @@
       return;
     }
     if (entry.url) {
+      if (shouldOpenExternally(entry.url)) {
+        window.open(entry.url, "_blank", "noopener,noreferrer");
+        return;
+      }
       var title =
         getLanguage() === "en"
           ? entry.titleEn || entry.title || entry.url
@@ -1717,15 +1718,20 @@
     return [];
   }
 
+  function hasLink(entry) {
+    return !!(entry && (entry.file || entry.url));
+  }
+
   async function resolveFiles(files) {
     if (files && files.length) {
-      return files.map(normalizeEntry).filter(Boolean);
+      return files.map(normalizeEntry).filter(Boolean).filter(hasLink);
     }
     try {
       var response = await fetch(getPaths().manifest);
       if (!response.ok) return [];
       var data = await response.json();
-      return rawProcessList(data).map(normalizeEntry).filter(Boolean);
+      // Temporarily hide info-only nodes (no file/url) until content is ready.
+      return rawProcessList(data).map(normalizeEntry).filter(Boolean).filter(hasLink);
     } catch (err) {
       console.warn("ProcessGraph: no se pudo cargar el manifest", err);
       return [];
@@ -1785,7 +1791,6 @@
     state.open = false;
     cancelAnimationFrame(state.raf);
     state.raf = 0;
-    setDescExpanded(false);
 
     if (els.overlay) {
       els.overlay.classList.remove("is-visible");
@@ -1812,6 +1817,8 @@
   function bindEntry() {
     var btn = document.getElementById("process-map-btn");
     if (!btn) return;
+    // Home page loads this script on demand and owns the click handler.
+    if (btn.getAttribute("data-external-loader") === "true") return;
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       open();

@@ -11,27 +11,30 @@
       content="Método Cicatriz - Plataforma artística de Candela Gencarelli. Una web que no funciona como archivo exhaustivo sino como experiencia situada y contingente. Procesos que aparecen parcial y aleatoriamente, reflejando la práctica artística como investigación en proceso. Método Cicatriz - Artistic platform by Candela Gencarelli. A website that functions not as an exhaustive archive but as a situated and contingent experience. Processes appear partially and at random, reflecting artistic practice as ongoing research."
     />
     <!-- favicon -->
-    <link rel="icon" type="x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link
       rel="preload"
-      href="assets/fonts/C_tesis-Regular.ttf"
+      href="assets/fonts/C_tesis-Regular.woff2"
       as="font"
-      type="font/ttf"
+      type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="assets/fonts/DINNextLTPro-Regular.ttf"
+      href="assets/fonts/DINNextLTPro-Regular.woff2"
       as="font"
-      type="font/ttf"
+      type="font/woff2"
       crossorigin
     />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link
+      rel="preload"
+      href="assets/images/leyenda-home-es.webp"
+      as="image"
+      fetchpriority="high"
+    />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/navigation.css" />
     <link rel="stylesheet" href="css/home.css" />
-    <link rel="stylesheet" href="css/pdf-viewer.css" />
-    <link rel="stylesheet" href="css/process-graph.css" />
     <title
       data-es="Método Cicatriz • Candela Gencarelli"
       data-en="Método Cicatriz • Candela Gencarelli"
@@ -71,6 +74,9 @@
             alt="Esta web no soy yo, es una forma de entrar a mi práctica artística"
             data-alt-es="Esta web no soy yo, es una forma de entrar a mi práctica artística"
             data-alt-en="This website isn't me, it's a way into my artistic practice"
+            width="1200"
+            height="502"
+            decoding="async"
             fetchpriority="high"
           />
 
@@ -97,6 +103,10 @@
                 alt="Abrir proceso"
                 data-alt-es="Abrir proceso"
                 data-alt-en="Open a process"
+                width="1524"
+                height="289"
+                decoding="async"
+                loading="lazy"
               />
             </picture>
           </button>
@@ -105,6 +115,7 @@
             type="button"
             id="process-map-btn"
             class="process-map-entry"
+            data-external-loader="true"
             data-es="Mapa de procesos"
             data-en="Process map"
           >
@@ -147,7 +158,57 @@
     <script defer src="js/pdf-link-layer.js"></script>
     <script defer src="js/random-pdf.js"></script>
     <script defer src="js/embed-viewer.js"></script>
-    <script defer src="js/process-graph.js"></script>
     <script defer src="main.js"></script>
+    <script>
+      (function () {
+        var loaded = false;
+        function loadMap() {
+          if (loaded) return;
+          loaded = true;
+          var link = document.createElement("link");
+          link.id = "process-graph-css";
+          link.rel = "stylesheet";
+          link.href = "css/process-graph.css";
+          document.head.appendChild(link);
+          var script = document.createElement("script");
+          script.src = "js/process-graph.js";
+          script.onload = function () {
+            if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
+              window.ProcessGraph.open();
+            }
+          };
+          document.body.appendChild(script);
+        }
+        function bind() {
+          var btn = document.getElementById("process-map-btn");
+          if (!btn) return;
+          btn.addEventListener(
+            "pointerenter",
+            function () {
+              if (document.getElementById("process-graph-css")) return;
+              var link = document.createElement("link");
+              link.id = "process-graph-css";
+              link.rel = "stylesheet";
+              link.href = "css/process-graph.css";
+              document.head.appendChild(link);
+            },
+            { once: true },
+          );
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (window.ProcessGraph && typeof window.ProcessGraph.open === "function") {
+              window.ProcessGraph.open();
+              return;
+            }
+            loadMap();
+          });
+        }
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", bind);
+        } else {
+          bind();
+        }
+      })();
+    </script>
   </body>
 </html>
