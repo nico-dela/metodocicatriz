@@ -7,29 +7,33 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ffffffee;
+  background-color: var(--color-nav-bg);
   z-index: 1000;
   padding: 20px 40px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .nav-left .artist-name {
   font-family: "C_tesis", serif;
   font-size: 26px;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text);
   text-decoration: none;
+  transition: color 0.25s ease;
 }
 
 .nav-left .artist-name:hover {
-  color: #666;
+  color: var(--color-text-muted-hover);
 }
 
 .nav-left a.artist-name:focus-visible {
-  outline: 2px solid #333;
+  outline: 2px solid var(--color-outline);
   outline-offset: 4px;
   border-radius: 2px;
 }
@@ -44,7 +48,7 @@
 .nav-right .lang-option,
 .nav-right .separator {
   text-decoration: none;
-  color: #999;
+  color: var(--color-muted);
   font-size: 14px;
   font-weight: 500;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -56,18 +60,18 @@
 
 .nav-right a.active,
 .nav-right .lang-option.active {
-  color: blue;
+  color: var(--color-accent);
   font-weight: 500;
 }
 
 .nav-right a:hover,
 .nav-right .lang-option:hover {
-  color: blue;
+  color: var(--color-accent);
 }
 
 .nav-right a:focus-visible,
 .nav-right .lang-option:focus-visible {
-  outline: 2px solid #333;
+  outline: 2px solid var(--color-outline);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -81,6 +85,38 @@
 
 .nav-right .lang-option {
   cursor: pointer;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  color: var(--color-muted);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--color-accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-outline);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.theme-toggle-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* Navigation Responsive */
@@ -130,6 +166,16 @@
   .nav-right .lang-option,
   .nav-right .separator {
     font-size: 13px;
+  }
+
+  .theme-toggle {
+    width: 26px;
+    height: 26px;
+  }
+
+  .theme-toggle-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 

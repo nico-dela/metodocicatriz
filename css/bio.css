@@ -57,9 +57,9 @@
 
 .home-btn {
   font-size: 16px;
-  color: #333;
+  color: var(--color-text);
   background: transparent;
-  border: 1px solid #333;
+  border: 1px solid var(--color-text);
   padding: 12px 32px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -73,8 +73,8 @@
 }
 
 .home-btn:hover {
-  background-color: #333;
-  color: #fff;
+  background-color: var(--color-btn-bg-hover);
+  color: var(--color-btn-text-hover);
 }
 
 .home-btn-top {

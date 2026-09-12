@@ -226,7 +226,7 @@ class PdfLoader {
       ">
         <p><strong>Error</strong></p>
         <p>${message}</p>
-        <button onclick="location.href='../index.html'" style="
+        <button type="button" id="pdf-error-home-btn" style="
           margin-top: 15px;
           padding: 8px 16px;
           background: white;
@@ -239,6 +239,12 @@ class PdfLoader {
         </button>
       </div>
     `;
+    var homeBtn = this.viewer.querySelector("#pdf-error-home-btn");
+    if (homeBtn) {
+      homeBtn.addEventListener("click", function () {
+        location.href = "../index.html";
+      });
+    }
   }
 }
 

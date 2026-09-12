@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="../css/bio.css" />
     <link rel="stylesheet" href="../css/cv-handler.css" />
     <link rel="stylesheet" href="../css/pdf-viewer.css" />
+    <script src="../js/theme.js"></script>
   </head>
   <body>
     <!-- Navigation -->
@@ -35,6 +36,12 @@
         </a>
       </div>
       <div class="nav-right">
+        <button
+          type="button"
+          id="theme-toggle"
+          class="theme-toggle"
+          aria-label="Tema de color"
+        ></button>
         <div class="language-toggle">
           <span class="lang-option active" data-lang="es">ES</span>
           <span class="separator">/</span>
@@ -55,9 +62,6 @@
             width="438"
             height="406"
             decoding="async"
-            style="display: none"
-            onload="this.style.display = 'block'"
-            onerror="this.parentElement.style.display = 'none'"
           />
         </div>
 
