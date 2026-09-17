@@ -20,6 +20,13 @@ Cursor recupera contexto vía `AGENTS.md`, `CODE_QUALITY.md` y `.cursorrules`; e
 
 <!-- Nuevas entradas abajo de esta línea -->
 
+## 2026-09-17 20:27:00 — Compresión web de PDFs de portfolio
+
+- Qué: recomprimí 7 PDFs pesados con Ghostscript (200 dpi, JPEGQ 85); total ~188 MB → ~147 MB.
+- Por qué: mejorar tiempo de carga del visor PDF.js en Netlify preview sin bajar a preset `/ebook`.
+- Descartado: compresión lossless-only (casi no reduce) y `/ebook` (demasiado agresivo).
+- Pendiente: si hace falta más ahorro en Maizena/Ensayo (~89 % del original), re-pasar esos a 150 dpi.
+
 ## 2026-09-17 20:15:00 — PDFs actualizados, fanzines locales, bio y guía Cursor
 
 - Qué: reemplacé 7 PDFs en `assets/pdfs/`, agregué 3 fanzines (antes FlipSnack), actualicé bio ES/EN, y creé `AGENTS.md` / `CODE_QUALITY.md` / `DECISIONS.md` / `MCP_USAGE.md` + `.cursorrules` / `.cursorignore`.
