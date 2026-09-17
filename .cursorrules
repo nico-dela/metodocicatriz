@@ -1,0 +1,24 @@
+# Método Cicatriz — reglas Cursor
+
+Antes de cambiar código: leé `AGENTS.md` y `CODE_QUALITY.md`. Usá `DECISIONS.md` y `MCP_USAGE.md` cuando apliquen.
+
+## Denylist — no abrir / no leer / no meter en contexto
+
+Estos paths son binarios o ruido; no los abras con el lector de archivos ni los uses como fuente de verdad de contenido:
+
+- `assets/pdfs/**/*.pdf`
+- `assets/fonts/**` (`.ttf`, `.woff`, `.woff2`)
+- `favicon.ico`
+- `assets/images/image-converter.sh` (salvo que la tarea sea ese script)
+
+Para PDFs: usá solo el **nombre de archivo** y `assets/pdfs/manifest.json` (o `manifest.json.from-home`). Para reemplazar un PDF, copiá por shell; no intentes leer el contenido del PDF.
+
+## Drafts `*.from-home`
+
+Son borradores de una evolución del home/process-graph. No los promociones a live ni los edites salvo que la tarea lo pida explícitamente.
+
+## Preferencias
+
+- Respetá i18n ES/EN y tipografías de marca (`C_tesis`, `DINNextLTPro`).
+- Cambios mínimos; no refactorices archivos grandes de paso.
+- Si ya hay PDF local, no vuelvas a FlipSnack u embeds externos para el mismo ítem.

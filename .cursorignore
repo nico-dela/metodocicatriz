@@ -1,0 +1,4 @@
+# Binarios pesados — no indexar en contexto Cursor
+assets/pdfs/**/*.pdf
+assets/fonts/**
+favicon.ico
