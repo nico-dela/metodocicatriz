@@ -1271,11 +1271,68 @@
     return false;
   }
 
+  function loadScriptOnce(src) {
+    return new Promise(function (resolve, reject) {
+      var existing = document.querySelector('script[src="' + src + '"]');
+      if (existing) {
+        if (window.PdfModal) {
+          resolve();
+          return;
+        }
+        existing.addEventListener("load", function () {
+          resolve();
+        });
+        existing.addEventListener("error", reject);
+        return;
+      }
+      var script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = function () {
+        resolve();
+      };
+      script.onerror = reject;
+      document.body.appendChild(script);
+    });
+  }
+
+  /** PdfModal is lazy-loaded on home; load it before opening a PDF node. */
+  function ensurePdfModal() {
+    if (window.PdfModal && typeof window.PdfModal.open === "function") {
+      return Promise.resolve();
+    }
+    if (typeof window.ensurePdfStack === "function") {
+      return window.ensurePdfStack();
+    }
+    var base = window.location.pathname.indexOf("/pages/") !== -1 ? "../" : "";
+    return loadScriptOnce(base + "js/pdf-link-layer.js")
+      .then(function () {
+        return loadScriptOnce(base + "js/embed-viewer.js");
+      })
+      .then(function () {
+        return loadScriptOnce(base + "js/random-pdf.js");
+      });
+  }
+
+  function openPdfEntry(file) {
+    ensurePdfModal()
+      .then(function () {
+        if (window.PdfModal && typeof window.PdfModal.open === "function") {
+          window.PdfModal.open(file);
+          return;
+        }
+        console.warn("ProcessGraph: PdfModal no disponible tras cargar el stack");
+      })
+      .catch(function (err) {
+        console.error("ProcessGraph: no se pudo cargar el visor PDF", err);
+      });
+  }
+
   function openNode(node) {
     if (!node || !node.entry) return;
     var entry = node.entry;
-    if (entry.file && window.PdfModal && typeof window.PdfModal.open === "function") {
-      window.PdfModal.open(entry.file);
+    if (entry.file) {
+      openPdfEntry(entry.file);
       return;
     }
     if (entry.url) {

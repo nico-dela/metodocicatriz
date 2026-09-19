@@ -20,6 +20,13 @@ Cursor recupera contexto vía `AGENTS.md`, `CODE_QUALITY.md` y `.cursorrules`; e
 
 <!-- Nuevas entradas abajo de esta línea -->
 
+## 2026-09-19 13:35:00 — Fix tap PDF en mapa (mobile)
+
+- Qué: al abrir el mapa se precarga el stack PDF; al tocar un nodo con `file`, `openNode` espera `PdfModal` (vía `ensurePdfStack` / carga on-demand) antes de abrir el modal.
+- Por qué: en mobile no hay hover del botón random, así que `PdfModal` nunca se cargaba y los nodos PDF fallaban en silencio; los de URL seguían andando con `window.open` / EmbedViewer.
+- Descartado: navegar a `pdf-viewer.html` — el modal in-page ya es el camino canónico.
+- Pendiente: ninguno.
+
 ## 2026-09-17 20:27:00 — Compresión web de PDFs de portfolio
 
 - Qué: recomprimí 7 PDFs pesados con Ghostscript (200 dpi, JPEGQ 85); total ~188 MB → ~147 MB.

@@ -35,10 +35,15 @@
     return pdfStackPromise;
   }
 
+  // Process graph opens PDF nodes via PdfModal; expose for on-demand load
+  // (mobile has no hover, so the random-PDF button never warms the stack).
+  window.ensurePdfStack = ensurePdfStack;
+
   var mapLoaded = false;
   function loadMap() {
     if (mapLoaded) return;
     mapLoaded = true;
+    ensurePdfStack().catch(function () {});
     if (!document.getElementById("process-graph-css")) {
       var link = document.createElement("link");
       link.id = "process-graph-css";
@@ -101,6 +106,7 @@
     );
     mapBtn.addEventListener("click", function (e) {
       e.preventDefault();
+      ensurePdfStack().catch(function () {});
       if (
         window.ProcessGraph &&
         typeof window.ProcessGraph.open === "function"
