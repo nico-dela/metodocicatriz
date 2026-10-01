@@ -2,62 +2,62 @@
 
 ## Project Context
 
-- **Stack**: sitio estático HTML/CSS/JS vanilla. Deploy en Netlify (`netlify.toml`, publish `.`, sin build). PDF.js vía CDN (`cdnjs.cloudflare.com`). i18n ES/EN con atributos `data-es`/`data-en` y `js/translations.js`.
-- **Test command**: no hay suite de tests.
-- **Lint command**: no hay linter configurado.
-- **Build command**: ninguno (sitio estático). Preview local con cualquier servidor HTTP estático; deploy = push a la rama `preview` (ver `DEPLOY-PREVIEW.md`).
-- **Estructura relevante**:
+- **Stack**: static HTML/CSS/JS site. Deploy on Netlify (`netlify.toml`, publish `.`, no build). PDF.js via CDN (`cdnjs.cloudflare.com`). ES/EN i18n with `data-es`/`data-en` attributes and `js/translations.js`.
+- **Test command**: no test suite.
+- **Lint command**: no linter configured.
+- **Build command**: none (static site). Local preview with any static HTTP server; deploy = push to the `preview` branch (see `DEPLOY-PREVIEW.md`).
+- **Relevant layout**:
   - `index.html`, `main.js` — home
   - `pages/` — bio, pdf-viewer
-  - `css/`, `js/` — estilos y módulos
+  - `css/`, `js/` — styles and modules
   - `assets/fonts/`, `assets/images/`, `assets/pdfs/` — assets
-  - `assets/pdfs/manifest.json` — catálogo live de PDFs/procesos
-  - `*.from-home` — drafts de una evolución del home/process-graph (no promover a live sin pedirlo)
-- **Naming**: archivos en kebab-case; PDFs existentes pueden tener espacios/años en el nombre (no renombrar). JS en camelCase.
+  - `assets/pdfs/manifest.json` — live catalog of PDFs/processes
+  - `*.from-home` — drafts of an evolution of the home/process-graph (do not promote to live unless asked)
+- **Naming**: files in kebab-case; existing PDFs may have spaces or years in the name (do not rename). JS in camelCase.
 
 ---
 
-## 1. Antes de generar código
+## 1. Before generating code
 
-- Revisá si `CODE_QUALITY.md` tiene una regla aplicable a lo que estás por hacer. Si la hay, decilo explícitamente antes de escribir código.
-- Revisá `DECISIONS.md` si existe: puede haber contexto de por qué algo está hecho de determinada forma.
-- Revisá `MCP_USAGE.md` antes de usar un MCP.
+- Check whether `CODE_QUALITY.md` has a rule that applies to what you are about to do. If it does, say so explicitly before writing code.
+- Check `DECISIONS.md` if it exists: it may explain why something is done a certain way.
+- Check `MCP_USAGE.md` before using an MCP.
 
 ## 2. Tests
 
-- No hay suite. No generes tests salvo que el usuario lo pida o se introduzca tooling de tests.
-- Si se agregan tests en el futuro: caso feliz, un edge case, un caso de error/input inválido; sin aserciones triviales solo para cobertura.
+- There is no suite. Do not generate tests unless the user asks or test tooling is introduced.
+- If tests are added later: a happy path, one edge case, and one error or invalid-input case; no trivial assertions just for coverage.
 
-## 3. Complejidad ciclomática
+## 3. Cyclomatic complexity
 
-- Objetivo por función **nueva**: ≤7. Máximo aceptable: 10.
-- Si la superás, refactorizá antes de entregar: extraer funciones con nombre descriptivo → early returns → polimorfismo/strategy si hay ramas por tipo.
-- No refactorizar de paso archivos grandes existentes (`process-graph.js`, etc.) salvo que la tarea lo pida.
+- Target per **new** function: ≤7. Acceptable maximum: 10.
+- If you exceed it, refactor before delivering: extract functions with descriptive names → early returns → polymorphism or strategy when branches are by type.
+- Do not refactor large existing files in passing (`process-graph.js`, and so on) unless the task asks for it.
 
-## 4. Seguridad — checklist antes de dar por terminada la tarea
+## 4. Security — checklist before considering the task done
 
-- [ ] Sin credenciales, tokens o keys hardcodeadas
-- [ ] Input validado en puntos de entrada (query params, URLs externas al embed)
-- [ ] Sin riesgo de inyección (HTML/URL)
-- [ ] Sin datos sensibles en logs
+- [ ] No hardcoded credentials, tokens, or keys
+- [ ] Input validated at entry points (query params, URLs external to the embed)
+- [ ] No injection risk (HTML/URL)
+- [ ] No sensitive data in logs
 
-Si algo es ambiguo, decilo en la respuesta en vez de asumir.
+If something is ambiguous, say so in the reply instead of assuming.
 
-## 5. Arquitectura y dependencias
+## 5. Architecture and dependencies
 
-- Respetá las capas existentes (HTML → CSS → JS modules); no cruces boundaries sin avisar.
-- No agregues una dependencia nueva (CDN o npm) sin justificar por qué.
-- Buscá antes de escribir: no dupliques lógica existente.
+- Respect existing layers (HTML → CSS → JS modules); do not cross boundaries without saying so.
+- Do not add a new dependency (CDN or npm) without justifying why.
+- Search before writing: do not duplicate existing logic.
 
-## 6. Calidad general
+## 6. General quality
 
-DEBE: naming descriptivo, seguir patrones del proyecto, no romper i18n ES/EN.
-NO DEBE: dejar bloques comentados grandes, TODOs de lógica placeholder, optimizaciones especulativas no pedidas.
+MUST: descriptive naming, follow project patterns, and do not break ES/EN i18n.
+MUST NOT: leave large commented-out blocks, placeholder-logic TODOs, or unrequested speculative optimizations.
 
-## 7. Al cerrar una sesión de trabajo
+## 7. When closing a work session
 
-- Si tocaste algo no trivial, agregá una entrada breve en `DECISIONS.md` con: qué se hizo, por qué, qué queda pendiente.
+- If you touched something non-trivial, add a short entry to `DECISIONS.md` with what was done, why, and what is still pending.
 
-## 8. Si no podés explicar tu propio código
+## 8. If you cannot explain your own code
 
-Decilo explícitamente en la respuesta en vez de entregarlo como si fuera obvio.
+Say so explicitly in the reply instead of delivering it as if it were obvious.

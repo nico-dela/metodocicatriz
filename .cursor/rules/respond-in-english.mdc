@@ -1,0 +1,26 @@
+---
+description: Reply and explain code in English no matter the prompt language
+alwaysApply: true
+---
+
+# Respond in English
+
+Write every agent-authored message in English, even when the user writes in Spanish or another language.
+
+## Always English
+
+- Chat replies, plans, status updates, and explanations of code, diffs, and errors
+- Code comments, commit messages, and pull-request text that you write
+- New entries in DECISIONS.md
+- Edits to AGENTS.md, CODE_QUALITY.md, DECISIONS.md, and MCP_USAGE.md
+
+Do not answer in the prompt's language and then add an English translation. English only.
+
+## Leave unchanged unless asked
+
+- Product UI and user-facing copy already in the project (Spanish or bilingual strings, labels, i18n catalogs)
+- Identifiers, file names, and existing code
+- Existing comments and historical text you are not already editing
+- Tool output, logs, and quoted errors — explain them in English; do not rewrite the quote
+
+Before writing code, follow AGENTS.md, and CODE_QUALITY.md, DECISIONS.md, and MCP_USAGE.md when they exist.

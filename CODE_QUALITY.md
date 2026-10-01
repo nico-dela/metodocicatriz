@@ -1,51 +1,51 @@
 # CODE_QUALITY.md
 
-Referencia de estándares del proyecto. El agente la consulta antes de generar código (ver AGENTS.md §1); vos la mantenés y ajustás con el tiempo.
+Project standards reference. The agent checks it before generating code (see AGENTS.md §1); keep it and adjust it over time.
 
 ## Naming
 
-- Nombres descriptivos, sin abreviaturas crípticas (`openPdfModal`, no `opm`).
-- Funciones: verbo + sustantivo (`loadManifest`, no `data2`).
-- Booleanos con prefijo `is`/`has`/`can` (`isValid`, `hasLink`).
+- Descriptive names, no cryptic abbreviations (`openPdfModal`, not `opm`).
+- Functions: verb + noun (`loadManifest`, not `data2`).
+- Booleans prefixed with `is`/`has`/`can` (`isValid`, `hasLink`).
 
-## Estructura de funciones
+## Function structure
 
-- Una función, una responsabilidad.
-- Máximo ~30 líneas como guía blanda; si la supera, evaluar extracción.
-- Early returns en vez de anidar condicionales.
-- Evitar parámetros booleanos que cambien el comportamiento de la función (preferir dos funciones separadas).
+- One function, one responsibility.
+- About 30 lines as a soft guide; if it exceeds that, consider extracting.
+- Early returns instead of nested conditionals.
+- Avoid boolean parameters that change the function's behavior (prefer two separate functions).
 
-## Manejo de errores
+## Error handling
 
-- No silenciar excepciones sin loggear o re-lanzar.
-- Errores esperables (validación, input de usuario, PDF faltante) se manejan explícitamente; errores inesperados se propagan.
-- Mensajes de error accionables: qué pasó, no solo "error".
+- Do not swallow exceptions without logging or re-raising.
+- Expected errors (validation, user input, missing PDF) are handled explicitly; unexpected errors propagate.
+- Actionable error messages: what happened, not just "error".
 
-## Comentarios
+## Comments
 
-- El código explica el "qué"; el comentario explica el "por qué" cuando no es obvio.
-- Nada de comentarios que repitan literalmente lo que dice la línea de abajo.
-- Sin bloques grandes de código comentado — se borra, para eso está git.
+- Code explains the "what"; a comment explains the "why" when it is not obvious.
+- No comments that literally repeat the line below.
+- No large blocks of commented-out code — delete them; that is what git is for.
 
 ## Tests
 
-- Hoy no hay suite. Cuando exista: un test por comportamiento; nombres que describen el escenario; mocks solo en los bordes (I/O, red, tiempo).
+- There is no suite today. When one exists: one test per behavior; names that describe the scenario; mocks only at the edges (I/O, network, time).
 
-## Dependencias
+## Dependencies
 
-- Antes de agregar una librería/CDN nueva: ¿esto ya lo resuelve algo que ya está en el proyecto?
-- Preferir librerías mantenidas activamente.
+- Before adding a new library or CDN: does something already in the project solve this?
+- Prefer actively maintained libraries.
 
 ## Git / commits
 
-- Un commit, un cambio lógico.
-- Mensaje en imperativo: "agrega validación de email", no "agregado" ni "agregando".
+- One commit, one logical change.
+- Imperative message, in English: "add email validation", not "added" or "adding".
 
-## Notas del proyecto
+## Project notes
 
-- Respetar bilingüismo: atributos `data-es`/`data-en` y bloques `data-lang="es|en"`.
-- Tipografía de marca: `C_tesis`, `DINNextLTPro` — no sustituir por stacks genéricos (Inter, system, etc.).
-- PDFs: referenciar por **filename** en el manifiesto (`"file": "..."`), no URLs absolutas. No abrir binarios PDF para “leerlos”; copiar/reemplazar por shell.
-- Archivos `*.from-home` son drafts; no promoverlos a live sin que el usuario lo pida.
-- Si ya hay PDF local, no agregar FlipSnack u otros embeds externos para el mismo ítem.
-- Preferir cambios mínimos alineados al CSS/JS existente; no rediseñar de paso.
+- Respect bilingual copy: `data-es`/`data-en` attributes and `data-lang="es|en"` blocks.
+- Brand type: `C_tesis`, `DINNextLTPro` — do not replace them with generic stacks (Inter, system, and so on).
+- PDFs: reference them by **filename** in the manifest (`"file": "..."`), not absolute URLs. Do not open PDF binaries to "read" them; copy or replace them via the shell.
+- `*.from-home` files are drafts; do not promote them to live unless the user asks.
+- If a local PDF already exists, do not add FlipSnack or other external embeds for the same item.
+- Prefer minimal changes aligned with existing CSS/JS; do not redesign in passing.

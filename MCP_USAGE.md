@@ -1,47 +1,49 @@
 # MCP_USAGE.md
 
-Qué MCPs / tools conviene usar en este proyecto y cuándo. Sin esta guía, el agente tiende a usar MCPs "por si acaso" o a ignorarlos y alucinar.
+Which MCPs and tools are worth using in this project, and when. Without this guide, the agent tends to use MCPs "just in case" or to ignore them and hallucinate.
 
-## Criterio general
+Explanations to the user about tool use are in English.
 
-- Un MCP se usa cuando la alternativa es que el agente **alucine o asuma** algo que el MCP puede confirmar.
-- Si la info ya está en el código o en `AGENTS.md`/`CODE_QUALITY.md`, no hace falta el MCP.
-- Ante la duda, decilo explícitamente ("podría confirmar esto con el browser") en vez de decidir en silencio.
+## General criterion
+
+- Use an MCP when the alternative is that the agent **hallucinates or assumes** something the MCP can confirm.
+- If the information is already in the code or in `AGENTS.md`/`CODE_QUALITY.md`, the MCP is unnecessary.
+- When unsure, say so explicitly ("I could confirm this with the browser") instead of deciding in silence.
 
 ---
 
-## Tools / MCPs relevantes
+## Relevant tools / MCPs
 
 ### cursor-ide-browser
 
-- **Usar cuando**: hay que verificar layout visual tras cambios en home, bio, pdf-viewer, process-graph, tipografía o CSS.
-- **No usar cuando**: la tarea es solo editar texto/JSON/manifiestos y no hay duda visual.
-- **Riesgo si no se usa**: romper layout mobile/desktop sin darse cuenta.
+- **Use when**: visual layout must be checked after changes to home, bio, pdf-viewer, process-graph, typography, or CSS.
+- **Do not use when**: the task is only editing text, JSON, or manifests and there is no visual doubt.
+- **Risk if unused**: breaking mobile or desktop layout without noticing.
 
-### WebFetch / WebSearch (tools Cursor)
+### WebFetch / WebSearch (Cursor tools)
 
-- **Usar cuando**: hace falta confirmar una API externa, docs de PDF.js/CDN, o un recurso remoto citado en la tarea.
-- **No usar cuando**: la respuesta está en el repo.
-- **Riesgo si no se usa**: código contra una API/CDN desactualizada.
+- **Use when**: an external API, PDF.js/CDN docs, or a remote resource cited in the task must be confirmed.
+- **Do not use when**: the answer is in the repo.
+- **Risk if unused**: code against an outdated API or CDN.
 
 ### Figma MCP
 
-- **Usar cuando**: la tarea menciona Figma o un diseño en Figma.
-- **No usar cuando**: no hay diseño Figma involucrado (caso habitual de este sitio).
+- **Use when**: the task mentions Figma or a Figma design.
+- **Do not use when**: no Figma design is involved (the usual case for this site).
 
 ### DB / tickets / filesystem MCP
 
-- No aplican a este proyecto estático. No inventarlos ni buscarlos "por si acaso".
+- They do not apply to this static project. Do not invent them or look for them "just in case".
 
 ---
 
-## Orden de prioridad
+## Priority order
 
-1. Código/archivos del proyecto
-2. Browser MCP para QA visual
-3. Docs externas (WebFetch/Search)
-4. Web search genérico — último recurso
+1. Project code and files
+2. Browser MCP for visual QA
+3. External docs (WebFetch/Search)
+4. Generic web search — last resort
 
-## Señal de sobrecarga
+## Overload signal
 
-Si el agente elige mal qué tool usar, revisar esta lista y desactivar lo que no se usó en las últimas sesiones.
+If the agent picks the wrong tool, review this list and disable what was not used in recent sessions.

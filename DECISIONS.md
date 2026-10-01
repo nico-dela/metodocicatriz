@@ -1,42 +1,44 @@
 # DECISIONS.md
 
-Log de sesiones de trabajo. Entrada corta al cerrar cada sesión no trivial — no reemplaza al historial de git, complementa el "por qué" que el diff no cuenta.
+Work-session log. A short entry when closing each non-trivial session — it does not replace git history; it adds the "why" the diff does not tell.
 
-Cursor recupera contexto vía `AGENTS.md`, `CODE_QUALITY.md` y `.cursorrules`; este archivo aporta el historial de decisiones del proyecto.
+Cursor recovers context via `AGENTS.md`, `CODE_QUALITY.md`, and `.cursorrules`; this file holds the project's decision history.
+
+New entries are in English.
 
 ---
 
-## Formato de cada entrada
+## Entry format
 
 ```markdown
-## YYYY-MM-DD HH:MM:ss — <título corto del cambio>
-- Qué: <qué se hizo, una línea>
-- Por qué: <la decisión de diseño o el problema que resolvía>
-- Descartado: <si evaluaste otra alternativa y la descartaste, cuál y por qué>
-- Pendiente: <qué queda para la próxima sesión, si algo>
+## YYYY-MM-DD HH:MM:ss — <short title of the change>
+- What: <what was done, one line>
+- Why: <the design decision or the problem it solved>
+- Rejected: <if you considered another option and dropped it, which one and why>
+- Pending: <what is left for the next session, if anything>
 ```
 
 ---
 
-<!-- Nuevas entradas abajo de esta línea -->
+<!-- New entries below this line -->
 
-## 2026-09-19 13:35:00 — Fix tap PDF en mapa (mobile)
+## 2026-09-19 13:35:00 — Fix PDF tap on the map (mobile)
 
-- Qué: al abrir el mapa se precarga el stack PDF; al tocar un nodo con `file`, `openNode` espera `PdfModal` (vía `ensurePdfStack` / carga on-demand) antes de abrir el modal.
-- Por qué: en mobile no hay hover del botón random, así que `PdfModal` nunca se cargaba y los nodos PDF fallaban en silencio; los de URL seguían andando con `window.open` / EmbedViewer.
-- Descartado: navegar a `pdf-viewer.html` — el modal in-page ya es el camino canónico.
-- Pendiente: ninguno.
+- What: opening the map preloads the PDF stack; tapping a node with `file`, `openNode` waits for `PdfModal` (via `ensurePdfStack` / on-demand load) before opening the modal.
+- Why: on mobile there is no hover on the random button, so `PdfModal` never loaded and PDF nodes failed silently; URL nodes kept working with `window.open` / EmbedViewer.
+- Rejected: navigate to `pdf-viewer.html` — the in-page modal is already the canonical path.
+- Pending: none.
 
-## 2026-09-17 20:27:00 — Compresión web de PDFs de portfolio
+## 2026-09-17 20:27:00 — Web compression of portfolio PDFs
 
-- Qué: recomprimí 7 PDFs pesados con Ghostscript (200 dpi, JPEGQ 85); total ~188 MB → ~147 MB.
-- Por qué: mejorar tiempo de carga del visor PDF.js en Netlify preview sin bajar a preset `/ebook`.
-- Descartado: compresión lossless-only (casi no reduce) y `/ebook` (demasiado agresivo).
-- Pendiente: si hace falta más ahorro en Maizena/Ensayo (~89 % del original), re-pasar esos a 150 dpi.
+- What: recompressed 7 heavy PDFs with Ghostscript (200 dpi, JPEGQ 85); total ~188 MB → ~147 MB.
+- Why: improve PDF.js viewer load time on the Netlify preview without dropping to the `/ebook` preset.
+- Rejected: lossless-only compression (barely reduces) and `/ebook` (too aggressive).
+- Pending: if more savings are needed on Maizena/Ensayo (~89% of the original), re-run those at 150 dpi.
 
-## 2026-09-17 20:15:00 — PDFs actualizados, fanzines locales, bio y guía Cursor
+## 2026-09-17 20:15:00 — Updated PDFs, local fanzines, bio, and Cursor guide
 
-- Qué: reemplacé 7 PDFs en `assets/pdfs/`, agregué 3 fanzines (antes FlipSnack), actualicé bio ES/EN, y creé `AGENTS.md` / `CODE_QUALITY.md` / `DECISIONS.md` / `MCP_USAGE.md` + `.cursorrules` / `.cursorignore`.
-- Por qué: el cliente envió versiones corregidas de los PDFs y fanzines locales; la bio nueva refleja el doctorado ya obtenido y KeyLab; hace falta denylist para que Cursor no indexe binarios pesados.
-- Descartado: dejar FlipSnack como fallback — con PDF local el visor in-page es suficiente.
-- Pendiente: promover `*.from-home` (process-graph / home) a live si se confirma el rediseño; revisar tamaño de deploy Netlify (~190 MB solo en PDFs nuevos).
+- What: replaced 7 PDFs in `assets/pdfs/`, added 3 fanzines (previously FlipSnack), updated the ES/EN bio, and created `AGENTS.md` / `CODE_QUALITY.md` / `DECISIONS.md` / `MCP_USAGE.md` plus `.cursorrules` / `.cursorignore`.
+- Why: the client sent corrected versions of the PDFs and local fanzines; the new bio reflects the completed doctorate and KeyLab; a denylist is needed so Cursor does not index heavy binaries.
+- Rejected: keep FlipSnack as a fallback — with a local PDF the in-page viewer is enough.
+- Pending: promote `*.from-home` (process-graph / home) to live if the redesign is confirmed; review the Netlify deploy size (~190 MB in new PDFs alone).
